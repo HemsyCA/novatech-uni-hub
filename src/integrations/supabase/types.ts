@@ -14,7 +14,236 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      order_items: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string
+          product_id: string | null
+          quantity: number
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id: string
+          product_id?: string | null
+          quantity: number
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string
+          product_id?: string | null
+          quantity?: number
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      orders: {
+        Row: {
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["order_status"]
+          total: number
+          transaction_code: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total: number
+          transaction_code?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["order_status"]
+          total?: number
+          transaction_code?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      print_reservations: {
+        Row: {
+          created_at: string
+          description: string | null
+          estimated_cost: number | null
+          estimated_grams: number
+          estimated_hours: number
+          id: string
+          notes: string | null
+          printer_id: string | null
+          project_name: string
+          scheduled_date: string
+          scheduled_time: string
+          status: Database["public"]["Enums"]["print_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_grams: number
+          estimated_hours: number
+          id?: string
+          notes?: string | null
+          printer_id?: string | null
+          project_name: string
+          scheduled_date: string
+          scheduled_time: string
+          status?: Database["public"]["Enums"]["print_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          estimated_cost?: number | null
+          estimated_grams?: number
+          estimated_hours?: number
+          id?: string
+          notes?: string | null
+          printer_id?: string | null
+          project_name?: string
+          scheduled_date?: string
+          scheduled_time?: string
+          status?: Database["public"]["Enums"]["print_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "print_reservations_printer_id_fkey"
+            columns: ["printer_id"]
+            isOneToOne: false
+            referencedRelation: "printers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      printers: {
+        Row: {
+          cost_per_gram: number
+          cost_per_hour: number
+          created_at: string
+          id: string
+          is_available: boolean | null
+          name: string
+          type: Database["public"]["Enums"]["printer_type"]
+        }
+        Insert: {
+          cost_per_gram?: number
+          cost_per_hour?: number
+          created_at?: string
+          id?: string
+          is_available?: boolean | null
+          name: string
+          type?: Database["public"]["Enums"]["printer_type"]
+        }
+        Update: {
+          cost_per_gram?: number
+          cost_per_hour?: number
+          created_at?: string
+          id?: string
+          is_available?: boolean | null
+          name?: string
+          type?: Database["public"]["Enums"]["printer_type"]
+        }
+        Relationships: []
+      }
+      products: {
+        Row: {
+          category: string
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean | null
+          name: string
+          price: number
+          stock: number
+          updated_at: string
+        }
+        Insert: {
+          category: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name: string
+          price: number
+          stock?: number
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean | null
+          name?: string
+          price?: number
+          stock?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +252,14 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      order_status: "pending" | "paid" | "delivered" | "cancelled"
+      print_status:
+        | "pending"
+        | "approved"
+        | "in_progress"
+        | "completed"
+        | "cancelled"
+      printer_type: "filament" | "resin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +386,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      order_status: ["pending", "paid", "delivered", "cancelled"],
+      print_status: [
+        "pending",
+        "approved",
+        "in_progress",
+        "completed",
+        "cancelled",
+      ],
+      printer_type: ["filament", "resin"],
+    },
   },
 } as const

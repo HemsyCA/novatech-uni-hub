@@ -60,15 +60,19 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
-            <Button
-              variant="outline"
-              className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-            >
-              Iniciar Sesión
-            </Button>
-            <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
-              Unirse al Equipo
-            </Button>
+            <a href="/auth">
+              <Button
+                variant="outline"
+                className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
+                Iniciar Sesión
+              </Button>
+            </a>
+            <a href="/auth">
+              <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
+                Unirse al Equipo
+              </Button>
+            </a>
           </div>
 
           {/* Mobile Menu Button */}
@@ -102,15 +106,19 @@ export function Navbar() {
                 </a>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/30">
-                <Button
-                  variant="outline"
-                  className="w-full border-primary/50 text-primary"
-                >
-                  Iniciar Sesión
-                </Button>
-                <Button className="w-full bg-gradient-primary text-primary-foreground">
-                  Unirse al Equipo
-                </Button>
+                <a href="/auth">
+                  <Button
+                    variant="outline"
+                    className="w-full border-primary/50 text-primary"
+                  >
+                    Iniciar Sesión
+                  </Button>
+                </a>
+                <a href="/auth">
+                  <Button className="w-full bg-gradient-primary text-primary-foreground">
+                    Unirse al Equipo
+                  </Button>
+                </a>
               </div>
             </div>
           </motion.div>
