@@ -10,6 +10,7 @@ const navItems = [
   { label: "Robots", href: "#robots" },
   { label: "Competencias", href: "#competencias" },
   { label: "Equipo", href: "#equipo" },
+  { label: "Impresión 3D", href: "/print3d" },
 ];
 
 export function Navbar() {

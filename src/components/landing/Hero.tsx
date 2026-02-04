@@ -79,16 +79,28 @@ export function Hero() {
               <Button
                 size="lg"
                 className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan group text-lg px-8"
+                asChild
               >
-                Conoce Nuestros Robots
-                <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                <a href="#robots">
+                  Conoce Nuestros Robots
+                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </a>
               </Button>
               <Button
                 size="lg"
                 variant="outline"
                 className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground text-lg px-8"
+                asChild
               >
-                Ver Competencias
+                <a href="#competencias">Ver Competencias</a>
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-lg px-8"
+                asChild
+              >
+                <a href="/print3d">Reservar Impresión 3D</a>
               </Button>
             </motion.div>
 

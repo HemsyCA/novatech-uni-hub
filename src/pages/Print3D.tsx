@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,7 +12,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Printer, CalendarIcon, Clock, DollarSign, Loader2 } from "lucide-react";
+import { ArrowLeft, Printer, CalendarIcon, Clock, DollarSign, Loader2, User, Mail, Phone } from "lucide-react";
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import novatechLogo from "@/assets/novatech-logo.png";
@@ -45,7 +45,6 @@ export default function Print3D() {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const navigate = useNavigate();
   const { toast } = useToast();
 
   // Form state
@@ -56,6 +55,10 @@ export default function Print3D() {
   const [hours, setHours] = useState("");
   const [date, setDate] = useState<Date>();
   const [time, setTime] = useState("");
+  // Campos de contacto para usuarios no autenticados
+  const [contactName, setContactName] = useState("");
+  const [contactEmail, setContactEmail] = useState("");
+  const [contactPhone, setContactPhone] = useState("");
 
   const selectedPrinterData = printers.find(p => p.id === selectedPrinter);
   const estimatedCost = selectedPrinterData 
@@ -65,21 +68,24 @@ export default function Print3D() {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      if (!session?.user) navigate("/auth");
     });
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
-      if (!session?.user) navigate("/auth");
     });
 
+    // Cargar impresoras siempre (público)
+    fetchPrinters();
+
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
+    // Solo cargar reservas si el usuario está autenticado
     if (user) {
-      fetchPrinters();
       fetchReservations();
+    } else {
+      setLoading(false);
     }
   }, [user]);
 
@@ -92,9 +98,12 @@ export default function Print3D() {
   };
 
   const fetchReservations = async () => {
+    if (!user) return;
+    
     const { data } = await supabase
       .from("print_reservations")
       .select("*, printers(name)")
+      .eq("user_id", user.id)
       .order("created_at", { ascending: false });
     if (data) setReservations(data as Reservation[]);
     setLoading(false);
@@ -107,9 +116,22 @@ export default function Print3D() {
       return;
     }
 
+    // Validar campos de contacto si no está autenticado
+    if (!user) {
+      if (!contactName || !contactEmail || !contactPhone) {
+        toast({ 
+          title: "Error", 
+          description: "Completa todos los datos de contacto", 
+          variant: "destructive" 
+        });
+        return;
+      }
+    }
+
     setSubmitting(true);
-    const { error } = await supabase.from("print_reservations").insert({
-      user_id: user.id,
+    
+    const reservationData: any = {
+      user_id: user?.id || null,
       printer_id: selectedPrinter,
       project_name: projectName,
       description,
@@ -117,19 +139,39 @@ export default function Print3D() {
       estimated_hours: parseFloat(hours),
       scheduled_date: format(date, "yyyy-MM-dd"),
       scheduled_time: time,
-    });
+    };
+
+    // Agregar datos de contacto si no hay usuario autenticado
+    if (!user) {
+      reservationData.contact_name = contactName;
+      reservationData.contact_email = contactEmail;
+      reservationData.contact_phone = contactPhone;
+    }
+
+    const { error } = await supabase.from("print_reservations").insert(reservationData);
 
     if (error) {
       toast({ title: "Error", description: error.message, variant: "destructive" });
     } else {
-      toast({ title: "¡Reserva creada!", description: "Tu turno ha sido registrado." });
+      toast({ 
+        title: "¡Reserva creada!", 
+        description: user 
+          ? "Tu turno ha sido registrado." 
+          : "Tu turno ha sido registrado. Te contactaremos pronto para confirmar." 
+      });
+      // Limpiar formulario
       setProjectName("");
       setDescription("");
       setGrams("");
       setHours("");
       setDate(undefined);
       setTime("");
-      fetchReservations();
+      setContactName("");
+      setContactEmail("");
+      setContactPhone("");
+      if (user) {
+        fetchReservations();
+      }
     }
     setSubmitting(false);
   };
@@ -163,7 +205,7 @@ export default function Print3D() {
       <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/30">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link to={user ? "/dashboard" : "/"} className="text-muted-foreground hover:text-primary transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="flex items-center gap-3">
@@ -171,6 +213,13 @@ export default function Print3D() {
               <span className="font-display font-bold">Impresión 3D</span>
             </div>
           </div>
+          {user && (
+            <Link to="/dashboard">
+              <Button variant="ghost" size="sm">
+                Dashboard
+              </Button>
+            </Link>
+          )}
         </div>
       </header>
 
@@ -188,6 +237,57 @@ export default function Print3D() {
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                  {/* Campos de contacto solo para usuarios no autenticados */}
+                  {!user && (
+                    <>
+                      <div className="space-y-2">
+                        <Label htmlFor="contact-name">Nombre completo *</Label>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="contact-name"
+                            value={contactName}
+                            onChange={(e) => setContactName(e.target.value)}
+                            placeholder="Tu nombre completo"
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contact-email">Email *</Label>
+                        <div className="relative">
+                          <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="contact-email"
+                            type="email"
+                            value={contactEmail}
+                            onChange={(e) => setContactEmail(e.target.value)}
+                            placeholder="tu@email.com"
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="contact-phone">Teléfono *</Label>
+                        <div className="relative">
+                          <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <Input
+                            id="contact-phone"
+                            type="tel"
+                            value={contactPhone}
+                            onChange={(e) => setContactPhone(e.target.value)}
+                            placeholder="+51 999 999 999"
+                            className="pl-10"
+                            required
+                          />
+                        </div>
+                      </div>
+                      <div className="border-t border-border/30 pt-4" />
+                    </>
+                  )}
+                  
                   <div className="space-y-2">
                     <Label>Nombre del proyecto</Label>
                     <Input
@@ -314,52 +414,92 @@ export default function Print3D() {
             </Card>
           </motion.div>
 
-          {/* Historial de reservas */}
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-            <Card className="glass-card border-border/30">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5 text-violet-400" />
-                  Mis Reservas
-                </CardTitle>
-                <CardDescription>Historial de tus impresiones</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4 max-h-[600px] overflow-y-auto">
-                  {reservations.length === 0 ? (
-                    <p className="text-center text-muted-foreground py-8">
-                      No tienes reservas aún
+          {/* Historial de reservas - Solo para usuarios autenticados */}
+          {user ? (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+              <Card className="glass-card border-border/30">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-violet-400" />
+                    Mis Reservas
+                  </CardTitle>
+                  <CardDescription>Historial de tus impresiones</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4 max-h-[600px] overflow-y-auto">
+                    {reservations.length === 0 ? (
+                      <p className="text-center text-muted-foreground py-8">
+                        No tienes reservas aún
+                      </p>
+                    ) : (
+                      reservations.map((res) => (
+                        <Card key={res.id} className="bg-muted/30 border-border/30">
+                          <CardContent className="pt-4">
+                            <div className="flex items-start justify-between mb-2">
+                              <h4 className="font-semibold">{res.project_name}</h4>
+                              <Badge className={statusColors[res.status]}>
+                                {statusLabels[res.status]}
+                              </Badge>
+                            </div>
+                            <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
+                              <span>📅 {format(new Date(res.scheduled_date), "PP", { locale: es })}</span>
+                              <span>🕐 {res.scheduled_time}</span>
+                              <span>⚖️ {res.estimated_grams}g</span>
+                              <span>⏱️ {res.estimated_hours}h</span>
+                            </div>
+                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/30">
+                              <span className="text-xs">{res.printers?.name}</span>
+                              <span className="font-semibold text-cyan-400">
+                                S/ {Number(res.estimated_cost).toFixed(2)}
+                              </span>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ) : (
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
+              <Card className="glass-card border-border/30">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Printer className="h-5 w-5 text-cyan-400" />
+                    Información
+                  </CardTitle>
+                  <CardDescription>Acerca de nuestras impresoras 3D</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      Reserva tu turno para usar nuestras impresoras 3D profesionales. 
+                      Disponemos de impresoras de filamento y resina para todos tus proyectos.
                     </p>
-                  ) : (
-                    reservations.map((res) => (
-                      <Card key={res.id} className="bg-muted/30 border-border/30">
-                        <CardContent className="pt-4">
-                          <div className="flex items-start justify-between mb-2">
-                            <h4 className="font-semibold">{res.project_name}</h4>
-                            <Badge className={statusColors[res.status]}>
-                              {statusLabels[res.status]}
-                            </Badge>
-                          </div>
-                          <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
-                            <span>📅 {format(new Date(res.scheduled_date), "PP", { locale: es })}</span>
-                            <span>🕐 {res.scheduled_time}</span>
-                            <span>⚖️ {res.estimated_grams}g</span>
-                            <span>⏱️ {res.estimated_hours}h</span>
-                          </div>
-                          <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/30">
-                            <span className="text-xs">{res.printers?.name}</span>
-                            <span className="font-semibold text-cyan-400">
-                              S/ {Number(res.estimated_cost).toFixed(2)}
-                            </span>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    ))
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
+                    <div className="space-y-2">
+                      <h4 className="font-semibold text-sm">Proceso:</h4>
+                      <ol className="text-sm text-muted-foreground space-y-1 list-decimal list-inside">
+                        <li>Completa el formulario con los detalles de tu proyecto</li>
+                        <li>Selecciona la fecha y hora que prefieras</li>
+                        <li>Recibirás una confirmación por email</li>
+                        <li>Te contactaremos para coordinar la entrega</li>
+                      </ol>
+                    </div>
+                    <div className="pt-4 border-t border-border/30">
+                      <p className="text-xs text-muted-foreground">
+                        ¿Ya tienes una cuenta?{" "}
+                        <Link to="/auth" className="text-primary hover:underline">
+                          Inicia sesión
+                        </Link>{" "}
+                        para ver tu historial de reservas.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
         </div>
       </main>
     </div>

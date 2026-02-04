@@ -42,11 +42,18 @@ export default function Auth() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
+      let errorMessage = error.message;
+      
+      // Mensajes de error más amigables
+      if (error.message === "Invalid login credentials") {
+        errorMessage = "Credenciales inválidas. Verifica tu email y contraseña.";
+      } else if (error.message.includes("Email not confirmed") || error.message.includes("email_not_confirmed")) {
+        errorMessage = "Tu email no ha sido confirmado. Por favor, revisa tu correo y confirma tu cuenta antes de iniciar sesión.";
+      }
+      
       toast({
         title: "Error al iniciar sesión",
-        description: error.message === "Invalid login credentials" 
-          ? "Credenciales inválidas. Verifica tu email y contraseña."
-          : error.message,
+        description: errorMessage,
         variant: "destructive",
       });
     } else {
