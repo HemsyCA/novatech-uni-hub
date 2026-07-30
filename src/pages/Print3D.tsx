@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,31 +15,12 @@ import { ArrowLeft, Printer, CalendarIcon, Clock, DollarSign, Loader2, User, Mai
 import { format } from "date-fns";
 import { es } from "date-fns/locale";
 import novatechLogo from "@/assets/novatech-logo.png";
-
-type Printer = {
-  id: string;
-  name: string;
-  type: "filament" | "resin";
-  cost_per_gram: number;
-  cost_per_hour: number;
-  is_available: boolean;
-};
-
-type Reservation = {
-  id: string;
-  project_name: string;
-  estimated_grams: number;
-  estimated_hours: number;
-  estimated_cost: number;
-  scheduled_date: string;
-  scheduled_time: string;
-  status: string;
-  created_at: string;
-  printers: { name: string } | null;
-};
+import { listPrinters, listUserReservations, createReservation } from "@/services/supabase/reservations";
+import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
+import type { Printer, Reservation } from "@/types/domain";
 
 export default function Print3D() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string } | null>(null);
   const [printers, setPrinters] = useState<Printer[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -66,15 +46,14 @@ export default function Print3D() {
     : 0;
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = subscribeToAuth((_event, session) => {
+      setUser(session?.user ? { id: session.user.id } : null);
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    getCurrentSession().then(({ data: { session } }) => {
+      setUser(session?.user ? { id: session.user.id } : null);
     });
 
-    // Cargar impresoras siempre (público)
     fetchPrinters();
 
     return () => subscription.unsubscribe();
@@ -90,23 +69,25 @@ export default function Print3D() {
   }, [user]);
 
   const fetchPrinters = async () => {
-    const { data } = await supabase
-      .from("printers")
-      .select("*")
-      .eq("is_available", true);
-    if (data) setPrinters(data as Printer[]);
+    try {
+      const printersData = await listPrinters();
+      setPrinters(printersData);
+    } catch {
+      toast({ title: "Error", description: "No se pudieron cargar las impresoras", variant: "destructive" });
+    }
   };
 
   const fetchReservations = async () => {
     if (!user) return;
-    
-    const { data } = await supabase
-      .from("print_reservations")
-      .select("*, printers(name)")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false });
-    if (data) setReservations(data as Reservation[]);
-    setLoading(false);
+
+    try {
+      const reservationsData = await listUserReservations(user.id);
+      setReservations(reservationsData);
+    } catch {
+      toast({ title: "Error", description: "No se pudieron cargar tus reservas", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -130,7 +111,7 @@ export default function Print3D() {
 
     setSubmitting(true);
     
-    const reservationData: any = {
+    const reservationData: Record<string, unknown> = {
       user_id: user?.id || null,
       printer_id: selectedPrinter,
       project_name: projectName,
@@ -148,18 +129,14 @@ export default function Print3D() {
       reservationData.contact_phone = contactPhone;
     }
 
-    const { error } = await supabase.from("print_reservations").insert(reservationData);
-
-    if (error) {
-      toast({ title: "Error", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      await createReservation(reservationData);
       toast({ 
         title: "¡Reserva creada!", 
         description: user 
           ? "Tu turno ha sido registrado." 
           : "Tu turno ha sido registrado. Te contactaremos pronto para confirmar." 
       });
-      // Limpiar formulario
       setProjectName("");
       setDescription("");
       setGrams("");
@@ -172,6 +149,8 @@ export default function Print3D() {
       if (user) {
         fetchReservations();
       }
+    } catch (error) {
+      toast({ title: "Error", description: error instanceof Error ? error.message : "No se pudo crear la reserva", variant: "destructive" });
     }
     setSubmitting(false);
   };

@@ -1,36 +1,21 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ShoppingCart, Plus, Minus, Trash2, Package, Search, Loader2 } from "lucide-react";
-
-type Product = {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  price: number;
-  stock: number;
-  image_url: string;
-};
+import { ArrowLeft, ShoppingCart, Plus, Minus, Package, Search, Loader2 } from "lucide-react";
+import { listProducts } from "@/services/supabase/products";
+import { listOrders, createOrderWithItems } from "@/services/supabase/orders";
+import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
+import type { Product, Order } from "@/types/domain";
 
 type CartItem = Product & { quantity: number };
 
-type Order = {
-  id: string;
-  total: number;
-  status: string;
-  transaction_code: string;
-  created_at: string;
-};
-
 export default function Store() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<{ id: string } | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -43,13 +28,13 @@ export default function Store() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
+    const { data: { subscription } } = subscribeToAuth((_event, session) => {
+      setUser(session?.user ? { id: session.user.id } : null);
       if (!session?.user) navigate("/auth");
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
+    getCurrentSession().then(({ data: { session } }) => {
+      setUser(session?.user ? { id: session.user.id } : null);
       if (!session?.user) navigate("/auth");
     });
 
@@ -64,17 +49,25 @@ export default function Store() {
   }, [user]);
 
   const fetchProducts = async () => {
-    const { data } = await supabase.from("products").select("*").eq("is_active", true);
-    if (data) setProducts(data as Product[]);
-    setLoading(false);
+    try {
+      const productsData = await listProducts();
+      setProducts(productsData);
+    } catch {
+      toast({ title: "Error", description: "No se pudieron cargar los productos", variant: "destructive" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const fetchOrders = async () => {
-    const { data } = await supabase
-      .from("orders")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (data) setOrders(data as Order[]);
+    if (!user) return;
+
+    try {
+      const ordersData = await listOrders(user.id);
+      setOrders(ordersData);
+    } catch {
+      toast({ title: "Error", description: "No se pudieron cargar tus pedidos", variant: "destructive" });
+    }
   };
 
   const categories = ["Todos", ...new Set(products.map((p) => p.category))];
@@ -124,46 +117,29 @@ export default function Store() {
   const handleCheckout = async () => {
     if (cart.length === 0) return;
 
+    if (!user) {
+      toast({ title: "Error", description: "Debes iniciar sesión para confirmar un pedido", variant: "destructive" });
+      return;
+    }
+
     setSubmitting(true);
-    
-    // Create order
-    const { data: order, error: orderError } = await supabase
-      .from("orders")
-      .insert({ user_id: user.id, total: cartTotal })
-      .select()
-      .single();
 
-    if (orderError) {
-      toast({ title: "Error", description: orderError.message, variant: "destructive" });
+    try {
+      const order = await createOrderWithItems(user.id, cart, cartTotal);
+
+      toast({
+        title: "¡Pedido realizado!",
+        description: `Código de transacción: ${order.transaction_code || order.id}`,
+      });
+
+      setCart([]);
+      setShowCart(false);
+      await fetchOrders();
+    } catch (error) {
+      toast({ title: "Error", description: error instanceof Error ? error.message : "No se pudo crear el pedido", variant: "destructive" });
+    } finally {
       setSubmitting(false);
-      return;
     }
-
-    // Create order items
-    const orderItems = cart.map((item) => ({
-      order_id: order.id,
-      product_id: item.id,
-      quantity: item.quantity,
-      unit_price: item.price,
-    }));
-
-    const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
-
-    if (itemsError) {
-      toast({ title: "Error", description: itemsError.message, variant: "destructive" });
-      setSubmitting(false);
-      return;
-    }
-
-    toast({
-      title: "¡Pedido realizado!",
-      description: `Código de transacción: ${order.transaction_code}`,
-    });
-
-    setCart([]);
-    setShowCart(false);
-    fetchOrders();
-    setSubmitting(false);
   };
 
   const statusColors: Record<string, string> = {

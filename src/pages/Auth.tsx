@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Mail, Lock, User, ArrowLeft } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
+import { getCurrentSession, getFriendlyAuthErrorMessage, signInWithPassword, signOut, signUpWithEmail, subscribeToAuth } from "@/services/supabase/auth";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -20,13 +20,13 @@ export default function Auth() {
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = subscribeToAuth((_event, session) => {
       if (session?.user) {
         navigate("/dashboard");
       }
     });
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    getCurrentSession().then(({ data: { session } }) => {
       if (session?.user) {
         navigate("/dashboard");
       }
@@ -39,18 +39,11 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await signInWithPassword(email, password);
 
     if (error) {
-      let errorMessage = error.message;
-      
-      // Mensajes de error más amigables
-      if (error.message === "Invalid login credentials") {
-        errorMessage = "Credenciales inválidas. Verifica tu email y contraseña.";
-      } else if (error.message.includes("Email not confirmed") || error.message.includes("email_not_confirmed")) {
-        errorMessage = "Tu email no ha sido confirmado. Por favor, revisa tu correo y confirma tu cuenta antes de iniciar sesión.";
-      }
-      
+      const errorMessage = getFriendlyAuthErrorMessage(error.message);
+
       toast({
         title: "Error al iniciar sesión",
         description: errorMessage,
@@ -66,14 +59,7 @@ export default function Auth() {
     e.preventDefault();
     setLoading(true);
 
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/dashboard`,
-        data: { full_name: fullName },
-      },
-    });
+    const { error } = await signUpWithEmail(email, password, fullName);
 
     if (error) {
       toast({
