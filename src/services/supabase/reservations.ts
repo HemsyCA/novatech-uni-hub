@@ -14,12 +14,31 @@ export const listPrinters = async () => {
 export const listUserReservations = async (userId: string) => {
   const { data, error } = await supabase
     .from("print_reservations")
-    .select("*, printers(name)")
+    .select("*, printers(name), print_materials(name)")
     .eq("user_id", userId)
     .order("created_at", { ascending: false });
 
   if (error) throw error;
   return (data ?? []) as Reservation[];
+};
+
+export const listAllReservations = async () => {
+  const { data, error } = await supabase
+    .from("print_reservations")
+    .select("*, printers(name), print_materials(name)")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Reservation[];
+};
+
+export const updateReservationStatus = async (id: string, status: Reservation["status"], notes?: string) => {
+  const { error } = await supabase
+    .from("print_reservations")
+    .update({ status, ...(notes !== undefined ? { notes } : {}) })
+    .eq("id", id);
+
+  if (error) throw error;
 };
 
 export const createReservation = async (reservationData: Record<string, unknown>) => {

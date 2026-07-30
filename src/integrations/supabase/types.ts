@@ -14,6 +14,74 @@ export type Database = {
   }
   public: {
     Tables: {
+      awards: {
+        Row: {
+          awarded_date: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          robot_competition_id: string
+          title: string
+        }
+        Insert: {
+          awarded_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          robot_competition_id: string
+          title: string
+        }
+        Update: {
+          awarded_date?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          robot_competition_id?: string
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "awards_robot_competition_id_fkey"
+            columns: ["robot_competition_id"]
+            isOneToOne: false
+            referencedRelation: "robot_competitions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      competitions: {
+        Row: {
+          created_at: string
+          description: string | null
+          event_date: string | null
+          id: string
+          location: string | null
+          name: string
+          organizer: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          location?: string | null
+          name: string
+          organizer?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          event_date?: string | null
+          id?: string
+          location?: string | null
+          name?: string
+          organizer?: string | null
+        }
+        Relationships: []
+      }
       order_items: {
         Row: {
           created_at: string
@@ -86,14 +154,52 @@ export type Database = {
         }
         Relationships: []
       }
+      print_materials: {
+        Row: {
+          cost_per_gram: number
+          cost_per_hour: number
+          created_at: string
+          id: string
+          is_active: boolean
+          is_default: boolean
+          name: string
+          print_speed_g_per_hour: number
+        }
+        Insert: {
+          cost_per_gram?: number
+          cost_per_hour?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name: string
+          print_speed_g_per_hour?: number
+        }
+        Update: {
+          cost_per_gram?: number
+          cost_per_hour?: number
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          name?: string
+          print_speed_g_per_hour?: number
+        }
+        Relationships: []
+      }
       print_reservations: {
         Row: {
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           created_at: string
           description: string | null
+          design_file_path: string | null
           estimated_cost: number | null
           estimated_grams: number
           estimated_hours: number
           id: string
+          material_id: string | null
           notes: string | null
           printer_id: string | null
           project_name: string
@@ -101,15 +207,20 @@ export type Database = {
           scheduled_time: string
           status: Database["public"]["Enums"]["print_status"]
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string | null
+          design_file_path?: string | null
           estimated_cost?: number | null
           estimated_grams: number
           estimated_hours: number
           id?: string
+          material_id?: string | null
           notes?: string | null
           printer_id?: string | null
           project_name: string
@@ -117,15 +228,20 @@ export type Database = {
           scheduled_time: string
           status?: Database["public"]["Enums"]["print_status"]
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           created_at?: string
           description?: string | null
+          design_file_path?: string | null
           estimated_cost?: number | null
           estimated_grams?: number
           estimated_hours?: number
           id?: string
+          material_id?: string | null
           notes?: string | null
           printer_id?: string | null
           project_name?: string
@@ -133,9 +249,16 @@ export type Database = {
           scheduled_time?: string
           status?: Database["public"]["Enums"]["print_status"]
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "print_reservations_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "print_materials"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "print_reservations_printer_id_fkey"
             columns: ["printer_id"]
@@ -244,14 +367,183 @@ export type Database = {
         }
         Relationships: []
       }
+      robot_competitions: {
+        Row: {
+          competition_id: string
+          created_at: string
+          id: string
+          notes: string | null
+          result: string | null
+          robot_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          result?: string | null
+          robot_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          id?: string
+          notes?: string | null
+          result?: string | null
+          robot_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "robot_competitions_competition_id_fkey"
+            columns: ["competition_id"]
+            isOneToOne: false
+            referencedRelation: "competitions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "robot_competitions_robot_id_fkey"
+            columns: ["robot_id"]
+            isOneToOne: false
+            referencedRelation: "robots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      robot_owners: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          robot_id: string
+          team_role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          robot_id: string
+          team_role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          robot_id?: string
+          team_role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "robot_owners_robot_id_fkey"
+            columns: ["robot_id"]
+            isOneToOne: false
+            referencedRelation: "robots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      robots: {
+        Row: {
+          category: string | null
+          created_at: string
+          description: string | null
+          id: string
+          image_url: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          image_url?: string | null
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      social_links: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          platform: string
+          url: string
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          platform: string
+          url: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          platform?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_staff: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
     }
     Enums: {
+      app_role: "admin" | "directiva"
       order_status: "pending" | "paid" | "delivered" | "cancelled"
       print_status:
         | "pending"
@@ -387,6 +679,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      app_role: ["admin", "directiva"],
       order_status: ["pending", "paid", "delivered", "cancelled"],
       print_status: [
         "pending",

@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { Order, Product } from "@/types/domain";
+import type { Order, OrderItem, Product } from "@/types/domain";
 
 export const listOrders = async (userId: string) => {
   const { data, error } = await supabase
@@ -10,6 +10,28 @@ export const listOrders = async (userId: string) => {
 
   if (error) throw error;
   return (data ?? []) as Order[];
+};
+
+export const listAllOrders = async () => {
+  const { data, error } = await supabase.from("orders").select("*").order("created_at", { ascending: false });
+
+  if (error) throw error;
+  return (data ?? []) as Order[];
+};
+
+export const listOrderItems = async (orderId: string) => {
+  const { data, error } = await supabase
+    .from("order_items")
+    .select("*, products(name)")
+    .eq("order_id", orderId);
+
+  if (error) throw error;
+  return (data ?? []) as (OrderItem & { products: { name: string } | null })[];
+};
+
+export const updateOrderStatus = async (orderId: string, status: Order["status"]) => {
+  const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
+  if (error) throw error;
 };
 
 export const createOrderWithItems = async (userId: string, cart: Array<Product & { quantity: number }>, total: number) => {

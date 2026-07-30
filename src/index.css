@@ -11,66 +11,66 @@
 
 @layer base {
   :root {
-    /* Fondos oscuros con matiz violeta */
-    --background: 260 30% 8%;
+    /* Fondos oscuros con gradiente violeta profundo a azul marino */
+    --background: 260 40% 6%;
     --foreground: 210 40% 98%;
 
-    --card: 260 25% 12%;
+    --card: 260 35% 10%;
     --card-foreground: 210 40% 98%;
 
-    --popover: 260 25% 10%;
+    --popover: 260 35% 8%;
     --popover-foreground: 210 40% 98%;
 
-    /* Cyan primario del logo */
-    --primary: 187 100% 50%;
+    /* Violeta primario del nuevo logo */
+    --primary: 270 85% 55%;
     --primary-foreground: 260 30% 8%;
 
-    /* Azul eléctrico */
-    --secondary: 220 90% 60%;
+    /* Azul profundo secundario */
+    --secondary: 220 80% 45%;
     --secondary-foreground: 210 40% 98%;
 
-    /* Violeta */
-    --accent: 263 70% 58%;
+    /* Azul ciano para acentos */
+    --accent: 190 100% 50%;
     --accent-foreground: 210 40% 98%;
 
-    /* Oro */
+    /* Oro/Dorado */
     --gold: 45 90% 55%;
     --gold-foreground: 260 30% 8%;
 
     /* Tonos muted */
-    --muted: 260 20% 18%;
+    --muted: 260 25% 16%;
     --muted-foreground: 215 20% 65%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 260 20% 20%;
-    --input: 260 20% 18%;
-    --ring: 187 100% 50%;
+    --border: 260 25% 18%;
+    --input: 260 25% 16%;
+    --ring: 270 85% 55%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
-    --sidebar-background: 260 25% 10%;
+    --sidebar-background: 260 35% 8%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 187 100% 50%;
-    --sidebar-primary-foreground: 260 30% 8%;
-    --sidebar-accent: 263 70% 58%;
-    --sidebar-accent-foreground: 210 40% 98%;
-    --sidebar-border: 260 20% 20%;
-    --sidebar-ring: 187 100% 50%;
+    --sidebar-primary: 270 85% 55%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 190 100% 50%;
+    --sidebar-accent-foreground: 260 30% 8%;
+    --sidebar-border: 260 25% 18%;
+    --sidebar-ring: 270 85% 55%;
 
-    /* Gradientes NovaTech */
-    --gradient-primary: linear-gradient(135deg, hsl(187 100% 50%), hsl(220 90% 60%));
-    --gradient-accent: linear-gradient(135deg, hsl(220 90% 60%), hsl(263 70% 58%));
+    /* Gradientes NovaTech mejorados */
+    --gradient-primary: linear-gradient(135deg, hsl(270 85% 55%), hsl(220 80% 45%));
+    --gradient-accent: linear-gradient(135deg, hsl(220 80% 45%), hsl(190 100% 50%));
     --gradient-gold: linear-gradient(135deg, hsl(45 90% 55%), hsl(35 100% 65%));
-    --gradient-full: linear-gradient(135deg, hsl(187 100% 50%), hsl(220 90% 60%), hsl(263 70% 58%), hsl(45 90% 55%));
-    --gradient-glow: radial-gradient(ellipse at center, hsl(187 100% 50% / 0.15), transparent 70%);
+    --gradient-full: linear-gradient(135deg, hsl(270 85% 55%), hsl(220 80% 45%), hsl(190 100% 50%), hsl(45 90% 55%));
+    --gradient-glow: radial-gradient(ellipse at center, hsl(270 85% 55% / 0.2), transparent 70%);
 
-    /* Sombras */
-    --shadow-glow-cyan: 0 0 30px hsl(187 100% 50% / 0.4);
-    --shadow-glow-violet: 0 0 30px hsl(263 70% 58% / 0.4);
-    --shadow-glow-gold: 0 0 30px hsl(45 90% 55% / 0.4);
+    /* Sombras con nuevo estilo */
+    --shadow-glow-cyan: 0 0 30px hsl(190 100% 50% / 0.35);
+    --shadow-glow-violet: 0 0 30px hsl(270 85% 55% / 0.35);
+    --shadow-glow-gold: 0 0 30px hsl(45 90% 55% / 0.35);
   }
 
   .dark {
