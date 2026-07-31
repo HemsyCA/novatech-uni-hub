@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { ArrowRight, Bot, Trophy, Cpu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import novatechLogo from "@/assets/novatech-logo.png";
@@ -81,10 +82,10 @@ export function Hero() {
                 className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan group text-lg px-8"
                 asChild
               >
-                <a href="#robots">
+                <Link to="/robots">
                   Conoce Nuestros Robots
                   <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </a>
+                </Link>
               </Button>
               <Button
                 size="lg"
@@ -92,7 +93,7 @@ export function Hero() {
                 className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground text-lg px-8"
                 asChild
               >
-                <a href="#competencias">Ver Competencias</a>
+                <Link to="/competencias">Ver Competencias</Link>
               </Button>
               <Button
                 size="lg"
@@ -100,7 +101,7 @@ export function Hero() {
                 className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-lg px-8"
                 asChild
               >
-                <a href="/print3d">Reservar Impresión 3D</a>
+                <Link to="/print3d">Reservar Impresión 3D</Link>
               </Button>
             </motion.div>
 

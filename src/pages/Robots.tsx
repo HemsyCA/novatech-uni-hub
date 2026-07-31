@@ -1,15 +1,17 @@
 import { Navbar } from "@/components/landing/Navbar";
-import { Hero } from "@/components/landing/Hero";
+import { RobotsSection } from "@/components/landing/RobotsSection";
 import { Footer } from "@/components/landing/Footer";
 
-const Index = () => {
+const Robots = () => {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
       <Navbar />
-      <Hero />
+      <main className="pt-20">
+        <RobotsSection />
+      </main>
       <Footer />
     </div>
   );
 };
 
-export default Index;
+export default Robots;

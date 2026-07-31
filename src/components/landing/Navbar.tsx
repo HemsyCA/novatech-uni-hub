@@ -1,15 +1,18 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { Button } from "@/components/ui/button";
 
+const MotionLink = motion.create(Link);
+
 const navItems = [
-  { label: "Inicio", href: "#inicio" },
-  { label: "Nosotros", href: "#nosotros" },
-  { label: "Robots", href: "#robots" },
-  { label: "Competencias", href: "#competencias" },
-  { label: "Equipo", href: "#equipo" },
+  { label: "Inicio", href: "/" },
+  { label: "Nosotros", href: "/nosotros" },
+  { label: "Robots", href: "/robots" },
+  { label: "Competencias", href: "/competencias" },
+  { label: "Equipo", href: "/equipo" },
   { label: "Impresión 3D", href: "/print3d" },
 ];
 
@@ -26,8 +29,8 @@ export function Navbar() {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <motion.a
-            href="#inicio"
+          <MotionLink
+            to="/"
             className="flex items-center gap-3"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
@@ -40,14 +43,14 @@ export function Navbar() {
             <span className="font-display text-xl font-bold text-gradient-primary hidden sm:block">
               NOVATECH UNI
             </span>
-          </motion.a>
+          </MotionLink>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center gap-1">
             {navItems.map((item, index) => (
-              <motion.a
+              <MotionLink
                 key={item.label}
-                href={item.href}
+                to={item.href}
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
@@ -55,25 +58,25 @@ export function Navbar() {
               >
                 {item.label}
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-primary group-hover:w-3/4 transition-all duration-300" />
-              </motion.a>
+              </MotionLink>
             ))}
           </div>
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
-            <a href="/auth">
+            <Link to="/auth">
               <Button
                 variant="outline"
                 className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
                 Iniciar Sesión
               </Button>
-            </a>
-            <a href="/auth">
+            </Link>
+            <Link to="/auth">
               <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
                 Unirse al Equipo
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -97,29 +100,29 @@ export function Navbar() {
           >
             <div className="container mx-auto px-4 py-4 flex flex-col gap-2">
               {navItems.map((item) => (
-                <a
+                <Link
                   key={item.label}
-                  href={item.href}
+                  to={item.href}
                   onClick={() => setIsOpen(false)}
                   className="px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-colors"
                 >
                   {item.label}
-                </a>
+                </Link>
               ))}
               <div className="flex flex-col gap-2 pt-4 border-t border-border/30">
-                <a href="/auth">
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button
                     variant="outline"
                     className="w-full border-primary/50 text-primary"
                   >
                     Iniciar Sesión
                   </Button>
-                </a>
-                <a href="/auth">
+                </Link>
+                <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-gradient-primary text-primary-foreground">
                     Unirse al Equipo
                   </Button>
-                </a>
+                </Link>
               </div>
             </div>
           </motion.div>

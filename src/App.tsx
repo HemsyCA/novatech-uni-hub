@@ -8,6 +8,10 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StaffRoute } from "@/components/StaffRoute";
 
 const Index = lazy(() => import("./pages/Index"));
+const About = lazy(() => import("./pages/About"));
+const Robots = lazy(() => import("./pages/Robots"));
+const Competitions = lazy(() => import("./pages/Competitions"));
+const Team = lazy(() => import("./pages/Team"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Auth = lazy(() => import("./pages/Auth"));
 const AuthCallback = lazy(() => import("./pages/AuthCallback"));
@@ -34,6 +38,10 @@ const App = () => (
         >
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/nosotros" element={<About />} />
+            <Route path="/robots" element={<Robots />} />
+            <Route path="/competencias" element={<Competitions />} />
+            <Route path="/equipo" element={<Team />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />

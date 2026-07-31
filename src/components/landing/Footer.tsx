@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Instagram, Youtube, Linkedin, Github } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
 
 const footerLinks = {
   navegacion: [
-    { label: "Inicio", href: "#inicio" },
-    { label: "Nosotros", href: "#nosotros" },
-    { label: "Robots", href: "#robots" },
-    { label: "Competencias", href: "#competencias" },
-    { label: "Equipo", href: "#equipo" },
+    { label: "Inicio", href: "/" },
+    { label: "Nosotros", href: "/nosotros" },
+    { label: "Robots", href: "/robots" },
+    { label: "Competencias", href: "/competencias" },
+    { label: "Equipo", href: "/equipo" },
   ],
   recursos: [
     { label: "Documentación", href: "#" },
@@ -40,7 +41,7 @@ export function Footer() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <a href="#inicio" className="flex items-center gap-3 mb-4">
+            <Link to="/" className="flex items-center gap-3 mb-4">
               <img
                 src={novatechLogo}
                 alt="NovaTech UNI"
@@ -49,7 +50,7 @@ export function Footer() {
               <span className="font-display text-xl font-bold text-gradient-primary">
                 NOVATECH UNI
               </span>
-            </a>
+            </Link>
             <p className="text-sm text-muted-foreground mb-6">
               Equipo universitario de robótica. Innovación, competencia y
               excelencia técnica.
@@ -78,12 +79,12 @@ export function Footer() {
             <ul className="space-y-2">
               {footerLinks.navegacion.map((link) => (
                 <li key={link.label}>
-                  <a
-                    href={link.href}
+                  <Link
+                    to={link.href}
                     className="text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
                     {link.label}
-                  </a>
+                  </Link>
                 </li>
               ))}
             </ul>
