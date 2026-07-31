@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { ArrowRight, Bot, Trophy, Cpu } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import novatechLogo from "@/assets/novatech-logo.png";
 
@@ -75,11 +75,11 @@ export function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.5 }}
-              className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
+              className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start"
             >
               <Button
                 size="lg"
-                className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan group text-lg px-8"
+                className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan group text-lg px-6"
                 asChild
               >
                 <Link to="/robots">
@@ -90,7 +90,7 @@ export function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground text-lg px-8"
+                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground text-lg px-6"
                 asChild
               >
                 <Link to="/competencias">Ver Competencias</Link>
@@ -98,35 +98,11 @@ export function Hero() {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-lg px-8"
+                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-lg px-6"
                 asChild
               >
                 <Link to="/print3d">Reservar Impresión 3D</Link>
               </Button>
-            </motion.div>
-
-            {/* Stats */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-border/30"
-            >
-              {[
-                { icon: Trophy, value: "15+", label: "Competencias" },
-                { icon: Bot, value: "20+", label: "Robots" },
-                { icon: Cpu, value: "50+", label: "Miembros" },
-              ].map((stat, index) => (
-                <div key={index} className="text-center lg:text-left">
-                  <stat.icon className="w-6 h-6 text-primary mb-2 mx-auto lg:mx-0" />
-                  <div className="font-display text-2xl md:text-3xl font-bold text-foreground">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm text-muted-foreground">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
             </motion.div>
           </motion.div>
 
