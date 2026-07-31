@@ -35,6 +35,30 @@ export const signUpWithEmail = async (email: string, password: string, fullName:
   });
 };
 
+export const signInWithGoogle = async () => {
+  return supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${window.location.origin}/auth/callback` },
+  });
+};
+
+export const signInWithGithub = async () => {
+  return supabase.auth.signInWithOAuth({
+    provider: "github",
+    options: { redirectTo: `${window.location.origin}/auth/callback` },
+  });
+};
+
+export const requestPasswordReset = async (email: string) => {
+  return supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/auth/reset-password`,
+  });
+};
+
+export const updatePassword = async (password: string) => {
+  return supabase.auth.updateUser({ password });
+};
+
 export const signOut = async () => {
   return supabase.auth.signOut();
 };

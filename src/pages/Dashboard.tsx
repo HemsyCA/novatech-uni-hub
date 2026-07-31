@@ -4,14 +4,16 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Printer, ShoppingCart, LogOut, User, Package, Calendar } from "lucide-react";
+import { Printer, ShoppingCart, LogOut, User, Package, Calendar, ShieldCheck } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
+import { useUserRole } from "@/hooks/use-user-role";
 
 export default function Dashboard() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const { isStaff } = useUserRole();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -91,7 +93,14 @@ export default function Dashboard() {
             <span className="text-sm text-muted-foreground hidden sm:block">
               {user?.email}
             </span>
-            <Button variant="ghost" size="icon" onClick={handleSignOut}>
+            {isStaff && (
+              <Button variant="ghost" size="icon" asChild title="Panel de directiva">
+                <Link to="/admin">
+                  <ShieldCheck className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+            <Button variant="ghost" size="icon" onClick={handleSignOut} title="Cerrar sesión">
               <LogOut className="h-5 w-5" />
             </Button>
           </div>

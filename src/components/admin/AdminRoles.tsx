@@ -17,7 +17,7 @@ export function AdminRoles() {
   const [newRole, setNewRole] = useState<AppRole>("directiva");
   const [granting, setGranting] = useState(false);
   const { toast } = useToast();
-  const { isAdmin } = useUserRole();
+  const { isSuperadmin } = useUserRole();
 
   const fetchRoles = async () => {
     try {
@@ -35,6 +35,16 @@ export function AdminRoles() {
 
   const handleGrant = async () => {
     if (!email) return;
+
+    if (newRole === "directiva" && !email.toLowerCase().endsWith("@uni.pe")) {
+      toast({
+        title: "Correo no permitido",
+        description: "El rol de directiva solo puede otorgarse a correos @uni.pe",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setGranting(true);
     try {
       const profile = await findProfileByEmail(email);
@@ -67,10 +77,10 @@ export function AdminRoles() {
     return <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />;
   }
 
-  if (!isAdmin) {
+  if (!isSuperadmin) {
     return (
       <p className="text-center text-muted-foreground py-8">
-        Solo administradores pueden gestionar roles.
+        Solo el superadmin puede gestionar roles.
       </p>
     );
   }
@@ -78,26 +88,33 @@ export function AdminRoles() {
   return (
     <div className="space-y-4">
       <Card className="glass-card border-border/30">
-        <CardContent className="pt-4 flex flex-col sm:flex-row gap-2">
-          <Input
-            placeholder="Email del usuario ya registrado"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="flex-1"
-          />
-          <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
-            <SelectTrigger className="w-40">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="directiva">Directiva</SelectItem>
-              <SelectItem value="admin">Admin</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button onClick={handleGrant} disabled={granting || !email} className="bg-gradient-primary">
-            {granting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
-            Otorgar
-          </Button>
+        <CardContent className="pt-4 space-y-2">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Input
+              placeholder="Email del usuario ya registrado"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="flex-1"
+            />
+            <Select value={newRole} onValueChange={(v) => setNewRole(v as AppRole)}>
+              <SelectTrigger className="w-40">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="directiva">Directiva</SelectItem>
+                <SelectItem value="superadmin">Superadmin</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleGrant} disabled={granting || !email} className="bg-gradient-primary">
+              {granting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <UserPlus className="h-4 w-4 mr-2" />}
+              Otorgar
+            </Button>
+          </div>
+          {newRole === "directiva" && (
+            <p className="text-xs text-muted-foreground">
+              El rol de directiva solo se puede otorgar a correos que terminen en @uni.pe.
+            </p>
+          )}
         </CardContent>
       </Card>
 

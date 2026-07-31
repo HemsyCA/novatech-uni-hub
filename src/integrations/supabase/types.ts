@@ -10,7 +10,7 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "14.1"
+    PostgrestVersion: "14.15"
   }
   public: {
     Tables: {
@@ -537,13 +537,10 @@ export type Database = {
         }
         Returns: boolean
       }
-      is_staff: {
-        Args: { _user_id: string }
-        Returns: boolean
-      }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "directiva"
+      app_role: "superadmin" | "directiva"
       order_status: "pending" | "paid" | "delivered" | "cancelled"
       print_status:
         | "pending"
@@ -679,7 +676,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "directiva"],
+      app_role: ["superadmin", "directiva"],
       order_status: ["pending", "paid", "delivered", "cancelled"],
       print_status: [
         "pending",

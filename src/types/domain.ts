@@ -67,7 +67,7 @@ export interface OrderItem {
   unit_price: number;
 }
 
-export type AppRole = "admin" | "directiva";
+export type AppRole = "superadmin" | "directiva";
 
 export interface UserRole {
   id: string;

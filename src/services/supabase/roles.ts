@@ -8,7 +8,7 @@ export const getMyRoles = async (): Promise<AppRole[]> => {
   return (data ?? []).map((r) => r.role as AppRole);
 };
 
-export const isStaff = (roles: AppRole[]) => roles.includes("admin") || roles.includes("directiva");
+export const isStaff = (roles: AppRole[]) => roles.includes("superadmin") || roles.includes("directiva");
 
 export const listAllUserRoles = async (): Promise<UserRole[]> => {
   const { data, error } = await supabase

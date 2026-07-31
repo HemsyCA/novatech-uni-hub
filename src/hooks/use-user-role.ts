@@ -47,5 +47,12 @@ export const useUserRole = () => {
     };
   }, []);
 
-  return { roles, loading, userId, isStaff: isStaff(roles), isAdmin: roles.includes("admin") };
+  return {
+    roles,
+    loading,
+    userId,
+    isStaff: isStaff(roles),
+    isSuperadmin: roles.includes("superadmin"),
+    isDirectiva: roles.includes("directiva"),
+  };
 };
