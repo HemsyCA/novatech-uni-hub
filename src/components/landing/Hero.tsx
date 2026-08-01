@@ -12,7 +12,7 @@ export function Hero() {
         {/* Gradient orbs */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary/20 rounded-full blur-[120px] animate-pulse-glow" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-accent/20 rounded-full blur-[100px] animate-pulse-glow" />
-        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gold/10 rounded-full blur-[80px] animate-pulse-glow" />
+        <div className="absolute top-1/2 right-1/3 w-64 h-64 bg-gray-500/10 rounded-full blur-[80px] animate-pulse-glow" />
         
         {/* Grid pattern */}
         <div 
