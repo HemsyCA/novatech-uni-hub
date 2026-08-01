@@ -49,6 +49,14 @@ export const signInWithGithub = async () => {
   });
 };
 
+export const resendConfirmationEmail = async (email: string) => {
+  return supabase.auth.resend({
+    type: "signup",
+    email,
+    options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+  });
+};
+
 export const requestPasswordReset = async (email: string) => {
   return supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${window.location.origin}/auth/reset-password`,

@@ -21,6 +21,7 @@ import {
   getCurrentSession,
   getFriendlyAuthErrorMessage,
   requestPasswordReset,
+  resendConfirmationEmail,
   signInWithGithub,
   signInWithGoogle,
   signInWithPassword,
@@ -47,6 +48,9 @@ export default function Auth() {
   const [resetEmail, setResetEmail] = useState("");
   const [resetLoading, setResetLoading] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [resendEmail, setResendEmail] = useState("");
+  const [resendLoading, setResendLoading] = useState(false);
+  const [resendOpen, setResendOpen] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -148,6 +152,36 @@ export default function Auth() {
       setResetEmail("");
     }
     setResetLoading(false);
+  };
+
+  const handleResendConfirmation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setResendLoading(true);
+
+    const domainOk = await domainHasMailServers(resendEmail);
+    if (domainOk === false) {
+      toast({
+        title: "Correo inválido",
+        description: "El dominio de ese correo no existe. Revisa que esté bien escrito.",
+        variant: "destructive",
+      });
+      setResendLoading(false);
+      return;
+    }
+
+    const { error } = await resendConfirmationEmail(resendEmail);
+
+    if (error) {
+      toast({ title: "Error", description: error.message, variant: "destructive" });
+    } else {
+      toast({
+        title: "Correo reenviado",
+        description: "Revisa tu bandeja de entrada (y spam) para confirmar tu cuenta.",
+      });
+      setResendOpen(false);
+      setResendEmail("");
+    }
+    setResendLoading(false);
   };
 
   return (
@@ -252,6 +286,46 @@ export default function Auth() {
                   <Button type="submit" className="w-full bg-gradient-primary" disabled={loading}>
                     {loading ? "Cargando..." : "Iniciar Sesión"}
                   </Button>
+
+                  <div className="text-center">
+                    <Dialog open={resendOpen} onOpenChange={setResendOpen}>
+                      <DialogTrigger asChild>
+                        <button type="button" className="text-xs text-muted-foreground hover:text-primary transition-colors">
+                          ¿No confirmaste tu cuenta? Reenviar correo de confirmación
+                        </button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Reenviar correo de confirmación</DialogTitle>
+                          <DialogDescription>
+                            Te mandamos de nuevo el enlace para confirmar tu cuenta. Si nunca te llegó,
+                            revisá que el correo esté bien escrito.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={handleResendConfirmation} className="space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="resend-email">Email</Label>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                              <Input
+                                id="resend-email"
+                                type="email"
+                                placeholder="tu@email.com"
+                                value={resendEmail}
+                                onChange={(e) => setResendEmail(e.target.value)}
+                                className="pl-10"
+                                required
+                              />
+                            </div>
+                          </div>
+                          <Button type="submit" className="w-full bg-gradient-primary" disabled={resendLoading}>
+                            {resendLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                            Reenviar correo
+                          </Button>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </form>
               </TabsContent>
 
