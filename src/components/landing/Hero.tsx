@@ -95,7 +95,7 @@ export function Hero() {
               >
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-4 w-4 h-4 rounded-full bg-primary glow-cyan" />
                 <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-4 w-3 h-3 rounded-full bg-accent glow-violet" />
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-3 h-3 rounded-full bg-gold glow-gold" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 w-3 h-3 rounded-full bg-black border border-white/30" />
               </motion.div>
             </div>
           </motion.div>
