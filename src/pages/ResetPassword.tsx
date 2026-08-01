@@ -58,7 +58,7 @@ export default function ResetPassword() {
       return;
     }
 
-    toast({ title: "Contraseña actualizada", description: "Ya podés usar tu nueva contraseña." });
+    toast({ title: "Contraseña actualizada", description: "Ya puedes usar tu nueva contraseña." });
     navigate("/dashboard", { replace: true });
   };
 
@@ -81,14 +81,14 @@ export default function ResetPassword() {
               <XCircle className="mx-auto h-10 w-10 text-destructive" />
               <CardTitle className="mt-4">El enlace no es válido o expiró</CardTitle>
               <CardDescription>
-                Volvé a pedir el enlace de restablecimiento desde la pantalla de inicio de sesión.
+                Vuelve a pedir el enlace de restablecimiento desde la pantalla de inicio de sesión.
               </CardDescription>
             </CardHeader>
           ) : (
             <>
               <CardHeader className="text-center">
                 <KeyRound className="mx-auto h-10 w-10 text-primary" />
-                <CardTitle className="mt-4">Elegí tu nueva contraseña</CardTitle>
+                <CardTitle className="mt-4">Elige tu nueva contraseña</CardTitle>
                 <CardDescription>Tiene que tener al menos 6 caracteres.</CardDescription>
               </CardHeader>
               <CardContent>

@@ -58,10 +58,10 @@ export default function AuthCallback() {
               {status === "error" && "El enlace no es válido o expiró"}
             </CardTitle>
             <CardDescription>
-              {status === "loading" && "Esperá un momento mientras validamos tu email."}
+              {status === "loading" && "Espera un momento mientras validamos tu email."}
               {status === "success" && "Te estamos llevando a tu panel."}
               {status === "error" &&
-                "Volvé a intentar el registro o inicia sesión si ya confirmaste tu cuenta antes."}
+                "Vuelve a intentar el registro o inicia sesión si ya confirmaste tu cuenta antes."}
             </CardDescription>
           </CardHeader>
 

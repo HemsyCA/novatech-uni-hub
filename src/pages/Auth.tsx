@@ -299,7 +299,7 @@ export default function Auth() {
                           <DialogTitle>Reenviar correo de confirmación</DialogTitle>
                           <DialogDescription>
                             Te mandamos de nuevo el enlace para confirmar tu cuenta. Si nunca te llegó,
-                            revisá que el correo esté bien escrito.
+                            revisa que el correo esté bien escrito.
                           </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleResendConfirmation} className="space-y-4">

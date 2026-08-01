@@ -20,7 +20,7 @@ export const useUserRole = () => {
         return;
       }
       try {
-        const myRoles = await getMyRoles();
+        const myRoles = await getMyRoles(uid);
         if (active) setRoles(myRoles);
       } catch {
         if (active) setRoles([]);

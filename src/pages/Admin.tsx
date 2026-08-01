@@ -36,19 +36,19 @@ export default function Admin() {
           </h1>
           <p className="text-muted-foreground">
             {isSuperadmin
-              ? "Como superadmin podés gestionar la tienda, las reservas y los roles."
+              ? "Como superadmin puedes gestionar la tienda, las reservas y los roles."
               : isDirectiva
-                ? "Tenés acceso de staff para gestionar la tienda y las reservas. La gestión de roles queda reservada al superadmin."
+                ? "Tienes acceso de staff para gestionar la tienda y las reservas. La gestión de roles queda reservada al superadmin."
                 : ""}
           </p>
         </motion.div>
 
         <Tabs defaultValue="products">
-          <TabsList className="grid w-full grid-cols-4 bg-muted/50 mb-6">
+          <TabsList className={`grid w-full bg-muted/50 mb-6 ${isSuperadmin ? "grid-cols-4" : "grid-cols-3"}`}>
             <TabsTrigger value="products">Productos</TabsTrigger>
             <TabsTrigger value="orders">Pedidos</TabsTrigger>
             <TabsTrigger value="reservations">Reservas</TabsTrigger>
-            <TabsTrigger value="roles">Roles</TabsTrigger>
+            {isSuperadmin && <TabsTrigger value="roles">Roles</TabsTrigger>}
           </TabsList>
           <TabsContent value="products">
             <AdminProducts />
@@ -59,9 +59,11 @@ export default function Admin() {
           <TabsContent value="reservations">
             <AdminReservations />
           </TabsContent>
-          <TabsContent value="roles">
-            <AdminRoles />
-          </TabsContent>
+          {isSuperadmin && (
+            <TabsContent value="roles">
+              <AdminRoles />
+            </TabsContent>
+          )}
         </Tabs>
       </main>
     </div>
