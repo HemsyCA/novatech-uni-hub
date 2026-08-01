@@ -1,13 +1,13 @@
 import { motion, useInView } from "framer-motion";
 import { useRef } from "react";
-import { Cpu, CircuitBoard, Box, Code2 } from "lucide-react";
+import { ArduinoIcon, EasyEdaIcon, OnshapeIcon, VSCodeIcon } from "@/components/icons/ToolIcons";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const tools = [
-  { name: "Arduino IDE", icon: Cpu, color: "primary" },
-  { name: "EasyEDA", icon: CircuitBoard, color: "accent" },
-  { name: "OneShape", icon: Box, color: "gold" },
-  { name: "Visual Studio", icon: Code2, color: "secondary" },
+  { name: "Arduino IDE", icon: ArduinoIcon, color: "primary" },
+  { name: "EasyEDA", icon: EasyEdaIcon, color: "accent" },
+  { name: "OneShape", icon: OnshapeIcon, color: "gold" },
+  { name: "Visual Studio Code", icon: VSCodeIcon, color: "secondary" },
 ];
 
 export function ToolsSection() {
@@ -45,7 +45,7 @@ export function ToolsSection() {
             >
               <div className="glass-card rounded-2xl p-6 text-center h-full border-gradient hover:scale-105 transition-transform duration-300">
                 <div
-                  className={`w-14 h-14 mx-auto rounded-xl flex items-center justify-center mb-4 ${
+                  className={`w-16 h-16 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 ${
                     tool.color === "primary"
                       ? "bg-primary/10 text-primary"
                       : tool.color === "accent"
@@ -55,7 +55,7 @@ export function ToolsSection() {
                           : "bg-gold/10 text-gold"
                   }`}
                 >
-                  <tool.icon className="w-7 h-7" />
+                  <tool.icon className="h-8 w-full" />
                 </div>
                 <h3 className="font-display text-base font-semibold text-foreground">{tool.name}</h3>
               </div>
