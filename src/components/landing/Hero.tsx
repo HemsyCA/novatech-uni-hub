@@ -1,7 +1,10 @@
 import { motion } from "framer-motion";
 import novatechLogo from "@/assets/novatech-logo.png";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function Hero() {
+  const { t } = useLanguage();
+
   return (
     <section
       id="inicio"
@@ -52,8 +55,7 @@ export function Hero() {
               transition={{ delay: 0.4 }}
               className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0"
             >
-              Innovación, ingeniería y competencia. Construimos el futuro de la
-              robótica universitaria con pasión y excelencia técnica.
+              {t.hero.subtitle}
             </motion.p>
           </motion.div>
 

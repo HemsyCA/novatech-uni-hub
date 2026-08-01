@@ -7,6 +7,7 @@ import { AdminRoles } from "@/components/admin/AdminRoles";
 import { AdminProducts } from "@/components/admin/AdminProducts";
 import { AdminOrders } from "@/components/admin/AdminOrders";
 import { AdminReservations } from "@/components/admin/AdminReservations";
+import { AdminContactMessages } from "@/components/admin/AdminContactMessages";
 import { useUserRole } from "@/hooks/use-user-role";
 
 export default function Admin() {
@@ -44,10 +45,11 @@ export default function Admin() {
         </motion.div>
 
         <Tabs defaultValue="products">
-          <TabsList className={`grid w-full bg-muted/50 mb-6 ${isSuperadmin ? "grid-cols-4" : "grid-cols-3"}`}>
+          <TabsList className={`grid w-full bg-muted/50 mb-6 ${isSuperadmin ? "grid-cols-5" : "grid-cols-4"}`}>
             <TabsTrigger value="products">Productos</TabsTrigger>
             <TabsTrigger value="orders">Pedidos</TabsTrigger>
             <TabsTrigger value="reservations">Reservas</TabsTrigger>
+            <TabsTrigger value="messages">Mensajes</TabsTrigger>
             {isSuperadmin && <TabsTrigger value="roles">Roles</TabsTrigger>}
           </TabsList>
           <TabsContent value="products">
@@ -58,6 +60,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="reservations">
             <AdminReservations />
+          </TabsContent>
+          <TabsContent value="messages">
+            <AdminContactMessages />
           </TabsContent>
           {isSuperadmin && (
             <TabsContent value="roles">

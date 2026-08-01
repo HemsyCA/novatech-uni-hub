@@ -2,27 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Mail, MapPin, Phone, Instagram, Youtube, Linkedin, Github } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
-
-const footerLinks = {
-  navegacion: [
-    { label: "Inicio", href: "/" },
-    { label: "Nosotros", href: "/nosotros" },
-    { label: "Robots", href: "/robots" },
-    { label: "Competencias", href: "/competencias" },
-    { label: "Equipo", href: "/equipo" },
-  ],
-  recursos: [
-    { label: "Documentación", href: "#" },
-    { label: "Calendario", href: "#" },
-    { label: "Galería", href: "#" },
-    { label: "Blog", href: "#" },
-  ],
-  legal: [
-    { label: "Términos de Uso", href: "#" },
-    { label: "Privacidad", href: "#" },
-    { label: "Contacto", href: "#" },
-  ],
-};
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const socialLinks = [
   { icon: Instagram, href: "#", label: "Instagram" },
@@ -32,6 +12,29 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { t } = useLanguage();
+
+  const footerLinks = {
+    navegacion: [
+      { label: t.nav.inicio, href: "/" },
+      { label: t.nav.nosotros, href: "/nosotros" },
+      { label: t.nav.robots, href: "/robots" },
+      { label: t.nav.competencias, href: "/competencias" },
+      { label: t.nav.equipo, href: "/equipo" },
+    ],
+    recursos: [
+      { label: t.footer.docs, href: "#" },
+      { label: t.footer.calendar, href: "#" },
+      { label: t.footer.gallery, href: "#" },
+      { label: t.footer.blog, href: "#" },
+    ],
+    legal: [
+      { label: t.footer.terms, href: "#" },
+      { label: t.footer.privacy, href: "#" },
+      { label: t.footer.contactLink, href: "#" },
+    ],
+  };
+
   return (
     <footer className="relative bg-card/50 border-t border-border/30">
       {/* Gradient line */}
@@ -52,8 +55,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground mb-6">
-              Equipo universitario de robótica. Innovación, competencia y
-              excelencia técnica.
+              {t.footer.tagline}
             </p>
             
             {/* Social Links */}
@@ -74,7 +76,7 @@ export function Footer() {
           {/* Navigation */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-4">
-              Navegación
+              {t.footer.navHeading}
             </h4>
             <ul className="space-y-2">
               {footerLinks.navegacion.map((link) => (
@@ -93,7 +95,7 @@ export function Footer() {
           {/* Resources */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-4">
-              Recursos
+              {t.footer.resourcesHeading}
             </h4>
             <ul className="space-y-2">
               {footerLinks.recursos.map((link) => (
@@ -112,7 +114,7 @@ export function Footer() {
           {/* Contact */}
           <div>
             <h4 className="font-display font-semibold text-foreground mb-4">
-              Contacto
+              {t.footer.contactHeading}
             </h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -130,7 +132,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground text-center md:text-left">
-            © 2024 NovaTech UNI. Todos los derechos reservados.
+            © 2024 NovaTech UNI. {t.footer.rights}
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (

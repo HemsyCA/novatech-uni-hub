@@ -4,6 +4,8 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { Button } from "@/components/ui/button";
+import { LanguageToggle } from "@/components/LanguageToggle";
+import { useLanguage } from "@/contexts/LanguageContext";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,21 +15,22 @@ import {
 
 const MotionLink = motion.create(Link);
 
-const navItems = [
-  { label: "Inicio", href: "/" },
-  { label: "Nosotros", href: "/nosotros" },
-  { label: "Robots", href: "/robots" },
-  { label: "Competencias", href: "/competencias" },
-  { label: "Equipo", href: "/equipo" },
-];
-
-const serviceItems = [
-  { label: "Tienda Nova", href: "/store" },
-  { label: "Impresión 3D", href: "/print3d" },
-];
-
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { t } = useLanguage();
+
+  const navItems = [
+    { label: t.nav.inicio, href: "/" },
+    { label: t.nav.nosotros, href: "/nosotros" },
+    { label: t.nav.robots, href: "/robots" },
+    { label: t.nav.competencias, href: "/competencias" },
+    { label: t.nav.equipo, href: "/equipo" },
+  ];
+
+  const serviceItems = [
+    { label: t.nav.tienda, href: "/store" },
+    { label: t.nav.impresion3d, href: "/print3d" },
+  ];
 
   return (
     <motion.nav
@@ -73,7 +76,7 @@ export function Navbar() {
 
             <DropdownMenu>
               <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors outline-none">
-                Servicios
+                {t.nav.servicios}
                 <ChevronDown size={14} />
               </DropdownMenuTrigger>
               <DropdownMenuContent align="center">
@@ -88,17 +91,18 @@ export function Navbar() {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
+            <LanguageToggle />
             <Link to="/auth">
               <Button
                 variant="outline"
                 className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
               >
-                Iniciar Sesión
+                {t.nav.login}
               </Button>
             </Link>
             <Link to="/auth">
               <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
-                Unirse al Equipo
+                {t.nav.join}
               </Button>
             </Link>
           </div>
@@ -135,7 +139,7 @@ export function Navbar() {
               ))}
 
               <div className="pt-2 mt-2 border-t border-border/30">
-                <span className="px-4 text-xs uppercase text-muted-foreground/70">Servicios</span>
+                <span className="px-4 text-xs uppercase text-muted-foreground/70">{t.nav.servicios}</span>
                 {serviceItems.map((item) => (
                   <Link
                     key={item.label}
@@ -148,18 +152,22 @@ export function Navbar() {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-2 pt-4 border-t border-border/30">
+              <div className="flex justify-center pt-4 border-t border-border/30">
+                <LanguageToggle />
+              </div>
+
+              <div className="flex flex-col gap-2">
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button
                     variant="outline"
                     className="w-full border-primary/50 text-primary"
                   >
-                    Iniciar Sesión
+                    {t.nav.login}
                   </Button>
                 </Link>
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-gradient-primary text-primary-foreground">
-                    Unirse al Equipo
+                    {t.nav.join}
                   </Button>
                 </Link>
               </div>
