@@ -27,6 +27,7 @@ import {
   signUpWithEmail,
   subscribeToAuth,
 } from "@/services/supabase/auth";
+import { domainHasMailServers } from "@/lib/email-validation";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -88,6 +89,17 @@ export default function Auth() {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
+    const domainOk = await domainHasMailServers(email);
+    if (domainOk === false) {
+      toast({
+        title: "Correo inválido",
+        description: "El dominio de ese correo no existe. Revisa que esté bien escrito.",
+        variant: "destructive",
+      });
+      setLoading(false);
+      return;
+    }
 
     const { error } = await signUpWithEmail(email, password, fullName);
 
