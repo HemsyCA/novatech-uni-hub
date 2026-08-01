@@ -1,7 +1,4 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import novatechLogo from "@/assets/novatech-logo.png";
 
 export function Hero() {
@@ -58,40 +55,6 @@ export function Hero() {
               Innovación, ingeniería y competencia. Construimos el futuro de la
               robótica universitaria con pasión y excelencia técnica.
             </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="flex flex-col sm:flex-row flex-wrap gap-3 justify-center lg:justify-start"
-            >
-              <Button
-                size="lg"
-                className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan group text-lg px-6"
-                asChild
-              >
-                <Link to="/robots">
-                  Conoce Nuestros Robots
-                  <ArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
-                </Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-accent/50 text-accent hover:bg-accent hover:text-accent-foreground text-lg px-6"
-                asChild
-              >
-                <Link to="/competencias">Ver Competencias</Link>
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-cyan-500/50 text-cyan-400 hover:bg-cyan-500/10 text-lg px-6"
-                asChild
-              >
-                <Link to="/print3d">Reservar Impresión 3D</Link>
-              </Button>
-            </motion.div>
           </motion.div>
 
           {/* Logo/Visual */}

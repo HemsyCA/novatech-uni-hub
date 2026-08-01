@@ -4,6 +4,12 @@ import { Menu, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const MotionLink = motion.create(Link);
 
@@ -13,6 +19,10 @@ const navItems = [
   { label: "Robots", href: "/robots" },
   { label: "Competencias", href: "/competencias" },
   { label: "Equipo", href: "/equipo" },
+];
+
+const serviceItems = [
+  { label: "Tienda Nova", href: "/store" },
   { label: "Impresión 3D", href: "/print3d" },
 ];
 
@@ -60,6 +70,20 @@ export function Navbar() {
                 <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-primary group-hover:w-3/4 transition-all duration-300" />
               </MotionLink>
             ))}
+
+            <DropdownMenu>
+              <DropdownMenuTrigger className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors outline-none">
+                Servicios
+                <ChevronDown size={14} />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="center">
+                {serviceItems.map((item) => (
+                  <DropdownMenuItem key={item.label} asChild>
+                    <Link to={item.href}>{item.label}</Link>
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           {/* CTA Button */}
@@ -109,6 +133,21 @@ export function Navbar() {
                   {item.label}
                 </Link>
               ))}
+
+              <div className="pt-2 mt-2 border-t border-border/30">
+                <span className="px-4 text-xs uppercase text-muted-foreground/70">Servicios</span>
+                {serviceItems.map((item) => (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block px-4 py-3 text-muted-foreground hover:text-primary hover:bg-muted/50 rounded-lg transition-colors"
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+
               <div className="flex flex-col gap-2 pt-4 border-t border-border/30">
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button
