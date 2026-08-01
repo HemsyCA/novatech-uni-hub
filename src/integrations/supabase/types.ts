@@ -541,7 +541,7 @@ export type Database = {
     }
     Enums: {
       app_role: "superadmin" | "directiva"
-      order_status: "pending" | "paid" | "delivered" | "cancelled"
+      order_status: "pending" | "paid" | "preparing" | "delivered" | "cancelled"
       print_status:
         | "pending"
         | "approved"
@@ -677,7 +677,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["superadmin", "directiva"],
-      order_status: ["pending", "paid", "delivered", "cancelled"],
+      order_status: ["pending", "paid", "preparing", "delivered", "cancelled"],
       print_status: [
         "pending",
         "approved",

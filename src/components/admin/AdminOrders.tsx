@@ -10,14 +10,16 @@ import type { Order, OrderItem } from "@/types/domain";
 const statusColors: Record<string, string> = {
   pending: "bg-yellow-500/20 text-yellow-400",
   paid: "bg-green-500/20 text-green-400",
+  preparing: "bg-cyan-500/20 text-cyan-400",
   delivered: "bg-blue-500/20 text-blue-400",
   cancelled: "bg-red-500/20 text-red-400",
 };
 
 const statusLabels: Record<string, string> = {
   pending: "Pendiente",
-  paid: "Pagado",
-  delivered: "Entregado",
+  paid: "Confirmado",
+  preparing: "Preparando",
+  delivered: "Listo para recoger",
   cancelled: "Cancelado",
 };
 

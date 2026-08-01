@@ -10,6 +10,9 @@ import { ArrowLeft, ShoppingCart, Plus, Minus, Package, Search, Loader2 } from "
 import { listProducts } from "@/services/supabase/products";
 import { listOrders, createOrderWithItems } from "@/services/supabase/orders";
 import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { StatusTracker } from "@/components/StatusTracker";
+import { orderSteps } from "@/lib/tracker-steps";
 import type { Product, Order } from "@/types/domain";
 
 type CartItem = Product & { quantity: number };
@@ -45,6 +48,19 @@ export default function Store() {
     if (user) {
       fetchProducts();
       fetchOrders();
+
+      const channel = supabase
+        .channel(`orders-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "orders", filter: `user_id=eq.${user.id}` },
+          () => fetchOrders()
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     }
   }, [user]);
 
@@ -145,14 +161,16 @@ export default function Store() {
   const statusColors: Record<string, string> = {
     pending: "bg-yellow-500/20 text-yellow-400",
     paid: "bg-green-500/20 text-green-400",
+    preparing: "bg-cyan-500/20 text-cyan-400",
     delivered: "bg-blue-500/20 text-blue-400",
     cancelled: "bg-red-500/20 text-red-400",
   };
 
   const statusLabels: Record<string, string> = {
     pending: "Pendiente",
-    paid: "Pagado",
-    delivered: "Entregado",
+    paid: "Confirmado",
+    preparing: "Preparando",
+    delivered: "Listo para recoger",
     cancelled: "Cancelado",
   };
 
@@ -359,7 +377,7 @@ export default function Store() {
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-3 max-h-[200px] overflow-y-auto">
+                    <div className="space-y-3 max-h-[420px] overflow-y-auto">
                       {orders.length === 0 ? (
                         <p className="text-sm text-muted-foreground text-center py-4">
                           Sin pedidos aún
@@ -368,7 +386,7 @@ export default function Store() {
                         orders.map((order) => (
                           <div
                             key={order.id}
-                            className="p-2 bg-muted/30 rounded-lg text-sm"
+                            className="p-3 bg-muted/30 rounded-lg text-sm space-y-3"
                           >
                             <div className="flex items-center justify-between mb-1">
                               <code className="text-xs font-mono text-emerald-400">
@@ -378,7 +396,8 @@ export default function Store() {
                                 {statusLabels[order.status]}
                               </Badge>
                             </div>
-                            <div className="flex items-center justify-between text-muted-foreground">
+                            <StatusTracker steps={orderSteps} currentKey={order.status} />
+                            <div className="flex items-center justify-between text-muted-foreground pt-1">
                               <span className="text-xs">
                                 {new Date(order.created_at).toLocaleDateString()}
                               </span>

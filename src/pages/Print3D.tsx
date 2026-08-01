@@ -17,6 +17,9 @@ import { es } from "date-fns/locale";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { listPrinters, listUserReservations, createReservation } from "@/services/supabase/reservations";
 import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
+import { supabase } from "@/integrations/supabase/client";
+import { StatusTracker } from "@/components/StatusTracker";
+import { reservationSteps } from "@/lib/tracker-steps";
 import type { Printer, Reservation } from "@/types/domain";
 
 export default function Print3D() {
@@ -63,6 +66,19 @@ export default function Print3D() {
     // Solo cargar reservas si el usuario está autenticado
     if (user) {
       fetchReservations();
+
+      const channel = supabase
+        .channel(`print-reservations-${user.id}`)
+        .on(
+          "postgres_changes",
+          { event: "UPDATE", schema: "public", table: "print_reservations", filter: `user_id=eq.${user.id}` },
+          () => fetchReservations()
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(channel);
+      };
     } else {
       setLoading(false);
     }
@@ -413,20 +429,21 @@ export default function Print3D() {
                     ) : (
                       reservations.map((res) => (
                         <Card key={res.id} className="bg-muted/30 border-border/30">
-                          <CardContent className="pt-4">
+                          <CardContent className="pt-4 space-y-3">
                             <div className="flex items-start justify-between mb-2">
                               <h4 className="font-semibold">{res.project_name}</h4>
                               <Badge className={statusColors[res.status]}>
                                 {statusLabels[res.status]}
                               </Badge>
                             </div>
+                            <StatusTracker steps={reservationSteps} currentKey={res.status} />
                             <div className="grid grid-cols-2 gap-2 text-sm text-muted-foreground">
                               <span>📅 {format(new Date(res.scheduled_date), "PP", { locale: es })}</span>
                               <span>🕐 {res.scheduled_time}</span>
                               <span>⚖️ {res.estimated_grams}g</span>
                               <span>⏱️ {res.estimated_hours}h</span>
                             </div>
-                            <div className="flex items-center justify-between mt-3 pt-3 border-t border-border/30">
+                            <div className="flex items-center justify-between pt-3 border-t border-border/30">
                               <span className="text-xs">{res.printers?.name}</span>
                               <span className="font-semibold text-cyan-400">
                                 S/ {Number(res.estimated_cost).toFixed(2)}
