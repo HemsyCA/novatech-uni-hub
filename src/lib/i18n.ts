@@ -11,7 +11,7 @@ export const translations = {
       servicios: "Servicios",
       tienda: "Tienda Nova",
       impresion3d: "Impresión 3D",
-      login: "Iniciar Sesión",
+      login: "Ingresar",
       join: "Unirse al Equipo",
     },
     hero: {
@@ -67,7 +67,7 @@ export const translations = {
       servicios: "Services",
       tienda: "Nova Store",
       impresion3d: "3D Printing",
-      login: "Sign In",
+      login: "Enter",
       join: "Join the Team",
     },
     hero: {

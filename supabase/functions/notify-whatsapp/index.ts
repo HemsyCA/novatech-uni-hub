@@ -1,6 +1,8 @@
 // Recibe el payload de un Database Webhook de Supabase (INSERT en `orders` o
 // `print_reservations`), arma un mensaje legible y lo manda por WhatsApp
-// (API de Twilio) a cada número configurado en BOARD_WHATSAPP_NUMBERS.
+// (API de Meta / WhatsApp Cloud API) a cada número configurado en
+// BOARD_WHATSAPP_NUMBERS. Manda texto libre (sin plantilla) porque esos
+// números están agregados como "destinatarios de prueba" en la app de Meta.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface WebhookPayload {
@@ -73,26 +75,42 @@ async function buildReservationMessage(record: Record<string, unknown>): Promise
 }
 
 async function sendWhatsapp(message: string) {
-  const sid = Deno.env.get("TWILIO_ACCOUNT_SID")!;
-  const token = Deno.env.get("TWILIO_AUTH_TOKEN")!;
-  const from = Deno.env.get("TWILIO_WHATSAPP_FROM")!;
-  const numbers = (Deno.env.get("BOARD_WHATSAPP_NUMBERS") ?? "").split(",").map((n) => n.trim()).filter(Boolean);
+  const token = Deno.env.get("META_ACCESS_TOKEN")!;
+  const phoneNumberId = Deno.env.get("META_PHONE_NUMBER_ID")!;
+  const numbers = (Deno.env.get("BOARD_WHATSAPP_NUMBERS") ?? "")
+    .split(/[,;\s]+/)
+    .map((n) => n.trim().replace(/^\+/, ""))
+    .filter(Boolean);
 
   const results = await Promise.allSettled(
-    numbers.map((to) =>
-      fetch(`https://api.twilio.com/2010-04-01/Accounts/${sid}/Messages.json`, {
+    numbers.map(async (to) => {
+      const res = await fetch(`https://graph.facebook.com/v21.0/${phoneNumberId}/messages`, {
         method: "POST",
         headers: {
-          Authorization: `Basic ${btoa(`${sid}:${token}`)}`,
-          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-        body: new URLSearchParams({
-          From: `whatsapp:${from}`,
-          To: `whatsapp:${to}`,
-          Body: message,
+        body: JSON.stringify({
+          messaging_product: "whatsapp",
+          to,
+          type: "text",
+          text: { body: message },
         }),
-      })
-    ),
+      });
+
+      const body = await res.text();
+      await supabaseAdmin.from("_whatsapp_debug").insert({
+        to_number: to,
+        http_status: res.status,
+        body,
+      });
+      if (!res.ok) {
+        console.error(`Meta API error for ${to}: ${res.status} ${body}`);
+        throw new Error(`Meta API ${res.status}: ${body}`);
+      }
+      console.log(`Meta API ok for ${to}: ${body}`);
+      return body;
+    }),
   );
 
   return results;

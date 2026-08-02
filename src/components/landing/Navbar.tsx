@@ -93,16 +93,8 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <LanguageToggle />
             <Link to="/auth">
-              <Button
-                variant="outline"
-                className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-              >
-                {t.nav.login}
-              </Button>
-            </Link>
-            <Link to="/auth">
               <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
-                {t.nav.join}
+                {t.nav.login}
               </Button>
             </Link>
           </div>
@@ -158,16 +150,8 @@ export function Navbar() {
 
               <div className="flex flex-col gap-2">
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button
-                    variant="outline"
-                    className="w-full border-primary/50 text-primary"
-                  >
-                    {t.nav.login}
-                  </Button>
-                </Link>
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
                   <Button className="w-full bg-gradient-primary text-primary-foreground">
-                    {t.nav.join}
+                    {t.nav.login}
                   </Button>
                 </Link>
               </div>
