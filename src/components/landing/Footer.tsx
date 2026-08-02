@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Mail, MapPin, Phone, Instagram, Youtube, Linkedin, Github } from "lucide-react";
+import { Mail, MapPin, Phone, Instagram, Youtube, Linkedin, Github, Facebook} from "lucide-react";
+import {TiktokIcon} from "@/components/icons/SocialIcons";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const socialLinks = [
-  { icon: Instagram, href: "#", label: "Instagram" },
-  { icon: Youtube, href: "#", label: "YouTube" },
-  { icon: Linkedin, href: "#", label: "LinkedIn" },
-  { icon: Github, href: "#", label: "GitHub" },
+  { icon: Facebook, href: "https://web.facebook.com/profile.php?id=61553951379710", label: "Facebook" },
+  { icon: Instagram, href: "https://www.instagram.com/novatechuni/", label: "Instagram" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/nova-tech-uni/", label: "LinkedIn" },
+  { icon: TiktokIcon, href: "https://www.tiktok.com/@novatechteam", label: "TikTok" },
 ];
 
 export function Footer() {
