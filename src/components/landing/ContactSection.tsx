@@ -60,7 +60,7 @@ export function ContactSection() {
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
             <span className="text-foreground">{t.contact.title1}</span>
-            <span className="text-gradient-accent">{t.contact.title2}</span>
+            <span className="text-primary">{t.contact.title2}</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.contact.subtitle}</p>
         </motion.div>
@@ -108,7 +108,11 @@ export function ContactSection() {
                 required
               />
             </div>
-            <Button type="submit" className="w-full bg-gradient-primary" disabled={submitting}>
+            <Button
+              type="submit"
+              className="w-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground active:bg-primary active:text-primary-foreground transition-colors duration-300"
+              disabled={submitting}
+            >
               {submitting ? (
                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
               ) : (

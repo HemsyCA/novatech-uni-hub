@@ -20,7 +20,7 @@ export default function Admin() {
           <Link to="/dashboard" className="flex items-center gap-3">
             <img src={novatechLogo} alt="NovaTech" className="h-10 w-10" />
             <span className="font-display font-bold text-gradient-primary hidden sm:block">
-              NOVATECH UNI
+              NOVATECH
             </span>
           </Link>
           <Link to="/dashboard" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors">

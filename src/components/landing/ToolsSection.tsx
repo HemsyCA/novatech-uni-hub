@@ -29,7 +29,7 @@ export function ToolsSection() {
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
             <span className="text-foreground">{t.tools.title1}</span>
-            <span className="text-gradient-primary">{t.tools.title2}</span>
+            <span className="text-primary">{t.tools.title2}</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.tools.subtitle}</p>
         </motion.div>
@@ -44,7 +44,7 @@ export function ToolsSection() {
               className="group"
             >
               <div className="rounded-2xl p-6 text-center h-full bg-transparent hover:scale-105 transition-transform duration-300">
-                <div className="w-24 h-24 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 bg-black border-2 border-black text-white">
+                <div className="w-24 h-24 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 bg-white/5 border border-white/10 text-white">
                   <tool.icon className="h-20 w-full" />
                 </div>
                 <h3 className="font-display text-base font-semibold text-foreground">{tool.name}</h3>

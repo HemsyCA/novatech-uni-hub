@@ -199,7 +199,7 @@ export default function Auth() {
             Volver al inicio
           </a>
           <img src={novatechLogo} alt="NovaTech" className="h-16 w-16 mx-auto mb-4" />
-          <h1 className="text-2xl font-display font-bold text-gradient-primary">NOVATECH UNI</h1>
+          <h1 className="text-2xl font-display font-bold text-gradient-primary">NOVATECH</h1>
           <p className="text-muted-foreground mt-2">Sistema de Gestión</p>
         </div>
 

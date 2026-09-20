@@ -77,6 +77,47 @@
     --background: 260 30% 8%;
     --foreground: 210 40% 98%;
   }
+
+  /* Tema minimalista para el Home: negro, blanco y morado */
+  .nova-mono {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 100%;
+
+    --popover: 0 0% 5%;
+    --popover-foreground: 0 0% 100%;
+
+    --primary: 265 60% 58%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 100%;
+    --secondary-foreground: 0 0% 0%;
+
+    --accent: 265 60% 58%;
+    --accent-foreground: 0 0% 100%;
+
+    --gold: 265 60% 58%;
+    --gold-foreground: 0 0% 100%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 68%;
+
+    --border: 0 0% 18%;
+    --input: 0 0% 14%;
+    --ring: 265 60% 58%;
+
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+
+  .nova-mono h1,
+  .nova-mono h2,
+  .nova-mono h3 {
+    font-family: 'Inter', sans-serif;
+    letter-spacing: -0.02em;
+  }
 }
 
 @layer base {
