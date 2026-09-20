@@ -56,9 +56,11 @@ export function Hero() {
               {/* Soft glow */}
               <div className="absolute inset-0 bg-primary/20 opacity-40 blur-[60px] scale-75" />
 
-              {/* Thin ring */}
-              <div
-                className="absolute inset-0 border border-border rounded-full"
+              {/* Thin dashed ring, rotating slowly */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0 border border-dashed border-primary/25 rounded-full"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               />
 
@@ -68,6 +70,32 @@ export function Hero() {
                 alt="NovaTech"
                 className="w-72 h-72 md:w-96 md:h-96 object-contain relative z-10 animate-float"
               />
+
+              {/* Orbiting dots */}
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 16, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0"
+                style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
+              >
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary shadow-[0_0_16px_hsl(var(--primary)/0.8)]" />
+              </motion.div>
+              <motion.div
+                animate={{ rotate: -360 }}
+                transition={{ duration: 22, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0"
+                style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
+              >
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-foreground shadow-[0_0_12px_hsl(var(--foreground)/0.6)]" />
+              </motion.div>
+              <motion.div
+                animate={{ rotate: 360 }}
+                transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+                className="absolute inset-0"
+                style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
+              >
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/70 shadow-[0_0_10px_hsl(var(--primary)/0.6)]" />
+              </motion.div>
             </div>
           </motion.div>
         </div>
