@@ -50,11 +50,12 @@ export function Navbar() {
           >
             <img
               src={novatechLogo}
-              alt="NovaTech UNI"
+              alt="NovaTech"
               className="h-12 w-12 object-contain"
             />
-            <span className="font-display text-xl font-bold text-gradient-primary hidden sm:block">
-              NOVATECH UNI
+            <span className="font-display text-xl font-bold hidden sm:block">
+              <span className="text-foreground">NOVA</span>
+              <span className="text-primary">TECH</span>
             </span>
           </MotionLink>
 
@@ -70,7 +71,7 @@ export function Navbar() {
                 className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-primary transition-colors relative group"
               >
                 {item.label}
-                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-gradient-primary group-hover:w-3/4 transition-all duration-300" />
+                <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-0 h-0.5 bg-primary group-hover:w-3/4 transition-all duration-300" />
               </MotionLink>
             ))}
 
@@ -93,7 +94,7 @@ export function Navbar() {
           <div className="hidden md:flex items-center gap-4">
             <LanguageToggle />
             <Link to="/auth">
-              <Button className="bg-gradient-primary text-primary-foreground hover:opacity-90 glow-cyan transition-all duration-300">
+              <Button className="bg-foreground text-background hover:bg-primary hover:text-primary-foreground active:bg-primary active:text-primary-foreground transition-colors duration-300">
                 {t.nav.login}
               </Button>
             </Link>
@@ -150,7 +151,7 @@ export function Navbar() {
 
               <div className="flex flex-col gap-2">
                 <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button className="w-full bg-gradient-primary text-primary-foreground">
+                  <Button className="w-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground active:bg-primary active:text-primary-foreground transition-colors duration-300">
                     {t.nav.login}
                   </Button>
                 </Link>

@@ -86,7 +86,7 @@ export default function Dashboard() {
           <Link to="/" className="flex items-center gap-3">
             <img src={novatechLogo} alt="NovaTech" className="h-10 w-10" />
             <span className="font-display font-bold text-gradient-primary hidden sm:block">
-              NOVATECH UNI
+              NOVATECH
             </span>
           </Link>
           <div className="flex items-center gap-4">
@@ -117,7 +117,7 @@ export default function Dashboard() {
             ¡Bienvenido, <span className="text-gradient-primary">{user?.user_metadata?.full_name || "Competidor"}</span>!
           </h1>
           <p className="text-muted-foreground">
-            Accede a los módulos del sistema NovaTech UNI
+            Accede a los módulos del sistema NovaTech
           </p>
         </motion.div>
 

@@ -38,8 +38,8 @@ export function Footer() {
 
   return (
     <footer className="relative bg-card/50 border-t border-border/30">
-      {/* Gradient line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
+      {/* Accent line */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
 
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
@@ -48,11 +48,12 @@ export function Footer() {
             <Link to="/" className="flex items-center gap-3 mb-4">
               <img
                 src={novatechLogo}
-                alt="NovaTech UNI"
+                alt="NovaTech"
                 className="h-12 w-12 object-contain"
               />
-              <span className="font-display text-xl font-bold text-gradient-primary">
-                NOVATECH UNI
+              <span className="font-display text-xl font-bold">
+                <span className="text-foreground">NOVA</span>
+                <span className="text-primary">TECH</span>
               </span>
             </Link>
             <p className="text-sm text-muted-foreground mb-6">
@@ -133,7 +134,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground text-center md:text-left">
-            © 2024 NovaTech UNI. {t.footer.rights}
+            © 2024 NovaTech. {t.footer.rights}
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (

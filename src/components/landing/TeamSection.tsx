@@ -129,7 +129,7 @@ export function TeamSection() {
                 Mural de Generaciones
               </h3>
               <p className="text-muted-foreground">
-                Honramos a cada generación que ha sido parte de NovaTech UNI
+                Honramos a cada generación que ha sido parte de NovaTech
               </p>
             </div>
             <div className="flex items-center gap-4 text-center">
