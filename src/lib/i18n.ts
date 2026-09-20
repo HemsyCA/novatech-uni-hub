@@ -19,10 +19,10 @@ export const translations = {
         "Innovación, ingeniería y competencia. Construimos el futuro de la robótica universitaria con pasión y excelencia técnica.",
     },
     tools: {
-      badge: "NUESTRO STACK",
-      title1: "Herramientas que ",
-      title2: "manejamos",
-      subtitle: "El software y las plataformas que usamos todos los días para diseñar, programar y fabricar.",
+      badge: "NOVAHERRAMIENTAS",
+      title1: "Nuestro ",
+      title2: "ecosistema de desarrollo",
+      subtitle: "",
     },
     contact: {
       badge: "CONTÁCTANOS",
@@ -75,10 +75,10 @@ export const translations = {
         "Innovation, engineering and competition. We're building the future of university robotics with passion and technical excellence.",
     },
     tools: {
-      badge: "OUR STACK",
-      title1: "Tools we ",
-      title2: "work with",
-      subtitle: "The software and platforms we use every day to design, code and build.",
+      badge: "NOVATOOLS",
+      title1: "Our ",
+      title2: "development ecosystem",
+      subtitle: "",
     },
     contact: {
       badge: "GET IN TOUCH",

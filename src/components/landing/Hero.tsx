@@ -1,6 +1,45 @@
 import { motion } from "framer-motion";
+import { useState, useEffect } from "react";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { useLanguage } from "@/contexts/LanguageContext";
+
+const TypewriterText = ({ text, startDelay = 0, speed = 60 }) => {
+  const [displayedText, setDisplayedText] = useState("");
+  const [showCursor, setShowCursor] = useState(true);
+  const [isComplete, setIsComplete] = useState(false);
+
+  useEffect(() => {
+    if (displayedText.length === text.length) {
+      setIsComplete(true);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setDisplayedText(text.slice(0, displayedText.length + 1));
+    }, speed);
+
+    return () => clearTimeout(timer);
+  }, [displayedText, text, speed]);
+
+  useEffect(() => {
+    const startTimer = setTimeout(() => {
+      setShowCursor(true);
+      const cursorInterval = setInterval(() => {
+        setShowCursor((prev) => !prev);
+      }, 500);
+      return () => clearInterval(cursorInterval);
+    }, startDelay);
+
+    return () => clearTimeout(startTimer);
+  }, [startDelay]);
+
+  return (
+    <>
+      {displayedText}
+      {!isComplete && <span className={`${showCursor ? "opacity-100" : "opacity-0"}`}>|</span>}
+    </>
+  );
+};
 
 export function Hero() {
   const { t } = useLanguage();
@@ -11,9 +50,9 @@ export function Hero() {
       className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
     >
       {/* Background Effects */}
-      <div className="absolute inset-0 bg-background">
+      <div className="absolute inset-0 bg-black">
         {/* Single soft accent glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-primary/10 rounded-full blur-[140px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-white/10 rounded-full blur-[140px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -26,23 +65,18 @@ export function Hero() {
             className="text-center lg:text-left"
           >
             <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 }}
-              className="font-display text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+              className="font-mono text-6xl md:text-8xl lg:text-9xl font-black mb-6 leading-tight tracking-tighter uppercase"
             >
-              <span className="text-foreground">NOVA</span>
-              <span className="text-primary">TECH</span>
+              <span className="text-white">NOVA</span>
+              <span className="text-white">TECH</span>
             </motion.h1>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="text-lg md:text-xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0"
-            >
-              {t.hero.subtitle}
-            </motion.p>
+            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 font-mono tracking-wide">
+              <TypewriterText text={t.hero.subtitle} startDelay={800} speed={20} />
+            </p>
           </motion.div>
 
           {/* Logo/Visual */}
@@ -54,13 +88,13 @@ export function Hero() {
           >
             <div className="relative">
               {/* Soft glow */}
-              <div className="absolute inset-0 bg-primary/20 opacity-40 blur-[60px] scale-75" />
+              <div className="absolute inset-0 bg-white/20 opacity-40 blur-[60px] scale-75" />
 
               {/* Thin dashed ring, rotating slowly */}
               <motion.div
                 animate={{ rotate: 360 }}
                 transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
-                className="absolute inset-0 border border-dashed border-primary/25 rounded-full"
+                className="absolute inset-0 border border-dashed border-white/25 rounded-full"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               />
 
@@ -78,7 +112,7 @@ export function Hero() {
                 className="absolute inset-0"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               >
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-primary shadow-[0_0_16px_hsl(var(--primary)/0.8)]" />
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 rounded-full bg-white shadow-[0_0_16px_rgba(255,255,255,0.8)]" />
               </motion.div>
               <motion.div
                 animate={{ rotate: -360 }}
@@ -86,7 +120,7 @@ export function Hero() {
                 className="absolute inset-0"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               >
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-foreground shadow-[0_0_12px_hsl(var(--foreground)/0.6)]" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.6)]" />
               </motion.div>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -94,7 +128,7 @@ export function Hero() {
                 className="absolute inset-0"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               >
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/70 shadow-[0_0_10px_hsl(var(--primary)/0.6)]" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/70 shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
               </motion.div>
             </div>
           </motion.div>

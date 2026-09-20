@@ -4,10 +4,10 @@ import { ArduinoIcon, EasyEdaIcon, OnshapeIcon, VSCodeIcon } from "@/components/
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const tools = [
-  { name: "Arduino IDE", icon: ArduinoIcon, color: "primary" },
-  { name: "EasyEDA", icon: EasyEdaIcon, color: "accent" },
-  { name: "OneShape", icon: OnshapeIcon, color: "gold" },
-  { name: "Visual Studio Code", icon: VSCodeIcon, color: "secondary" },
+  { name: "Arduino IDE", icon: ArduinoIcon, color: "primary", url: "https://www.arduino.cc/" },
+  { name: "EasyEDA", icon: EasyEdaIcon, color: "accent", url: "https://easyeda.com/" },
+  { name: "OneShape", icon: OnshapeIcon, color: "gold", url: "https://www.onshape.com/" },
+  { name: "Visual Studio Code", icon: VSCodeIcon, color: "secondary", url: "https://code.visualstudio.com/" },
 ];
 
 export function ToolsSection() {
@@ -16,7 +16,7 @@ export function ToolsSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 relative bg-muted/30">
+    <section className="py-24 relative bg-black">
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -24,14 +24,10 @@ export function ToolsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-4">
-            {t.tools.badge}
-          </span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-foreground">{t.tools.title1}</span>
-            <span className="text-primary">{t.tools.title2}</span>
+          <h2 className="font-mono text-5xl md:text-6xl font-black mb-6 uppercase tracking-tighter">
+            <span className="text-white">{t.tools.title1}</span>
+            <span className="text-white">{t.tools.title2}</span>
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.tools.subtitle}</p>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -44,10 +40,12 @@ export function ToolsSection() {
               className="group"
             >
               <div className="rounded-2xl p-6 text-center h-full bg-transparent hover:scale-105 transition-transform duration-300">
-                <div className="w-24 h-24 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 bg-white/5 border border-white/10 text-white">
-                  <tool.icon className="h-20 w-full" />
-                </div>
-                <h3 className="font-display text-base font-semibold text-foreground">{tool.name}</h3>
+                <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-block">
+                  <div className={`h-20 mx-auto flex items-center justify-center mb-4 text-white cursor-pointer group-hover:text-white/80 transition-colors duration-300 ${tool.name === "Arduino IDE" ? "w-25" : "w-20"}`}>
+                    <tool.icon className="w-full h-full" />
+                  </div>
+                </a>
+                <h3 className="font-display text-base font-semibold text-white group-hover:text-white transition-colors duration-300">{tool.name}</h3>
               </div>
             </motion.div>
           ))}

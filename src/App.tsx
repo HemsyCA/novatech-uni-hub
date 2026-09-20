@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StaffRoute } from "@/components/StaffRoute";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { FloatingContactButtons } from "@/components/FloatingContactButtons";
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
@@ -31,6 +32,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <FloatingContactButtons />
         <Suspense
           fallback={
             <div className="min-h-screen bg-background flex items-center justify-center text-primary">

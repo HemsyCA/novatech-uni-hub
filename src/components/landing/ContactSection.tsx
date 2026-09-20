@@ -55,12 +55,12 @@ export function ContactSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-accent/10 text-accent border border-accent/20 mb-4">
+          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-white/10 text-white border border-white/20 mb-4">
             {t.contact.badge}
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-foreground">{t.contact.title1}</span>
-            <span className="text-primary">{t.contact.title2}</span>
+            <span className="text-white">{t.contact.title1}</span>
+            <span className="text-white">{t.contact.title2}</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">{t.contact.subtitle}</p>
         </motion.div>
@@ -110,7 +110,7 @@ export function ContactSection() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-foreground text-background hover:bg-primary hover:text-primary-foreground active:bg-primary active:text-primary-foreground transition-colors duration-300"
+              className="w-full bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300"
               disabled={submitting}
             >
               {submitting ? (

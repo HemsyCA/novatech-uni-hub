@@ -37,42 +37,24 @@ export function Footer() {
   };
 
   return (
-    <footer className="relative bg-card/50 border-t border-border/30">
+    <footer className="relative bg-black border-t border-border/30">
       {/* Accent line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary to-transparent" />
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
 
       <div className="container mx-auto px-4 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
-          <div className="col-span-2 md:col-span-4 lg:col-span-1">
-            <Link to="/" className="flex items-center gap-3 mb-4">
+          <div className="col-span-2 md:col-span-4 lg:col-span-1 flex flex-col items-center">
+            <Link to="/" className="mb-4 w-32 h-32 flex items-center justify-center border-2 border-white/20 rounded-lg hover:border-white transition-colors">
               <img
                 src={novatechLogo}
                 alt="NovaTech"
-                className="h-12 w-12 object-contain"
+                className="h-20 w-20 object-contain"
               />
-              <span className="font-display text-xl font-bold">
-                <span className="text-foreground">NOVA</span>
-                <span className="text-primary">TECH</span>
-              </span>
             </Link>
-            <p className="text-sm text-muted-foreground mb-6">
+            <p className="text-sm text-white text-center">
               {t.footer.tagline}
             </p>
-            
-            {/* Social Links */}
-            <div className="flex gap-3">
-              {socialLinks.map((social) => (
-                <a
-                  key={social.label}
-                  href={social.href}
-                  aria-label={social.label}
-                  className="w-10 h-10 rounded-lg bg-muted/50 flex items-center justify-center text-muted-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  <social.icon className="w-5 h-5" />
-                </a>
-              ))}
-            </div>
           </div>
 
           {/* Navigation */}
@@ -85,7 +67,7 @@ export function Footer() {
                 <li key={link.label}>
                   <Link
                     to={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-white transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -104,7 +86,7 @@ export function Footer() {
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-sm text-muted-foreground hover:text-white transition-colors"
                   >
                     {link.label}
                   </a>
@@ -120,11 +102,11 @@ export function Footer() {
             </h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4 mt-0.5 text-primary" />
+                <Mail className="w-4 h-4 mt-0.5 text-white" />
                 <span>contacto@novatechuni.edu</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 mt-0.5 text-primary" />
+                <MapPin className="w-4 h-4 mt-0.5 text-white" />
                 <span>Universidad Nacional de Ingeniería, Lima, Perú</span>
               </li>
             </ul>
@@ -141,7 +123,7 @@ export function Footer() {
               <a
                 key={link.label}
                 href={link.href}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                className="text-sm text-muted-foreground hover:text-white transition-colors"
               >
                 {link.label}
               </a>
