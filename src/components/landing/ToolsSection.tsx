@@ -43,19 +43,9 @@ export function ToolsSection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="group"
             >
-              <div className="glass-card rounded-2xl p-6 text-center h-full border-gradient hover:scale-105 transition-transform duration-300">
-                <div
-                  className={`w-16 h-16 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 ${
-                    tool.color === "primary"
-                      ? "bg-primary/10 text-primary"
-                      : tool.color === "accent"
-                        ? "bg-accent/10 text-accent"
-                        : tool.color === "secondary"
-                          ? "bg-secondary/10 text-secondary"
-                          : "bg-gold/10 text-gold"
-                  }`}
-                >
-                  <tool.icon className="h-8 w-full" />
+              <div className="rounded-2xl p-6 text-center h-full bg-transparent hover:scale-105 transition-transform duration-300">
+                <div className="w-24 h-24 mx-auto rounded-xl flex items-center justify-center mb-4 p-2 bg-black border-2 border-black text-white">
+                  <tool.icon className="h-20 w-full" />
                 </div>
                 <h3 className="font-display text-base font-semibold text-foreground">{tool.name}</h3>
               </div>
