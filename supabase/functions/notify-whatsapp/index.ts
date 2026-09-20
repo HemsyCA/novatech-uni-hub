@@ -1,8 +1,9 @@
 // Recibe el payload de un Database Webhook de Supabase (INSERT en `orders` o
-// `print_reservations`), arma un mensaje legible y lo manda por WhatsApp
-// (API de Meta / WhatsApp Cloud API) a cada número configurado en
-// BOARD_WHATSAPP_NUMBERS. Manda texto libre (sin plantilla) porque esos
-// números están agregados como "destinatarios de prueba" en la app de Meta.
+// `print_reservations`), arma los parámetros de una plantilla de WhatsApp
+// aprobada por Meta y la manda a cada número configurado en
+// BOARD_WHATSAPP_NUMBERS. Usa plantillas (type: "template") en vez de texto
+// libre porque el texto libre solo se puede mandar dentro de la ventana de
+// 24h en que el destinatario le escribió al número de negocio.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 interface WebhookPayload {
@@ -10,6 +11,8 @@ interface WebhookPayload {
   table: "orders" | "print_reservations";
   record: Record<string, unknown>;
 }
+
+const TEMPLATE_LANGUAGE = "es_PE";
 
 const supabaseAdmin = createClient(
   Deno.env.get("SUPABASE_URL")!,
@@ -28,7 +31,7 @@ async function getCustomerName(userId: string | null): Promise<{ name: string; e
   return { name: data?.full_name ?? "Cliente", email: data?.email ?? null };
 }
 
-async function buildOrderMessage(record: Record<string, unknown>): Promise<string> {
+async function buildOrderParams(record: Record<string, unknown>): Promise<Record<string, string>> {
   const { data: items } = await supabaseAdmin
     .from("order_items")
     .select("quantity, products(name)")
@@ -40,16 +43,15 @@ async function buildOrderMessage(record: Record<string, unknown>): Promise<strin
 
   const { name, email } = await getCustomerName(record.user_id as string | null);
 
-  return [
-    "🛒 *Nuevo pedido en NovaTech*",
-    `Cliente: ${name}${email ? ` (${email})` : ""}`,
-    `Productos: ${itemsList || "sin detalle"}`,
-    `Total: S/ ${record.total}`,
-    `Código: ${record.transaction_code}`,
-  ].join("\n");
+  return {
+    customer_name: `${name}${email ? ` (${email})` : ""}`,
+    products: itemsList || "sin detalle",
+    total: String(record.total),
+    order_code: String(record.transaction_code),
+  };
 }
 
-async function buildReservationMessage(record: Record<string, unknown>): Promise<string> {
+async function buildReservationParams(record: Record<string, unknown>): Promise<Record<string, string>> {
   const [{ data: printer }, { data: material }] = await Promise.all([
     record.printer_id
       ? supabaseAdmin.from("printers").select("name").eq("id", record.printer_id).maybeSingle()
@@ -64,23 +66,33 @@ async function buildReservationMessage(record: Record<string, unknown>): Promise
     name = (await getCustomerName(record.user_id as string)).name;
   }
 
-  return [
-    "🖨️ *Nueva reserva de impresión 3D*",
-    `Proyecto: ${record.project_name}`,
-    `Cliente: ${name ?? "Cliente"}`,
-    `Impresora: ${printer?.name ?? "sin asignar"}${material?.name ? ` (${material.name})` : ""}`,
-    `Fecha: ${record.scheduled_date} ${record.scheduled_time}`,
-    `Costo estimado: S/ ${record.estimated_cost}`,
-  ].join("\n");
+  return {
+    project_name: String(record.project_name),
+    customer_name: name ?? "Cliente",
+    printer_name: `${printer?.name ?? "sin asignar"}${material?.name ? ` (${material.name})` : ""}`,
+    date: `${record.scheduled_date} ${record.scheduled_time}`,
+    cost: String(record.estimated_cost),
+  };
 }
 
-async function sendWhatsapp(message: string) {
+async function sendWhatsappTemplate(templateName: string, parameters: Record<string, string>) {
   const token = Deno.env.get("META_ACCESS_TOKEN")!;
   const phoneNumberId = Deno.env.get("META_PHONE_NUMBER_ID")!;
   const numbers = (Deno.env.get("BOARD_WHATSAPP_NUMBERS") ?? "")
     .split(/[,;\s]+/)
     .map((n) => n.trim().replace(/^\+/, ""))
     .filter(Boolean);
+
+  const components = [
+    {
+      type: "body",
+      parameters: Object.entries(parameters).map(([parameter_name, text]) => ({
+        type: "text",
+        parameter_name,
+        text,
+      })),
+    },
+  ];
 
   const results = await Promise.allSettled(
     numbers.map(async (to) => {
@@ -93,8 +105,12 @@ async function sendWhatsapp(message: string) {
         body: JSON.stringify({
           messaging_product: "whatsapp",
           to,
-          type: "text",
-          text: { body: message },
+          type: "template",
+          template: {
+            name: templateName,
+            language: { code: TEMPLATE_LANGUAGE },
+            components,
+          },
         }),
       });
 
@@ -127,19 +143,22 @@ Deno.serve(async (req) => {
     return new Response(JSON.stringify({ skipped: true }), { headers: { "Content-Type": "application/json" } });
   }
 
-  const message = payload.table === "orders"
-    ? await buildOrderMessage(payload.record)
-    : payload.table === "print_reservations"
-      ? await buildReservationMessage(payload.record)
-      : null;
+  let templateName: string;
+  let params: Record<string, string>;
 
-  if (!message) {
+  if (payload.table === "orders") {
+    templateName = "nuevo_pedido_novatech";
+    params = await buildOrderParams(payload.record);
+  } else if (payload.table === "print_reservations") {
+    templateName = "nueva_reserva_3d_novatech";
+    params = await buildReservationParams(payload.record);
+  } else {
     return new Response(JSON.stringify({ skipped: true, reason: "unknown table" }), {
       headers: { "Content-Type": "application/json" },
     });
   }
 
-  const results = await sendWhatsapp(message);
+  const results = await sendWhatsappTemplate(templateName, params);
 
   return new Response(JSON.stringify({ sent: results.length }), {
     headers: { "Content-Type": "application/json" },
