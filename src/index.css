@@ -45,16 +45,16 @@
     --destructive-foreground: 210 40% 98%;
 
     --border: 260 25% 18%;
-    --input: 260 25% 16%;
-    --ring: 270 85% 55%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 100%;
 
     --radius: 0.75rem;
 
     /* Sidebar */
     --sidebar-background: 260 35% 8%;
     --sidebar-foreground: 210 40% 98%;
-    --sidebar-primary: 270 85% 55%;
-    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-primary: 0 0% 100%;
+    --sidebar-primary-foreground: 0 0% 0%;
     --sidebar-accent: 190 100% 50%;
     --sidebar-accent-foreground: 260 30% 8%;
     --sidebar-border: 260 25% 18%;
@@ -106,7 +106,7 @@
 
     --border: 0 0% 18%;
     --input: 0 0% 14%;
-    --ring: 265 60% 58%;
+    --ring: 0 0% 100%;
 
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
@@ -176,7 +176,7 @@
   }
 
   .glass-card {
-    @apply bg-card/60 backdrop-blur-xl border border-border/50;
+    @apply bg-black/40 backdrop-blur-xl border border-white/20;
   }
 
   .border-gradient {
@@ -255,10 +255,10 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted));
+  background: rgba(255, 255, 255, 0.3);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary));
+  background: rgba(255, 255, 255, 0.6);
 }

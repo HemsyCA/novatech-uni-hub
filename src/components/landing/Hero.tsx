@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { useLanguage } from "@/contexts/LanguageContext";
 
@@ -47,12 +48,10 @@ export function Hero() {
   return (
     <section
       id="inicio"
-      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 bg-black"
     >
       {/* Background Effects */}
       <div className="absolute inset-0 bg-black">
-        {/* Single soft accent glow */}
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[32rem] h-[32rem] bg-white/10 rounded-full blur-[140px]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
@@ -68,7 +67,7 @@ export function Hero() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
-              className="font-mono text-6xl md:text-8xl lg:text-9xl font-black mb-6 leading-tight tracking-tighter uppercase"
+              className="font-display text-4xl md:text-6xl lg:text-8xl font-black mb-6 leading-tight tracking-tighter uppercase"
             >
               <span className="text-white">NOVA</span>
               <span className="text-white">TECH</span>
@@ -77,6 +76,27 @@ export function Hero() {
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 font-mono tracking-wide">
               <TypewriterText text={t.hero.subtitle} startDelay={800} speed={20} />
             </p>
+
+            {/* Action Buttons */}
+            <div className="flex gap-4 justify-center lg:justify-start">
+              <button
+                onClick={() => {
+                  const element = document.getElementById("contacto");
+                  if (element) {
+                    element.scrollIntoView({ behavior: "smooth" });
+                  }
+                }}
+                className="px-6 py-3 bg-white text-black font-mono font-semibold rounded-lg hover:bg-white/90 transition-colors duration-300"
+              >
+                Conócenos
+              </button>
+              <Link
+                to="/robots"
+                className="px-6 py-3 border-2 border-white text-white font-mono font-semibold rounded-lg hover:bg-white/10 transition-colors duration-300"
+              >
+                Prototipos
+              </Link>
+            </div>
           </motion.div>
 
           {/* Logo/Visual */}

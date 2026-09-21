@@ -35,7 +35,7 @@ const App = () => (
         <FloatingContactButtons />
         <Suspense
           fallback={
-            <div className="min-h-screen bg-background flex items-center justify-center text-primary">
+            <div className="min-h-screen bg-black flex items-center justify-center text-white font-mono text-lg">
               Cargando página...
             </div>
           }

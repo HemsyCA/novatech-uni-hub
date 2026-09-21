@@ -4,6 +4,7 @@ import { Mail, MapPin, Phone, Instagram, Youtube, Linkedin, Github, Facebook} fr
 import {TiktokIcon} from "@/components/icons/SocialIcons";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { InteractiveFocusLine } from "./InteractiveFocusLine";
 
 const socialLinks = [
   { icon: Facebook, href: "https://web.facebook.com/profile.php?id=61553951379710", label: "Facebook" },
@@ -38,8 +39,8 @@ export function Footer() {
 
   return (
     <footer className="relative bg-black border-t border-border/30">
-      {/* Accent line */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white to-transparent" />
+      {/* Static white line */}
+      <InteractiveFocusLine />
 
       <div className="container mx-auto px-4 py-16">
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-8 mb-12">
@@ -103,7 +104,7 @@ export function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 mt-0.5 text-white" />
-                <span>contacto@novatechuni.edu</span>
+                <span>novatech.uni@uni.edu.pe</span>
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-0.5 text-white" />
@@ -116,7 +117,7 @@ export function Footer() {
         {/* Bottom */}
         <div className="pt-8 border-t border-border/30 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground text-center md:text-left">
-            © 2024 NovaTech. {t.footer.rights}
+            © 2026 NovaTech. {t.footer.rights}
           </p>
           <div className="flex gap-6">
             {footerLinks.legal.map((link) => (

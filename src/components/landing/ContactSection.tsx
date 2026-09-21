@@ -47,7 +47,7 @@ export function ContactSection() {
   };
 
   return (
-    <section className="py-24 relative">
+    <section id="contacto" className="py-24 relative">
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -71,7 +71,7 @@ export function ContactSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-xl mx-auto"
         >
-          <form onSubmit={handleSubmit} className="glass-card rounded-2xl p-6 md:p-8 space-y-4">
+          <form id="contact-form" onSubmit={handleSubmit} className="glass-card rounded-2xl p-6 md:p-8 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="contact-name">{t.contact.nameLabel}</Label>
               <Input

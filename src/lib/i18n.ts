@@ -16,7 +16,7 @@ export const translations = {
     },
     hero: {
       subtitle:
-        "Innovación, ingeniería y competencia. Construimos el futuro de la robótica universitaria con pasión y excelencia técnica.",
+        "Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento.",
     },
     tools: {
       badge: "NOVAHERRAMIENTAS",
