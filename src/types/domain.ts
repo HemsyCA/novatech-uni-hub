@@ -76,6 +76,11 @@ export interface UserRole {
   created_at: string;
 }
 
+export interface UserRoleWithProfile extends UserRole {
+  email: string | null;
+  full_name: string | null;
+}
+
 export interface Robot {
   id: string;
   name: string;
