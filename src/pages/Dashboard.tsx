@@ -4,16 +4,19 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Printer, ShoppingCart, LogOut, User, Package, Calendar, ShieldCheck } from "lucide-react";
+import { Printer, ShoppingCart, LogOut, User, Package, Calendar, ShieldCheck, GraduationCap } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useUserRole } from "@/hooks/use-user-role";
+import { useAcademyAccess } from "@/hooks/use-academy-access";
+import { formatDate } from "@/lib/academy-dates";
 
 export default function Dashboard() {
   const [user, setUser] = useState<SupabaseUser | null>(null);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { isStaff } = useUserRole();
+  const academy = useAcademyAccess();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -77,6 +80,19 @@ export default function Dashboard() {
       href: "/store",
       color: "from-amber-500 to-orange-500",
     },
+    ...(academy.hasAccess
+      ? [
+          {
+            title: "Academia Nova",
+            description: academy.activeMembership
+              ? `Disponible hasta el ${formatDate(academy.activeMembership.ends_at)}`
+              : "Curso de la convocatoria",
+            icon: GraduationCap,
+            href: "/academia",
+            color: "from-fuchsia-500 to-violet-500",
+          },
+        ]
+      : []),
   ];
 
   return (
