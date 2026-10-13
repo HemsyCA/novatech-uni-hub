@@ -19,6 +19,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { AdminInscripciones } from "@/components/admin/AdminInscripciones";
 import {
   addAcademyMembers,
   createAcademyGroup,
@@ -79,6 +80,7 @@ export function AdminAcademia() {
 
   return (
     <div className="space-y-6">
+      <AdminInscripciones groups={groups} onReviewed={fetchGroups} />
       <NewGroupForm onCreated={fetchGroups} />
 
       {groups.length === 0 ? (
