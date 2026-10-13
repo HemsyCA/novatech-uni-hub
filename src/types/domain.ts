@@ -157,6 +157,21 @@ export interface AcademyGroup {
   academia_miembros: AcademyMember[];
 }
 
+export type ApplicationStatus = "pendiente" | "aprobada" | "rechazada";
+
+export interface AcademyApplication {
+  id: string;
+  nombre: string;
+  email: string;
+  whatsapp: string;
+  carrera: string;
+  ciclo: number;
+  estado: ApplicationStatus;
+  grupo_id: string | null;
+  revisado_at: string | null;
+  created_at: string;
+}
+
 export interface AcademyMembership {
   grupo_nombre: string;
   starts_at: string;
