@@ -24,6 +24,7 @@ const Print3D = lazy(() => import("./pages/Print3D"));
 const Store = lazy(() => import("./pages/Store"));
 const Admin = lazy(() => import("./pages/Admin"));
 const Academia = lazy(() => import("./pages/Academia"));
+const Miembros = lazy(() => import("./pages/Miembros"));
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,7 @@ const App = () => (
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/academia" element={<Academia />} />
+              <Route path="/miembros" element={<Miembros />} />
               <Route element={<StaffRoute />}>
                 <Route path="/admin" element={<Admin />} />
               </Route>

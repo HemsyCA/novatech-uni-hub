@@ -4,11 +4,12 @@ import { motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Printer, ShoppingCart, LogOut, User, Package, Calendar, ShieldCheck, GraduationCap } from "lucide-react";
+import { Printer, ShoppingCart, LogOut, User, Package, Calendar, ShieldCheck, GraduationCap, Cpu } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useUserRole } from "@/hooks/use-user-role";
 import { useAcademyAccess } from "@/hooks/use-academy-access";
+import { useMemberAccess } from "@/hooks/use-member-access";
 import { formatDate } from "@/lib/academy-dates";
 
 export default function Dashboard() {
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const { isStaff } = useUserRole();
   const academy = useAcademyAccess();
+  const { isMember } = useMemberAccess();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -90,6 +92,17 @@ export default function Dashboard() {
             icon: GraduationCap,
             href: "/academia",
             color: "from-fuchsia-500 to-violet-500",
+          },
+        ]
+      : []),
+    ...(isMember
+      ? [
+          {
+            title: "Zona de miembros",
+            description: "Material interno de robots, componentes y PCBs",
+            icon: Cpu,
+            href: "/miembros",
+            color: "from-sky-500 to-indigo-500",
           },
         ]
       : []),

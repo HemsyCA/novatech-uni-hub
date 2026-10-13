@@ -126,6 +126,63 @@ export type Database = {
           },
         ]
       }
+      material_miembros: {
+        Row: {
+          categoria: string
+          created_at: string
+          descripcion: string | null
+          id: string
+          orden: number
+          robot: string | null
+          tipo: string
+          titulo: string
+          url: string | null
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          robot?: string | null
+          tipo: string
+          titulo: string
+          url?: string | null
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          robot?: string | null
+          tipo?: string
+          titulo?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      nova_miembros: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
+      }
       awards: {
         Row: {
           awarded_date: string | null
@@ -683,6 +740,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_member: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       revisar_inscripcion: {
         Args: { _aprobar: boolean; _grupo_id?: string; _id: string }
