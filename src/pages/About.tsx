@@ -1,16 +1,16 @@
-import { Navbar } from "@/components/landing/Navbar";
+import { PageLayout } from "@/components/landing/PageLayout";
 import { AboutSection } from "@/components/landing/AboutSection";
-import { Footer } from "@/components/landing/Footer";
+import { TeamSection } from "@/components/landing/TeamSection";
+import { useScrollToHash } from "@/hooks/use-scroll-to-hash";
 
 const About = () => {
+  useScrollToHash();
+
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
-      <Navbar />
-      <main className="pt-20">
-        <AboutSection />
-      </main>
-      <Footer />
-    </div>
+    <PageLayout>
+      <AboutSection />
+      <TeamSection />
+    </PageLayout>
   );
 };
 
