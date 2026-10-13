@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Calendar,
+  Cpu,
   GraduationCap,
   LogOut,
   Package,
@@ -16,6 +17,7 @@ import { supabase } from "@/integrations/supabase/client";
 import novatechLogo from "@/assets/novatech-logo.png";
 import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useAcademyAccess } from "@/hooks/use-academy-access";
+import { useMemberAccess } from "@/hooks/use-member-access";
 import { useAcademyProgress } from "@/hooks/use-academy-progress";
 import { daysLeft, formatDate, limaToday } from "@/lib/academy-dates";
 import { lessonPath } from "@/lib/academia/course";
@@ -80,6 +82,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const academy = useAcademyAccess();
   const progress = useAcademyProgress(academy.userId);
+  const member = useMemberAccess();
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -248,6 +251,21 @@ export default function Dashboard() {
     </section>
   );
 
+  const membersSection = member.isMember ? (
+    <section>
+      <SectionTitle>Miembros</SectionTitle>
+      <ServiceCard
+        to="/miembros"
+        icon={Cpu}
+        title="Zona de miembros"
+        description="Material interno de robots, componentes y PCBs."
+      />
+    </section>
+  ) : null;
+
+  // A un miembro sin acceso a Academia no le sirve el aviso de "conoce cómo unirte".
+  const showAcademyNotice = !academy.hasAccess && !member.loading && !member.isMember;
+
   return (
     <div className="font-mono min-h-screen bg-black text-white">
       <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
@@ -288,17 +306,10 @@ export default function Dashboard() {
           <p className="mt-2 text-white/60">Tu panel de Nova Tech: aprendizaje y servicios en un solo lugar.</p>
         </motion.div>
 
-        {academy.hasAccess ? (
-          <>
-            {academySection}
-            {servicesSection}
-          </>
-        ) : (
-          <>
-            {servicesSection}
-            {academySection}
-          </>
-        )}
+        {academy.hasAccess && academySection}
+        {membersSection}
+        {servicesSection}
+        {showAcademyNotice && academySection}
       </main>
     </div>
   );

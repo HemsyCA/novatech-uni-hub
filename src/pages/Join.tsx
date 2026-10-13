@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { CircuitBoard, Code2, Cog, Laptop, Mouse, NotebookPen, UserPlus } from "lucide-react";
 import { PageLayout } from "@/components/landing/PageLayout";
 import { SectionHeading } from "@/components/landing/SectionHeading";
+import { ApplicationForm } from "@/components/landing/ApplicationForm";
 
 const levels = [
   {
@@ -137,20 +138,20 @@ const Join = () => (
       </div>
     </section>
 
-    <section className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4">
-        <div className="rounded-2xl border border-white/20 p-8 md:p-12 text-center max-w-3xl mx-auto">
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-white mb-4">¿Listo para empezar?</h2>
-          <p className="text-white/60 mb-8">
-            Anunciamos cada convocatoria en nuestras redes. Escríbenos y te avisamos cuando abran las inscripciones.
-          </p>
-          <Link
-            to="/#contacto"
-            className="inline-block px-6 py-3 bg-white text-black font-semibold rounded-lg hover:bg-white/90 transition-colors"
-          >
+    <section id="inscripcion" className="py-20 border-t border-white/10">
+      <div className="container mx-auto px-4 max-w-xl">
+        <SectionHeading
+          eyebrow="Inscripción"
+          title="¿Listo para empezar?"
+          subtitle="Déjanos tus datos y la directiva te asignará a un grupo de la convocatoria."
+        />
+        <ApplicationForm />
+        <p className="mt-6 text-center text-sm text-white/50">
+          ¿Tienes dudas?{" "}
+          <Link to="/#contacto" className="text-white hover:underline">
             Escríbenos
           </Link>
-        </div>
+        </p>
       </div>
     </section>
   </PageLayout>

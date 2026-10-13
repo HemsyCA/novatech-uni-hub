@@ -41,6 +41,56 @@ export type Database = {
         }
         Relationships: []
       }
+      academia_inscripciones: {
+        Row: {
+          carrera: string
+          ciclo: number
+          created_at: string
+          email: string
+          estado: Database["public"]["Enums"]["inscripcion_estado"]
+          grupo_id: string | null
+          id: string
+          nombre: string
+          revisado_at: string | null
+          revisado_por: string | null
+          whatsapp: string
+        }
+        Insert: {
+          carrera: string
+          ciclo: number
+          created_at?: string
+          email: string
+          estado?: Database["public"]["Enums"]["inscripcion_estado"]
+          grupo_id?: string | null
+          id?: string
+          nombre: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          whatsapp: string
+        }
+        Update: {
+          carrera?: string
+          ciclo?: number
+          created_at?: string
+          email?: string
+          estado?: Database["public"]["Enums"]["inscripcion_estado"]
+          grupo_id?: string | null
+          id?: string
+          nombre?: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          whatsapp?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academia_inscripciones_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "academia_grupos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       academia_miembros: {
         Row: {
           created_at: string
@@ -75,6 +125,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      material_miembros: {
+        Row: {
+          categoria: string
+          created_at: string
+          descripcion: string | null
+          id: string
+          orden: number
+          robot: string | null
+          tipo: string
+          titulo: string
+          url: string | null
+        }
+        Insert: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          robot?: string | null
+          tipo: string
+          titulo: string
+          url?: string | null
+        }
+        Update: {
+          categoria?: string
+          created_at?: string
+          descripcion?: string | null
+          id?: string
+          orden?: number
+          robot?: string | null
+          tipo?: string
+          titulo?: string
+          url?: string | null
+        }
+        Relationships: []
+      }
+      nova_miembros: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          id?: string
+        }
+        Relationships: []
       }
       awards: {
         Row: {
@@ -633,10 +740,16 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_member: { Args: { _user_id: string }; Returns: boolean }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      revisar_inscripcion: {
+        Args: { _aprobar: boolean; _grupo_id?: string; _id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "superadmin" | "directiva"
+      inscripcion_estado: "pendiente" | "aprobada" | "rechazada"
       order_status: "pending" | "paid" | "preparing" | "delivered" | "cancelled"
       print_status:
         | "pending"
@@ -773,6 +886,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["superadmin", "directiva"],
+      inscripcion_estado: ["pendiente", "aprobada", "rechazada"],
       order_status: ["pending", "paid", "preparing", "delivered", "cancelled"],
       print_status: [
         "pending",

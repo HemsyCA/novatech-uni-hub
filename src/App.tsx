@@ -29,6 +29,7 @@ const AcademiaGuide = lazy(() => import("./pages/academia/AcademiaGuide"));
 const AcademiaFinalTask = lazy(() => import("./pages/academia/AcademiaFinalTask"));
 const AcademiaModule = lazy(() => import("./pages/academia/AcademiaModule"));
 const AcademiaLesson = lazy(() => import("./pages/academia/AcademiaLesson"));
+const Miembros = lazy(() => import("./pages/Miembros"));
 
 const queryClient = new QueryClient();
 
@@ -68,6 +69,7 @@ const App = () => (
                 <Route path=":moduleId" element={<AcademiaModule />} />
                 <Route path=":moduleId/:lessonId" element={<AcademiaLesson />} />
               </Route>
+              <Route path="/miembros" element={<Miembros />} />
               <Route element={<StaffRoute />}>
                 <Route path="/admin" element={<Admin />} />
               </Route>

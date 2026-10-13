@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Loader2, Plus, Save, Trash2, UserPlus, X } from "lucide-react";
+import { Award, Loader2, Plus, Save, Trash2, UserPlus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -19,6 +19,8 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+import { AdminInscripciones } from "@/components/admin/AdminInscripciones";
+import { addNovaMembers, listNovaMemberEmails } from "@/services/supabase/miembros";
 import {
   addAcademyMembers,
   createAcademyGroup,
@@ -53,6 +55,7 @@ const errorMessage = (error: unknown, fallback: string) =>
 export function AdminAcademia() {
   const [groups, setGroups] = useState<AcademyGroup[]>([]);
   const [registered, setRegistered] = useState<Set<string>>(new Set());
+  const [novaMembers, setNovaMembers] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
@@ -61,7 +64,9 @@ export function AdminAcademia() {
       const data = await listAcademyGroups();
       setGroups(data);
       const emails = [...new Set(data.flatMap((g) => g.academia_miembros.map((m) => m.email)))];
-      setRegistered(await findRegisteredEmails(emails));
+      const [registeredEmails, memberEmails] = await Promise.all([findRegisteredEmails(emails), listNovaMemberEmails()]);
+      setRegistered(registeredEmails);
+      setNovaMembers(memberEmails);
     } catch (error) {
       toast({ title: "Error", description: errorMessage(error, "No se pudieron cargar los grupos"), variant: "destructive" });
     } finally {
@@ -79,6 +84,7 @@ export function AdminAcademia() {
 
   return (
     <div className="space-y-6">
+      <AdminInscripciones groups={groups} onReviewed={fetchGroups} />
       <NewGroupForm onCreated={fetchGroups} />
 
       {groups.length === 0 ? (
@@ -86,7 +92,13 @@ export function AdminAcademia() {
       ) : (
         <Accordion type="multiple" className="space-y-2">
           {groups.map((group) => (
-            <GroupItem key={group.id} group={group} registered={registered} onChange={fetchGroups} />
+            <GroupItem
+              key={group.id}
+              group={group}
+              registered={registered}
+              novaMembers={novaMembers}
+              onChange={fetchGroups}
+            />
           ))}
         </Accordion>
       )}
@@ -190,10 +202,11 @@ function NewGroupForm({ onCreated }: { onCreated: () => Promise<void> }) {
 interface GroupItemProps {
   group: AcademyGroup;
   registered: Set<string>;
+  novaMembers: Set<string>;
   onChange: () => Promise<void>;
 }
 
-function GroupItem({ group, registered, onChange }: GroupItemProps) {
+function GroupItem({ group, registered, novaMembers, onChange }: GroupItemProps) {
   const [nombre, setNombre] = useState(group.nombre);
   const [startsAt, setStartsAt] = useState(group.starts_at);
   const [endsAt, setEndsAt] = useState(group.ends_at);
@@ -325,7 +338,11 @@ function GroupItem({ group, registered, onChange }: GroupItemProps) {
                   member={member}
                   groupStartsAt={group.starts_at}
                   isRegistered={registered.has(member.email)}
+                  isNovaMember={novaMembers.has(member.email)}
                   disabled={busy}
+                  onPromote={() =>
+                    run(() => addNovaMembers([member.email]), `${member.email} ahora es miembro de Nova`, "No se pudo hacer miembro")
+                  }
                   onSaveOverride={(value) =>
                     run(
                       () => setAcademyMemberEndOverride(member.id, value),
@@ -347,12 +364,23 @@ interface MemberRowProps {
   member: AcademyMember;
   groupStartsAt: string;
   isRegistered: boolean;
+  isNovaMember: boolean;
   disabled: boolean;
   onSaveOverride: (value: string | null) => void;
+  onPromote: () => void;
   onRemove: () => void;
 }
 
-function MemberRow({ member, groupStartsAt, isRegistered, disabled, onSaveOverride, onRemove }: MemberRowProps) {
+function MemberRow({
+  member,
+  groupStartsAt,
+  isRegistered,
+  isNovaMember,
+  disabled,
+  onSaveOverride,
+  onPromote,
+  onRemove,
+}: MemberRowProps) {
   const [override, setOverride] = useState(member.ends_at_override ?? "");
   const changed = override !== (member.ends_at_override ?? "");
 
@@ -363,8 +391,31 @@ function MemberRow({ member, groupStartsAt, isRegistered, disabled, onSaveOverri
         <Badge variant={isRegistered ? "secondary" : "outline"} className="shrink-0">
           {isRegistered ? "Registrado" : "Sin cuenta aún"}
         </Badge>
+        {isNovaMember && <Badge className="shrink-0">Miembro</Badge>}
       </div>
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        {!isNovaMember && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button size="sm" variant="outline" className="h-8" disabled={disabled} title="Aprobar como miembro de Nova">
+                <Award className="h-4 w-4 mr-1" />
+                Hacer miembro
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>¿Hacer miembro de Nova a {member.email}?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  Tendrá acceso permanente al material interno de robots. Hazlo después de revisar su entregable.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                <AlertDialogAction onClick={onPromote}>Hacer miembro</AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         <Label htmlFor={`override-${member.id}`} className="text-xs text-muted-foreground whitespace-nowrap">
           Fin individual
         </Label>

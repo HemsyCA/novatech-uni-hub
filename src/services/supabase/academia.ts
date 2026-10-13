@@ -1,5 +1,5 @@
 import { supabase } from "@/integrations/supabase/client";
-import type { AcademyGroup, AcademyMembership } from "@/types/domain";
+import type { AcademyApplication, AcademyGroup, AcademyMembership } from "@/types/domain";
 
 interface GroupFields {
   nombre: string;
@@ -70,6 +70,43 @@ export const getMyAcademyMemberships = async (): Promise<AcademyMembership[]> =>
   const { data, error } = await supabase.rpc("my_academy_memberships");
   if (error) throw error;
   return data ?? [];
+};
+
+export interface ApplicationFields {
+  nombre: string;
+  email: string;
+  whatsapp: string;
+  carrera: string;
+  ciclo: number;
+}
+
+export class DuplicateApplicationError extends Error {}
+
+// Sin .select(): quien se inscribe no tiene permiso de lectura sobre la tabla.
+export const submitAcademyApplication = async (fields: ApplicationFields) => {
+  const { error } = await supabase.from("academia_inscripciones").insert(fields);
+  if (error?.code === "23505") throw new DuplicateApplicationError();
+  if (error) throw error;
+};
+
+export const listPendingApplications = async (): Promise<AcademyApplication[]> => {
+  const { data, error } = await supabase
+    .from("academia_inscripciones")
+    .select("*")
+    .eq("estado", "pendiente")
+    .order("created_at", { ascending: true });
+
+  if (error) throw error;
+  return (data ?? []) as AcademyApplication[];
+};
+
+export const reviewApplication = async (id: string, approve: boolean, grupoId?: string) => {
+  const { error } = await supabase.rpc("revisar_inscripcion", {
+    _id: id,
+    _aprobar: approve,
+    _grupo_id: grupoId,
+  });
+  if (error) throw error;
 };
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
