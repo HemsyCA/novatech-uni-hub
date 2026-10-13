@@ -147,7 +147,7 @@ export default function Dashboard() {
   const expiredMembership = academy.memberships.find((m) => m.ends_at < today);
   const next = progress.nextLesson;
 
-  const academySection = academy.loading ? null : academy.hasAccess ? (
+  const academySection = academy.loading || progress.loading ? null : academy.hasAccess ? (
     <section>
       <SectionTitle>Academia Nova</SectionTitle>
       <div className="rounded-2xl border border-white/25 p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
