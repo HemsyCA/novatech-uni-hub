@@ -118,3 +118,24 @@ export const parseEmailList = (text: string) => {
   const invalid = tokens.filter((t) => !EMAIL_RE.test(t));
   return { valid, invalid };
 };
+
+export const listMyAcademyProgress = async (userId: string): Promise<string[]> => {
+  const { data, error } = await supabase.from("academia_progreso").select("lesson_key").eq("user_id", userId);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.lesson_key);
+};
+
+export const addAcademyProgress = async (userId: string, lessonKeys: string[]) => {
+  const { error } = await supabase
+    .from("academia_progreso")
+    .upsert(
+      lessonKeys.map((lesson_key) => ({ user_id: userId, lesson_key })),
+      { onConflict: "user_id,lesson_key", ignoreDuplicates: true },
+    );
+  if (error) throw error;
+};
+
+export const removeAcademyProgress = async (userId: string, lessonKey: string) => {
+  const { error } = await supabase.from("academia_progreso").delete().eq("user_id", userId).eq("lesson_key", lessonKey);
+  if (error) throw error;
+};
