@@ -183,6 +183,24 @@ export type Database = {
         }
         Relationships: []
       }
+      academia_progreso: {
+        Row: {
+          completed_at: string
+          lesson_key: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string
+          lesson_key: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string
+          lesson_key?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       awards: {
         Row: {
           awarded_date: string | null

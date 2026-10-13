@@ -135,7 +135,7 @@ export default function AcademiaHome() {
             </div>
           ))}
         </div>
-        <p className="mt-4 text-xs text-white/40">Tu progreso se guarda en este navegador.</p>
+        <p className="mt-4 text-xs text-white/40">Tu progreso se guarda en tu cuenta: puedes continuar desde cualquier dispositivo.</p>
       </section>
     </div>
   );
