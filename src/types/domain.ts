@@ -172,6 +172,27 @@ export interface AcademyApplication {
   created_at: string;
 }
 
+export interface NovaMember {
+  id: string;
+  email: string;
+  created_at: string;
+  full_name: string | null;
+  registered: boolean;
+}
+
+export type MemberMaterialType = "descripcion" | "componente" | "pcb" | "documento";
+
+export interface MemberMaterial {
+  id: string;
+  categoria: string;
+  robot: string | null;
+  tipo: MemberMaterialType;
+  titulo: string;
+  descripcion: string | null;
+  url: string | null;
+  orden: number;
+}
+
 export interface AcademyMembership {
   grupo_nombre: string;
   starts_at: string;
