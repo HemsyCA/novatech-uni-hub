@@ -8,6 +8,7 @@ import { AdminProducts } from "@/components/admin/AdminProducts";
 import { AdminOrders } from "@/components/admin/AdminOrders";
 import { AdminReservations } from "@/components/admin/AdminReservations";
 import { AdminContactMessages } from "@/components/admin/AdminContactMessages";
+import { AdminAcademia } from "@/components/admin/AdminAcademia";
 import { useUserRole } from "@/hooks/use-user-role";
 
 export default function Admin() {
@@ -37,19 +38,22 @@ export default function Admin() {
           </h1>
           <p className="text-muted-foreground">
             {isSuperadmin
-              ? "Como superadmin puedes gestionar la tienda, las reservas y los roles."
+              ? "Como superadmin puedes gestionar la tienda, las reservas, los convocados de Academia Nova y los roles."
               : isDirectiva
-                ? "Tienes acceso de staff para gestionar la tienda y las reservas. La gestión de roles queda reservada al superadmin."
+                ? "Tienes acceso de staff para gestionar la tienda, las reservas y los convocados de Academia Nova. La gestión de roles queda reservada al superadmin."
                 : ""}
           </p>
         </motion.div>
 
         <Tabs defaultValue="products">
-          <TabsList className={`grid w-full bg-muted/50 mb-6 ${isSuperadmin ? "grid-cols-5" : "grid-cols-4"}`}>
+          <TabsList
+            className={`grid w-full h-auto bg-muted/50 mb-6 grid-cols-3 ${isSuperadmin ? "sm:grid-cols-6" : "sm:grid-cols-5"}`}
+          >
             <TabsTrigger value="products">Productos</TabsTrigger>
             <TabsTrigger value="orders">Pedidos</TabsTrigger>
             <TabsTrigger value="reservations">Reservas</TabsTrigger>
             <TabsTrigger value="messages">Mensajes</TabsTrigger>
+            <TabsTrigger value="academia">Convocados</TabsTrigger>
             {isSuperadmin && <TabsTrigger value="roles">Roles</TabsTrigger>}
           </TabsList>
           <TabsContent value="products">
@@ -63,6 +67,9 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="messages">
             <AdminContactMessages />
+          </TabsContent>
+          <TabsContent value="academia">
+            <AdminAcademia />
           </TabsContent>
           {isSuperadmin && (
             <TabsContent value="roles">

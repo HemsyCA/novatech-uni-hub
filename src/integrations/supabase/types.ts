@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      academia_grupos: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          ends_at: string
+          id: string
+          nombre: string
+          starts_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          ends_at: string
+          id?: string
+          nombre: string
+          starts_at: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          ends_at?: string
+          id?: string
+          nombre?: string
+          starts_at?: string
+        }
+        Relationships: []
+      }
+      academia_miembros: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          email: string
+          ends_at_override: string | null
+          grupo_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          email: string
+          ends_at_override?: string | null
+          grupo_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          ends_at_override?: string | null
+          grupo_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "academia_miembros_grupo_id_fkey"
+            columns: ["grupo_id"]
+            isOneToOne: false
+            referencedRelation: "academia_grupos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       awards: {
         Row: {
           awarded_date: string | null
@@ -554,6 +616,16 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      has_academy_access: { Args: { _user_id: string }; Returns: boolean }
+      my_academy_memberships: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          activo: boolean
+          ends_at: string
+          grupo_nombre: string
+          starts_at: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -139,3 +139,27 @@ export interface SocialLink {
   display_order: number;
   created_at: string;
 }
+
+export interface AcademyMember {
+  id: string;
+  grupo_id: string;
+  email: string;
+  ends_at_override: string | null;
+  created_at: string;
+}
+
+export interface AcademyGroup {
+  id: string;
+  nombre: string;
+  starts_at: string;
+  ends_at: string;
+  created_at: string;
+  academia_miembros: AcademyMember[];
+}
+
+export interface AcademyMembership {
+  grupo_nombre: string;
+  starts_at: string;
+  ends_at: string;
+  activo: boolean;
+}

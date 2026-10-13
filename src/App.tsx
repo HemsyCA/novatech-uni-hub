@@ -23,6 +23,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Print3D = lazy(() => import("./pages/Print3D"));
 const Store = lazy(() => import("./pages/Store"));
 const Admin = lazy(() => import("./pages/Admin"));
+const Academia = lazy(() => import("./pages/Academia"));
 
 const queryClient = new QueryClient();
 
@@ -55,6 +56,7 @@ const App = () => (
             <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/academia" element={<Academia />} />
               <Route element={<StaffRoute />}>
                 <Route path="/admin" element={<Admin />} />
               </Route>
