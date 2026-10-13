@@ -24,7 +24,7 @@ export function Navbar() {
     { label: t.nav.nosotros, href: "/nosotros" },
     { label: t.nav.robots, href: "/robots" },
     { label: t.nav.competencias, href: "/competencias" },
-    { label: t.nav.equipo, href: "/equipo" },
+    { label: t.nav.unete, href: "/unete" },
   ];
 
   const serviceItems = [
@@ -80,9 +80,9 @@ export function Navbar() {
                 {t.nav.servicios}
                 <ChevronDown size={14} />
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="center">
+              <DropdownMenuContent align="center" className="bg-black border-white/20 text-white font-mono">
                 {serviceItems.map((item) => (
-                  <DropdownMenuItem key={item.label} asChild>
+                  <DropdownMenuItem key={item.label} asChild className="focus:bg-white/10 focus:text-white cursor-pointer">
                     <Link to={item.href}>{item.label}</Link>
                   </DropdownMenuItem>
                 ))}

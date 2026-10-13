@@ -1,203 +1,132 @@
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
-import { Zap, Shield, Gauge, Eye } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Cpu } from "lucide-react";
+import { SectionHeading } from "@/components/landing/SectionHeading";
+import { RobotCard } from "@/components/landing/RobotCard";
+import { pcbs, robotCategories, robots, type RobotCategoryId, type RobotLevel } from "@/data/robots";
 
-const robots = [
-  {
-    name: "NOVA-X1",
-    category: "Sumo 3kg",
-    description: "Robot de combate diseñado para máxima tracción y empuje lateral.",
-    stats: { potencia: 95, defensa: 80, velocidad: 70 },
-    color: "primary",
-    image: "🤖",
-  },
-  {
-    name: "PHANTOM",
-    category: "Seguidor de Línea",
-    description: "Velocidad extrema con sensores de alta precisión para curvas cerradas.",
-    stats: { potencia: 60, defensa: 50, velocidad: 98 },
-    color: "accent",
-    image: "⚡",
-  },
-  {
-    name: "TITAN MK3",
-    category: "Sumo Autónomo",
-    description: "Inteligencia artificial para detección y estrategia de combate autónoma.",
-    stats: { potencia: 85, defensa: 90, velocidad: 65 },
-    color: "gold",
-    image: "🦾",
-  },
-  {
-    name: "SPECTRE",
-    category: "Mini Sumo",
-    description: "Compacto pero devastador, optimizado para reacciones rápidas.",
-    stats: { potencia: 70, defensa: 60, velocidad: 95 },
-    color: "secondary",
-    image: "👾",
-  },
-];
+const ALL = "all";
 
-function StatBar({ value, color }: { value: number; color: string }) {
-  const colorClass =
-    color === "primary"
-      ? "bg-primary"
-      : color === "accent"
-      ? "bg-accent"
-      : color === "gold"
-      ? "bg-gold"
-      : "bg-secondary";
+const levels = (["Amateur", "Senior", "Máster"] as RobotLevel[]).filter((l) =>
+  robots.some((r) => r.levels.includes(l))
+);
 
+function FilterChip({ active, onClick, children }: { active: boolean; onClick: () => void; children: string }) {
   return (
-    <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-      <motion.div
-        initial={{ width: 0 }}
-        whileInView={{ width: `${value}%` }}
-        transition={{ duration: 1, ease: "easeOut" }}
-        className={`h-full rounded-full ${colorClass}`}
-      />
-    </div>
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={`px-3 py-1.5 text-xs rounded-full border transition-colors ${
+        active ? "bg-white text-black border-white" : "border-white/20 text-white/70 hover:border-white/60 hover:text-white"
+      }`}
+    >
+      {children}
+    </button>
   );
 }
 
 export function RobotsSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const [category, setCategory] = useState<RobotCategoryId | typeof ALL>(ALL);
+  const [level, setLevel] = useState<RobotLevel | typeof ALL>(ALL);
+
+  const filtered = robots.filter(
+    (r) => (category === ALL || r.categories.includes(category)) && (level === ALL || r.levels.includes(level))
+  );
 
   return (
-    <section id="robots" className="py-24 relative">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -right-64 top-1/4 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[100px]" />
-        <div className="absolute -left-64 bottom-1/4 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[80px]" />
-      </div>
+    <>
+      <section id="robots" className="py-20">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            as="h1"
+            eyebrow="Prototipos"
+            title="Nuestros robots"
+            subtitle="Cada robot se diseña, fabrica y programa dentro del equipo. Estos son los que compitieron con Nova en la temporada 2026."
+          />
 
-      <div className="container mx-auto px-4" ref={ref}>
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-accent/10 text-accent border border-accent/20 mb-4">
-            NUESTROS ROBOTS
-          </span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-foreground">Máquinas de </span>
-            <span className="text-gradient-accent">Combate</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Cada robot es el resultado de meses de diseño, iteración y pruebas.
-            Conoce a nuestros competidores.
+          <div className="space-y-3 mb-10">
+            <div className="flex flex-wrap gap-2 justify-center">
+              <FilterChip active={category === ALL} onClick={() => setCategory(ALL)}>
+                Todas las categorías
+              </FilterChip>
+              {robotCategories.map((c) => (
+                <FilterChip key={c.id} active={category === c.id} onClick={() => setCategory(c.id)}>
+                  {c.name}
+                </FilterChip>
+              ))}
+            </div>
+            <div className="flex flex-wrap gap-2 justify-center">
+              <FilterChip active={level === ALL} onClick={() => setLevel(ALL)}>
+                Todos los niveles
+              </FilterChip>
+              {levels.map((l) => (
+                <FilterChip key={l} active={level === l} onClick={() => setLevel(l)}>
+                  {l}
+                </FilterChip>
+              ))}
+            </div>
+          </div>
+
+          <p className="text-center text-sm text-white/50 mb-6">
+            {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
           </p>
-        </motion.div>
 
-        {/* Robots Grid */}
-        <div className="grid md:grid-cols-2 gap-6">
-          {robots.map((robot, index) => (
-            <motion.div
-              key={robot.name}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.15 }}
-              className="group"
-            >
-              <div className="glass-card rounded-2xl p-6 h-full border border-border/50 hover:border-primary/50 transition-all duration-300">
-                <div className="flex items-start gap-4">
-                  {/* Robot Icon */}
-                  <div
-                    className={`w-20 h-20 rounded-xl flex items-center justify-center text-4xl ${
-                      robot.color === "primary"
-                        ? "bg-primary/10"
-                        : robot.color === "accent"
-                        ? "bg-accent/10"
-                        : robot.color === "gold"
-                        ? "bg-gold/10"
-                        : "bg-secondary/10"
-                    }`}
-                  >
-                    {robot.image}
-                  </div>
-
-                  {/* Info */}
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-display text-xl font-bold text-foreground">
-                        {robot.name}
-                      </h3>
-                      <span
-                        className={`px-2 py-0.5 rounded text-xs font-medium ${
-                          robot.color === "primary"
-                            ? "bg-primary/20 text-primary"
-                            : robot.color === "accent"
-                            ? "bg-accent/20 text-accent"
-                            : robot.color === "gold"
-                            ? "bg-gold/20 text-gold"
-                            : "bg-secondary/20 text-secondary"
-                        }`}
-                      >
-                        {robot.category}
-                      </span>
-                    </div>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {robot.description}
-                    </p>
-
-                    {/* Stats */}
-                    <div className="space-y-2">
-                      <div>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Zap className="w-3 h-3" /> Potencia
-                          </span>
-                          <span className="text-foreground">{robot.stats.potencia}%</span>
-                        </div>
-                        <StatBar value={robot.stats.potencia} color={robot.color} />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Shield className="w-3 h-3" /> Defensa
-                          </span>
-                          <span className="text-foreground">{robot.stats.defensa}%</span>
-                        </div>
-                        <StatBar value={robot.stats.defensa} color={robot.color} />
-                      </div>
-                      <div>
-                        <div className="flex justify-between text-xs mb-1">
-                          <span className="text-muted-foreground flex items-center gap-1">
-                            <Gauge className="w-3 h-3" /> Velocidad
-                          </span>
-                          <span className="text-foreground">{robot.stats.velocidad}%</span>
-                        </div>
-                        <StatBar value={robot.stats.velocidad} color={robot.color} />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          ))}
+          {filtered.length === 0 ? (
+            <p className="text-center text-white/60 py-12">No hay robots con esa combinación de categoría y nivel.</p>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              {filtered.map((robot, index) => (
+                <motion.div
+                  key={robot.name}
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.3) }}
+                >
+                  <RobotCard robot={robot} />
+                </motion.div>
+              ))}
+            </div>
+          )}
         </div>
+      </section>
 
-        {/* CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.6 }}
-          className="text-center mt-12"
-        >
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground"
-          >
-            <Eye className="w-4 h-4 mr-2" />
-            Ver Todos los Robots
-          </Button>
-        </motion.div>
-      </div>
-    </section>
+      <section className="py-20 border-t border-white/10">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            eyebrow="Categorías"
+            title="Dónde competimos"
+            subtitle="Los niveles Amateur, Senior y Máster ordenan la dificultad dentro de cada categoría."
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {robotCategories.map((c) => (
+              <div key={c.id} className="rounded-2xl border border-white/10 p-5">
+                <h3 className="font-display text-base font-bold text-white mb-2">{c.name}</h3>
+                <p className="text-sm text-white/60 leading-relaxed">{c.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="py-20 border-t border-white/10">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            eyebrow="Hardware propio"
+            title="PCBs universales"
+            subtitle="Placas diseñadas por Nova en EasyEDA y reutilizadas entre varias categorías."
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {pcbs.map((pcb) => (
+              <div key={pcb.name} className="rounded-2xl border border-white/10 p-5">
+                <Cpu className="w-6 h-6 text-white mb-4" />
+                <h3 className="font-display text-sm font-bold text-white mb-2">{pcb.name}</h3>
+                <p className="text-xs text-white/60">{pcb.usedIn}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

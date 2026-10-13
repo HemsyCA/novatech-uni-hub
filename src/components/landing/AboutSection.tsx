@@ -1,144 +1,107 @@
 import { motion } from "framer-motion";
-import { useInView } from "framer-motion";
-import { useRef } from "react";
-import { Target, Lightbulb, Users, Award } from "lucide-react";
+import { Code2, Cog, CircuitBoard } from "lucide-react";
+import { SectionHeading } from "@/components/landing/SectionHeading";
+import { areas } from "@/data/team";
+import { countPlacements, pastTournaments } from "@/data/tournaments";
 
-const features = [
+const pillars = [
   {
-    icon: Target,
-    title: "Misión",
-    description:
-      "Formar ingenieros competitivos a través del desarrollo de robots autónomos, fomentando la innovación y el trabajo en equipo.",
-    color: "primary",
+    icon: Cog,
+    title: "Diseño mecánico",
+    description: "Modelamos chasis y piezas en Onshape y las fabricamos con impresión 3D.",
   },
   {
-    icon: Lightbulb,
-    title: "Innovación",
-    description:
-      "Desarrollamos soluciones creativas utilizando tecnología de punta en mecánica, electrónica y programación.",
-    color: "accent",
+    icon: CircuitBoard,
+    title: "Electrónica",
+    description: "Diseñamos nuestras propias PCBs en EasyEDA, con el ESP32 como cerebro de los robots.",
   },
   {
-    icon: Users,
-    title: "Comunidad",
-    description:
-      "Más de 50 miembros activos trabajando juntos, compartiendo conocimiento y pasión por la robótica.",
-    color: "secondary",
-  },
-  {
-    icon: Award,
-    title: "Excelencia",
-    description:
-      "Múltiples podios en competencias nacionales e internacionales que validan nuestro compromiso con la calidad.",
-    color: "gold",
+    icon: Code2,
+    title: "Programación",
+    description: "Escribimos el firmware y el control que hace que cada robot perciba, decida y actúe.",
   },
 ];
 
+const seasonSummary = (year: string) => {
+  const totals = countPlacements(pastTournaments().filter((t) => t.start.startsWith(year)));
+  return `${totals.played} torneos y ${totals.first} primeros puestos`;
+};
+
+const milestones = [
+  { date: "2025", title: "Temporada 2025", description: seasonSummary("2025") },
+  { date: "Jun 2025", title: "Nova Legacy I", description: "Organizamos nuestro propio torneo en la UNI." },
+  {
+    date: "Oct 2025",
+    title: "RoboChallenge Rumanía",
+    description: "Primera competencia internacional, en la Universidad Politécnica de Bucarest.",
+  },
+  { date: "2026", title: "Temporada 2026", description: seasonSummary("2026") },
+];
+
 export function AboutSection() {
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
-
   return (
-    <section id="nosotros" className="py-24 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
-        <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-accent/50 to-transparent" />
-      </div>
+    <>
+      <section id="nosotros" className="py-20">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            as="h1"
+            eyebrow="Nosotros"
+            title="Somos Nova Tech UNI"
+            subtitle="Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento."
+          />
 
-      <div className="container mx-auto px-4" ref={ref}>
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-16"
-        >
-          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20 mb-4">
-            SOBRE NOSOTROS
-          </span>
-          <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
-            <span className="text-foreground">Construyendo el </span>
-            <span className="text-gradient-primary">Futuro</span>
-          </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-            Somos un equipo de estudiantes universitarios apasionados por la robótica,
-            unidos por el deseo de innovar y competir al más alto nivel.
-          </p>
-        </motion.div>
-
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 30 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              className="group"
-            >
-              <div className="glass-card rounded-2xl p-6 h-full border-gradient hover:scale-105 transition-transform duration-300">
-                <div
-                  className={`w-14 h-14 rounded-xl flex items-center justify-center mb-4 ${
-                    feature.color === "primary"
-                      ? "bg-primary/10 text-primary"
-                      : feature.color === "accent"
-                      ? "bg-accent/10 text-accent"
-                      : feature.color === "secondary"
-                      ? "bg-secondary/10 text-secondary"
-                      : "bg-gold/10 text-gold"
-                  }`}
-                >
-                  <feature.icon className="w-7 h-7" />
-                </div>
-                <h3 className="font-display text-xl font-semibold text-foreground mb-3">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {feature.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Timeline Preview */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.6, delay: 0.5 }}
-          className="mt-20"
-        >
-          <div className="glass-card rounded-2xl p-8 md:p-12">
-            <h3 className="font-display text-2xl md:text-3xl font-bold text-center mb-8">
-              <span className="text-foreground">Nuestra </span>
-              <span className="text-gradient-accent">Historia</span>
-            </h3>
-            
-            <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-              {[
-                { year: "2018", event: "Fundación", desc: "Inicio del equipo" },
-                { year: "2020", event: "Primera Victoria", desc: "Campeonato Nacional" },
-                { year: "2022", event: "Internacional", desc: "Competencia Global" },
-                { year: "2024", event: "Expansión", desc: "Nuevas categorías" },
-              ].map((item, index) => (
-                <div key={item.year} className="flex items-center gap-4 md:flex-col md:text-center">
-                  <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center font-display font-bold text-primary-foreground">
-                    {item.year}
-                  </div>
-                  <div>
-                    <div className="font-semibold text-foreground">{item.event}</div>
-                    <div className="text-sm text-muted-foreground">{item.desc}</div>
-                  </div>
-                  {index < 3 && (
-                    <div className="hidden md:block w-24 h-0.5 bg-gradient-to-r from-primary to-accent" />
-                  )}
-                </div>
-              ))}
-            </div>
+          <div className="grid md:grid-cols-3 gap-4">
+            {pillars.map((pillar, index) => (
+              <motion.div
+                key={pillar.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                className="rounded-2xl border border-white/10 p-6"
+              >
+                <pillar.icon className="w-8 h-8 text-white mb-4" />
+                <h2 className="font-display text-lg font-bold text-white mb-2">{pillar.title}</h2>
+                <p className="text-sm text-white/60 leading-relaxed">{pillar.description}</p>
+              </motion.div>
+            ))}
           </div>
-        </motion.div>
-      </div>
-    </section>
+        </div>
+      </section>
+
+      <section className="py-20 border-t border-white/10">
+        <div className="container mx-auto px-4">
+          <SectionHeading eyebrow="Trayectoria" title="Nuestra historia" />
+          <ol className="relative max-w-3xl mx-auto border-l border-white/20 pl-8 space-y-10">
+            {milestones.map((m) => (
+              <li key={m.title} className="relative">
+                <span className="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-white" />
+                <div className="text-xs uppercase tracking-widest text-white/50">{m.date}</div>
+                <h3 className="font-display text-xl font-bold text-white mt-1">{m.title}</h3>
+                <p className="text-sm text-white/60 mt-1">{m.description}</p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="py-20 border-t border-white/10">
+        <div className="container mx-auto px-4">
+          <SectionHeading
+            eyebrow="Organización"
+            title="Nuestras áreas"
+            subtitle="Nova funciona como una organización: cada área sostiene una parte del equipo."
+          />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {areas.map((area) => (
+              <div key={area.name} className="rounded-2xl border border-white/10 p-5">
+                <h3 className="font-display text-sm font-bold text-white mb-2">{area.name}</h3>
+                <p className="text-xs text-white/60 leading-relaxed">{area.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

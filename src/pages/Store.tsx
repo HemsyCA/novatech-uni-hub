@@ -35,20 +35,19 @@ export default function Store() {
   useEffect(() => {
     const { data: { subscription } } = subscribeToAuth((_event, session) => {
       setUser(session?.user ? { id: session.user.id } : null);
-      if (!session?.user) navigate("/auth");
     });
 
     getCurrentSession().then(({ data: { session } }) => {
       setUser(session?.user ? { id: session.user.id } : null);
-      if (!session?.user) navigate("/auth");
     });
 
+    fetchProducts();
+
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     if (user) {
-      fetchProducts();
       fetchOrders();
 
       const channel = supabase
@@ -136,7 +135,8 @@ export default function Store() {
     if (cart.length === 0) return;
 
     if (!user) {
-      toast({ title: "Error", description: "Debes iniciar sesión para confirmar un pedido", variant: "destructive" });
+      toast({ title: "Inicia sesión", description: "Necesitas una cuenta para confirmar tu pedido." });
+      navigate("/auth");
       return;
     }
 
@@ -189,7 +189,7 @@ export default function Store() {
       <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/30">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link to="/dashboard" className="text-muted-foreground hover:text-primary transition-colors">
+            <Link to={user ? "/dashboard" : "/"} className="text-muted-foreground hover:text-primary transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div className="flex items-center gap-3">
@@ -198,6 +198,7 @@ export default function Store() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            {user && (
             <Sheet open={ordersOpen} onOpenChange={setOrdersOpen}>
               <SheetTrigger asChild>
                 <Button variant="outline" size="sm" className="relative">
@@ -251,6 +252,7 @@ export default function Store() {
                 </div>
               </SheetContent>
             </Sheet>
+            )}
 
             <Sheet open={cartOpen} onOpenChange={setCartOpen}>
               <SheetTrigger asChild>
