@@ -85,7 +85,7 @@ export default function Academia() {
       </header>
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {loading ? (
+        {loading || progress.loading ? (
           <div className="text-white/60 animate-pulse">Cargando…</div>
         ) : hasAccess ? (
           <Suspense fallback={<div className="text-white/60 animate-pulse">Cargando…</div>}>
