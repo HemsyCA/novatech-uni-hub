@@ -21,6 +21,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { StatusTracker } from "@/components/StatusTracker";
 import { reservationSteps } from "@/lib/tracker-steps";
 import type { Printer, Reservation } from "@/types/domain";
+import { useScrollToHash } from "@/hooks/use-scroll-to-hash";
 
 export default function Print3D() {
   const [user, setUser] = useState<{ id: string } | null>(null);
@@ -29,6 +30,7 @@ export default function Print3D() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const { toast } = useToast();
+  useScrollToHash(Boolean(user) && !loading);
 
   // Form state
   const [projectName, setProjectName] = useState("");
@@ -412,7 +414,7 @@ export default function Print3D() {
           {/* Historial de reservas - Solo para usuarios autenticados */}
           {user ? (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-              <Card className="glass-card border-border/30">
+              <Card id="mis-reservas" className="glass-card border-border/30 scroll-mt-24">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-violet-400" />

@@ -36,6 +36,7 @@ export const useAcademyAccess = () => {
 
   return {
     ...state,
+    userId,
     isStaff,
     activeMembership: state.memberships.find((m) => m.activo) ?? null,
   };
