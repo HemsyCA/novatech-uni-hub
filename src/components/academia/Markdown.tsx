@@ -2,11 +2,113 @@ import { useState, type ReactNode } from "react";
 import { Link } from "react-router-dom";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Check, ChevronRight, Copy } from "lucide-react";
+import { useChecklist } from "@/components/academia/checklist-context";
+import { PhetSim } from "@/components/academia/widgets/PhetSim";
+import { LedResistorCalculator } from "@/components/academia/widgets/LedResistorCalculator";
+import { LedDiagram } from "@/components/academia/widgets/LedDiagram";
+import { Potentiometer, VoltageDivider } from "@/components/academia/widgets/VoltageDivider";
+import { Esp32Pinout } from "@/components/academia/widgets/Esp32Pinout";
+import { AlgorithmOrder } from "@/components/academia/widgets/AlgorithmOrder";
+import { BlinkSimulator } from "@/components/academia/widgets/BlinkSimulator";
+import { IntegerDivision } from "@/components/academia/widgets/IntegerDivision";
+import { ButtonLab } from "@/components/academia/widgets/ButtonLab";
+import { AnalogReader } from "@/components/academia/widgets/AnalogReader";
+import { ForLoop, PwmDemo } from "@/components/academia/widgets/Pwm";
+import { ServoDemo } from "@/components/academia/widgets/ServoDemo";
+import { SerialCommands } from "@/components/academia/widgets/SerialCommands";
+import { SchematicSymbols } from "@/components/academia/widgets/SchematicSymbols";
+import { PullResistor } from "@/components/academia/widgets/PullResistor";
+import { PcbLayers } from "@/components/academia/widgets/PcbLayers";
+import { ViewCube } from "@/components/academia/widgets/ViewCube";
+import { SketchConstraints } from "@/components/academia/widgets/SketchConstraints";
+import { FeatureHistory } from "@/components/academia/widgets/FeatureHistory";
+import { Clearance, Overhang } from "@/components/academia/widgets/PrintRules";
+import { Slicer } from "@/components/academia/widgets/Slicer";
+import { PanelSimulator } from "@/components/academia/widgets/PanelSimulator";
+import { UploadSimulator } from "@/components/academia/widgets/UploadSimulator";
+import { SafetyCheck, TipTemperature } from "@/components/academia/widgets/SolderBasics";
+import { ThtSolderGame } from "@/components/academia/widgets/ThtSolderGame";
+import { DefectHunt } from "@/components/academia/widgets/DefectHunt";
+import { SmdOrder, SmdSizes } from "@/components/academia/widgets/SmdWidgets";
+import { ReviewCards } from "@/components/academia/widgets/ReviewCards";
+import { Check, ChevronRight, Copy, Info, Lightbulb, TriangleAlert, Wrench, type LucideIcon } from "lucide-react";
 
 const ANSWERS_LANGUAGE = "language-respuestas";
 const VIDEO_LANGUAGE = "language-video";
 const YOUTUBE_ID = /^[\w-]{11}$/;
+const PHET_LANGUAGE = "language-phet";
+const PHET_SLUG = /^[a-z0-9-]+$/;
+const WIDGET_LANGUAGE = "language-widget";
+
+// Apoyos interactivos que se insertan en una lección con un bloque ```widget.
+const widgets: Record<string, () => JSX.Element> = {
+  "calculadora-led": LedResistorCalculator,
+  "diagrama-led": LedDiagram,
+  "divisor-voltaje": VoltageDivider,
+  potenciometro: Potentiometer,
+  "pinout-esp32": Esp32Pinout,
+  "ordenar-semaforo": AlgorithmOrder,
+  "simulador-parpadeo": BlinkSimulator,
+  "division-enteros": IntegerDivision,
+  "laboratorio-boton": ButtonLab,
+  "lector-analogico": AnalogReader,
+  pwm: PwmDemo,
+  "bucle-for": ForLoop,
+  servo: ServoDemo,
+  "monitor-comandos": SerialCommands,
+  "simbolos-esquematico": SchematicSymbols,
+  "resistencia-pull": PullResistor,
+  "capas-pcb": PcbLayers,
+  "cubo-vistas": ViewCube,
+  "boceto-definido": SketchConstraints,
+  "historial-operaciones": FeatureHistory,
+  holguras: Clearance,
+  voladizos: Overhang,
+  laminador: Slicer,
+  "simulador-panel": PanelSimulator,
+  "carga-arduino": UploadSimulator,
+  "temperatura-cautin": TipTemperature,
+  "seguridad-soldadura": SafetyCheck,
+  "soldar-tht": ThtSolderGame,
+  "encuentra-defecto": DefectHunt,
+  "tamanos-smd": SmdSizes,
+  "orden-smd": SmdOrder,
+  "repaso-soldadura": ReviewCards,
+};
+
+type HastNode = { type: string; tagName?: string; value?: string; children?: HastNode[] };
+
+const textOf = (node: HastNode): string =>
+  node.type === "text" ? (node.value ?? "") : (node.children ?? []).map(textOf).join("");
+
+// Texto en negrita con el que empieza un bloque: "> **Truco:** …" devuelve "Truco:".
+const leadingStrong = (node: HastNode) => {
+  const paragraph = node.children?.find((child) => child.type === "element");
+  const first = paragraph?.children?.[0];
+  return first?.type === "element" && first.tagName === "strong" ? textOf(first) : "";
+};
+
+type CalloutKind = "tip" | "warning" | "info" | "example" | "plain";
+
+const calloutKind = (label: string): CalloutKind => {
+  if (/^(truco|tip|consejo|idea|regla)/i.test(label)) return "tip";
+  if (/^(cuidado|importante|atención|ojo|peligro|seguridad|el error)/i.test(label)) return "warning";
+  if (/^(nota|dato)/i.test(label)) return "info";
+  if (/^ejemplo/i.test(label)) return "example";
+  return "plain";
+};
+
+const calloutStyles: Record<CalloutKind, { icon: LucideIcon | null; box: string; iconColor: string }> = {
+  tip: { icon: Lightbulb, box: "border-amber-300/40 bg-amber-300/[0.08]", iconColor: "text-amber-300" },
+  warning: { icon: TriangleAlert, box: "border-rose-400/40 bg-rose-400/[0.08]", iconColor: "text-rose-400" },
+  info: { icon: Info, box: "border-sky-400/40 bg-sky-400/[0.08]", iconColor: "text-sky-400" },
+  example: {
+    icon: Wrench,
+    box: "border-[rgb(var(--accent,255_255_255)/0.4)] bg-[rgb(var(--accent,255_255_255)/0.07)]",
+    iconColor: "text-[rgb(var(--accent,255_255_255))]",
+  },
+  plain: { icon: null, box: "border-white/20 bg-white/[0.04]", iconColor: "" },
+};
 
 function YouTubeVideo({ id, title }: { id: string; title: string }) {
   return (
@@ -66,6 +168,48 @@ function CodeBlock({ text, children }: { text: string; children: ReactNode }) {
   );
 }
 
+function TaskCheckbox({ type, checked }: { type?: string; checked?: boolean }) {
+  // Dentro de una lista que se puede marcar, la casilla la dibuja TaskItem.
+  const checklist = useChecklist();
+  if (type !== "checkbox" || checklist) return null;
+  return (
+    <span
+      aria-hidden
+      className={`mr-2 inline-block h-4 w-4 translate-y-0.5 rounded border ${checked ? "bg-white border-white" : "border-white/50"}`}
+    />
+  );
+}
+
+function TaskItem({ node, className, children }: { node?: HastNode; className?: string; children?: ReactNode }) {
+  const checklist = useChecklist();
+  const isTask = className?.includes("task-list-item");
+  if (!checklist || !isTask || !node) return <li className={className}>{children}</li>;
+
+  const item = textOf(node).trim();
+  const done = checklist.checked.has(item);
+  return (
+    <li className="not-prose my-1.5 list-none">
+      <button
+        type="button"
+        aria-pressed={done}
+        onClick={() => checklist.toggle(item)}
+        className={`flex w-full items-start gap-3 rounded-xl border px-4 py-2.5 text-left text-sm leading-relaxed transition-colors [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_strong]:text-white ${
+          done ? "border-[rgb(var(--accent,255_255_255)/0.5)] bg-[rgb(var(--accent,255_255_255)/0.08)] text-white" : "border-white/15 text-white/80 hover:border-white/30"
+        }`}
+      >
+        <span
+          className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
+            done ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255))] text-black" : "border-white/40"
+          }`}
+        >
+          {done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
+        </span>
+        <span>{children}</span>
+      </button>
+    </li>
+  );
+}
+
 const components: Components = {
   a: ({ href, children }) => {
     if (href?.startsWith("/")) return <Link to={href}>{children}</Link>;
@@ -83,22 +227,41 @@ const components: Components = {
       </table>
     </div>
   ),
-  blockquote: ({ children }) => (
-    <aside className="not-prose my-6 rounded-xl border border-white/20 bg-white/[0.04] px-5 py-4 text-sm leading-relaxed text-white/85 [&_strong]:text-white [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1">
-      {children}
-    </aside>
-  ),
+  blockquote: ({ node, children }) => {
+    const callout = calloutStyles[calloutKind(node ? leadingStrong(node) : "")];
+    const Icon = callout.icon;
+    return (
+      <aside
+        className={`not-prose my-6 flex gap-3 rounded-xl border px-5 py-4 text-sm leading-relaxed text-white/85 [&_strong]:text-white [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_p+p]:mt-2 ${callout.box}`}
+      >
+        {Icon && <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${callout.iconColor}`} aria-hidden />}
+        <div className="min-w-0 flex-1">{children}</div>
+      </aside>
+    );
+  },
   pre: ({ node, children }) => {
     const code = node?.children[0];
     const classNames = code && "properties" in code ? code.properties.className : undefined;
     const isAnswers = Array.isArray(classNames) && classNames.includes(ANSWERS_LANGUAGE);
     const isVideo = Array.isArray(classNames) && classNames.includes(VIDEO_LANGUAGE);
+    const isPhet = Array.isArray(classNames) && classNames.includes(PHET_LANGUAGE);
+    const isWidget = Array.isArray(classNames) && classNames.includes(WIDGET_LANGUAGE);
 
     const text = code && "children" in code ? code.children.map((c) => ("value" in c ? c.value : "")).join("") : "";
 
     if (isVideo) {
       const [id = "", title = "Video de apoyo"] = text.trim().split(/\r?\n/).map((line) => line.trim());
       if (YOUTUBE_ID.test(id)) return <YouTubeVideo id={id} title={title} />;
+    }
+
+    if (isPhet) {
+      const [slug = "", title = "Simulación", instructions] = text.trim().split(/\r?\n/).map((line) => line.trim());
+      if (PHET_SLUG.test(slug)) return <PhetSim slug={slug} title={title} instructions={instructions} />;
+    }
+
+    if (isWidget) {
+      const Widget = widgets[text.trim()];
+      if (Widget) return <Widget />;
     }
 
     if (isAnswers) {
@@ -117,13 +280,12 @@ const components: Components = {
 
     return <CodeBlock text={text}>{children}</CodeBlock>;
   },
-  input: ({ type, checked }) =>
-    type === "checkbox" ? (
-      <span
-        aria-hidden
-        className={`mr-2 inline-block h-4 w-4 translate-y-0.5 rounded border ${checked ? "bg-white border-white" : "border-white/50"}`}
-      />
-    ) : null,
+  input: ({ type, checked }) => <TaskCheckbox type={type} checked={checked} />,
+  li: ({ node, className, children }) => (
+    <TaskItem node={node as HastNode | undefined} className={className}>
+      {children}
+    </TaskItem>
+  ),
 };
 
 export function Markdown({ children }: { children: string }) {
