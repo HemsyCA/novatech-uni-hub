@@ -55,11 +55,13 @@ Un **diagrama de flujo** dibuja un algoritmo con figuras estándar:
 | **Rombo** | Una decisión con dos salidas: sí / no ("¿botón presionado?") |
 | **Flechas** | El orden en que se siguen los pasos |
 
-**Ejemplo: un semáforo.**
+Antes de ver un diagrama completo, intenta tú: ordena las instrucciones de un semáforo. Cuando aciertes, verás su diagrama de flujo.
 
-Inicio → Encender verde → Esperar 3 s → Apagar verde → Encender amarillo → Esperar 1 s → Apagar amarillo → Encender rojo → Esperar 3 s → Apagar rojo → volver a "Encender verde".
+```widget
+ordenar-semaforo
+```
 
-Fíjate en la última flecha: vuelve al principio. Los programas de robots **nunca terminan**: se repiten mientras el robot esté encendido.
+> **Dato:** fíjate en la última flecha del diagrama: vuelve al principio. Los programas de robots **nunca terminan**: se repiten mientras el robot esté encendido.
 
 ### Paso a paso
 
@@ -149,6 +151,14 @@ const int LED_VERDE = 18;
 Así el código se entiende mejor (`LED_VERDE` dice más que `18`) y, si cambias el LED de pin, solo cambias una línea. `const` significa que ese valor no cambiará durante el programa.
 
 > **Dato:** en internet verás también `#define LED_VERDE 18`. Hace algo parecido. Ojo: esa forma **no** lleva `=` ni `;`.
+
+#### Así lo ejecuta el ESP32
+
+Antes de armarlo en Wokwi, mira cómo el ESP32 lee un programa completo. Presiona **Ejecutar**: `setup()` corre una sola vez y después `loop()` se repite sin parar.
+
+```widget
+simulador-parpadeo
+```
 
 ### Paso a paso
 
@@ -258,6 +268,10 @@ contador = contador + 1;   // toma el valor de contador, súmale 1 y guárdalo d
 ```
 
 > **Cuidado con la división de enteros.** `7 / 2` da **3**, no 3.5, porque los dos números son enteros y el resultado se corta. Para obtener decimales, al menos uno debe tener punto: `7 / 2.0` da **3.5**.
+
+```widget
+division-enteros
+```
 
 #### ¿Dónde se crean las variables?
 
@@ -373,6 +387,14 @@ Hay dos formas de usar un botón:
 #### El rebote
 
 Cuando presionas un botón real, sus contactos metálicos "rebotan" durante unos milisegundos: el ESP32 ve varias pulsaciones muy rápidas en lugar de una. La solución más simple es **esperar unos 50 ms** después de detectar un cambio, hasta que la señal se estabilice. A esto se le llama **antirrebote (debounce)**.
+
+#### Pruébalo antes de armarlo
+
+Mantén presionado el botón y mira la señal que lee el pin. Después quita la resistencia pull-down o el antirrebote para ver qué falla.
+
+```widget
+laboratorio-boton
+```
 
 ### Paso a paso
 
@@ -529,6 +551,14 @@ El programa revisa las condiciones **en orden** y ejecuta solo la primera que se
 
 Comparadores disponibles: `<` (menor), `>` (mayor), `<=` (menor o igual), `>=` (mayor o igual).
 
+#### Pruébalo: del pin al número
+
+Gira el potenciómetro y mira las tres cosas a la vez: el número que lee `analogRead`, cómo `map` lo pasa a porcentaje y qué rama del `else if` se ejecuta.
+
+```widget
+lector-analogico
+```
+
 ### Paso a paso
 
 1. Nuevo proyecto en Wokwi. Agrega un **potenciómetro**.
@@ -624,6 +654,12 @@ analogWrite(pin, valor);   // valor de 0 (apagado) a 255 (máximo)
 - `analogWrite(23, 128);` → aproximadamente la mitad
 - `analogWrite(23, 255);` → brillo máximo
 
+Mueve el valor y mira la señal: el pin solo está encendido o apagado, pero el promedio cambia.
+
+```widget
+pwm
+```
+
 #### El bucle `for`
 
 Repite un bloque un número determinado de veces:
@@ -639,6 +675,12 @@ Tiene tres partes, separadas por `;`:
 1. **Inicio:** `int i = 0` → crea un contador que empieza en 0.
 2. **Condición:** `i < 5` → se repite mientras se cumpla.
 3. **Paso:** `i++` → al final de cada vuelta, suma 1 al contador (`i++` es lo mismo que `i = i + 1`; `i--` resta 1).
+
+Arma tus propios bucles y mira cuántas vueltas da cada uno. Prueba el botón **¿Error?**: es uno de los errores más comunes.
+
+```widget
+bucle-for
+```
 
 ### Paso a paso
 
@@ -731,6 +773,10 @@ Recibe un **pulso cada 20 milisegundos** (50 veces por segundo). La **duración*
 - Pulso de **2.5 ms** → **180°**
 
 ¿Te suena? Es una señal **PWM**, como la de P6. Por suerte, no tienes que generarla a mano: una **librería** lo hace por ti.
+
+```widget
+servo
+```
 
 #### ¿Qué es una librería?
 
@@ -885,6 +931,14 @@ encenderSolo(LED_ROJO);           // apaga todo y enciende solo el rojo
 
 **¿Por qué usar funciones?** Porque en vez de repetir las mismas 3 líneas en 5 lugares, escribes una vez y usas el nombre. Si hay un error, lo corriges en un solo lugar. Es lo que harás en el equipo con funciones como `adelante()`, `atras()` o `girarIzquierda()` para mover un robot.
 
+#### Pruébalo antes de armarlo
+
+Este es el programa del Paso a paso funcionando. Escribe una letra y presiona **Enviar**: mira qué `case` se ejecuta. Después quita un `break` y vuelve a probar.
+
+```widget
+monitor-comandos
+```
+
 #### El salto al Bluetooth
 
 En el ESP32, recibir por Bluetooth es casi idéntico. Solo cambian unas pocas líneas:
@@ -1034,6 +1088,12 @@ Para que tu computadora pueda hablar con el ESP32 necesitas tres cosas:
 - **El programa se cargó, pero no pasa nada:** presiona el botón **EN** para reiniciar la placa.
 - **Símbolos raros en el Monitor Serial:** selecciona **115200** baudios en el monitor.
 
+Practica en el simulador antes de conectar tu placa: provoca estos errores y resuélvelos.
+
+```widget
+carga-arduino
+```
+
 ### Puedo continuar si…
 
 - [ ] Tengo Arduino IDE con el soporte para ESP32 instalado.
@@ -1067,6 +1127,12 @@ Arma en Wokwi el circuito completo usando el **Mapa de pines Nova**:
 - [ ] **Reporte en el Monitor Serial:** cada vez que cambie el modo o el ángulo, imprime una línea con **tu nombre**, el **modo** y el **ángulo**. Por ejemplo: `[Ana] Modo: MANUAL | Ángulo: 95`
 - [ ] Al iniciar, el programa imprime cuáles son tus 3 comandos.
 - [ ] Usa al menos **2 funciones propias**.
+
+Así debe comportarse tu panel cuando esté terminado. Pruébalo y compáralo con el tuyo mientras lo programas:
+
+```widget
+simulador-panel
+```
 
 ### Recomendaciones
 

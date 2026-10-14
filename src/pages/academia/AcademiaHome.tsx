@@ -1,10 +1,13 @@
+import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, Flame, Lock, NotebookPen, type LucideIcon } from "lucide-react";
 import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
 import { Part2Status } from "@/components/academia/Part2Locked";
 import { PracticaCard } from "@/components/academia/PracticaCard";
-import { LessonRow, ProgressBar } from "@/components/academia/ui";
-import { courseModules, lessonPath, part2Module, weeklyPlan, type CourseModuleId } from "@/lib/academia/course";
+import { ProgressBar } from "@/components/academia/ui";
+import { CoursePath } from "@/components/academia/CoursePath";
+import { courseModules, lessonPath, part2Module, type CourseModuleId } from "@/lib/academia/course";
+import { moduleAccent } from "@/lib/academia/modules";
 import { daysLeft, formatDate } from "@/lib/academy-dates";
 
 const moduleIcons: Record<CourseModuleId, LucideIcon> = {
@@ -97,9 +100,12 @@ export default function AcademiaHome() {
               <Link
                 key={module.id}
                 to={`/academia/${module.id}`}
-                className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors flex flex-col"
+                style={{ "--accent": moduleAccent(module.id) } as CSSProperties}
+                className="group rounded-2xl border border-white/10 p-5 hover:border-[rgb(var(--accent)/0.6)] transition-colors flex flex-col"
               >
-                <Icon className="h-7 w-7 mb-4" />
+                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[rgb(var(--accent)/0.15)] text-[rgb(var(--accent))]">
+                  <Icon className="h-6 w-6" />
+                </span>
                 <h3 className="font-display font-bold">{module.name}</h3>
                 <p className="mt-2 text-sm text-white/60 flex-1">{module.summary}</p>
                 <p className="mt-4 text-xs text-white/40">
@@ -130,29 +136,13 @@ export default function AcademiaHome() {
 
       <section>
         <div className="mb-5">
-          <h2 className="font-display text-xl font-bold">Plan de 3 semanas</h2>
+          <h2 className="font-display text-xl font-bold">Tu camino</h2>
           <p className="mt-2 text-sm text-white/60">
-            Puedes avanzar como prefieras, pero este orden hace que cada tema se apoye en el anterior. P5 usa lo de E2 y P7
-            usa lo de E3.
+            Las lecciones se abren en orden porque cada una se apoya en la anterior. Al terminar la Parte 1 podrás volver a
+            cualquiera para repasar.
           </p>
         </div>
-        <div className="grid gap-4 lg:grid-cols-3">
-          {weeklyPlan.map((week) => (
-            <div key={week.title} className="rounded-2xl border border-white/10 p-3">
-              <h3 className="px-3 pt-2 pb-3 text-xs uppercase tracking-widest text-white/50">{week.title}</h3>
-              <div className="space-y-0.5">
-                {week.lessons.map((lesson) => (
-                  <LessonRow
-                    key={lesson.key}
-                    lesson={lesson}
-                    done={progress.completed.has(lesson.key)}
-                    active={lesson.key === next?.key && started}
-                  />
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+        <CoursePath />
         <p className="mt-4 text-xs text-white/40">Tu progreso se guarda en tu cuenta: puedes continuar desde cualquier dispositivo.</p>
       </section>
 

@@ -1,5 +1,5 @@
 import { Navigate, useParams } from "react-router-dom";
-import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
+import { useAcademy, useCanAccessPart2, useLessonState } from "@/components/academia/academy-context";
 import { Markdown } from "@/components/academia/Markdown";
 import { Part2Locked } from "@/components/academia/Part2Locked";
 import { Breadcrumbs, LessonRow, ProgressBar } from "@/components/academia/ui";
@@ -10,6 +10,7 @@ export default function AcademiaModule() {
   const { progress } = useAcademy();
   const module = getModule(moduleId);
   const canAccessPart2 = useCanAccessPart2();
+  const stateOf = useLessonState();
 
   if (!module) return <Navigate to="/academia" replace />;
   if (module.id === "soldadura" && !canAccessPart2) return <Part2Locked />;
@@ -51,7 +52,7 @@ export default function AcademiaModule() {
         <ProgressBar value={Math.round((done / required.length) * 100)} label={`Progreso de ${module.name}`} />
         <div className="mt-4 rounded-2xl border border-white/10 p-2 space-y-0.5">
           {module.lessons.map((lesson) => (
-            <LessonRow key={lesson.key} lesson={lesson} done={progress.completed.has(lesson.key)} />
+            <LessonRow key={lesson.key} lesson={lesson} state={stateOf(lesson)} />
           ))}
         </div>
       </section>

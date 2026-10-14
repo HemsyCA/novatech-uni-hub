@@ -51,6 +51,12 @@ Onshape es un **CAD paramétrico**: cada pieza se construye con una secuencia de
 | **Acercar / alejar** | Gira la **rueda** del mouse |
 | **Ver todo** | Tecla **F** |
 
+Practica aquí antes de entrar a Onshape:
+
+```widget
+cubo-vistas
+```
+
 ### Paso a paso
 
 1. Entra a [onshape.com](https://onshape.com) y crea tu cuenta (plan Free, o Education si eres estudiante).
@@ -122,6 +128,12 @@ En Onshape, el color de las líneas indica si el boceto está **completamente de
 
 **Objetivo de todo buen boceto: que quede completamente negro.** Así, cuando cambies una medida, la pieza cambiará exactamente como esperas.
 
+Este es el boceto del Paso a paso. Aplica las reglas una por una y mira cómo pasa de azul a negro:
+
+```widget
+boceto-definido
+```
+
 #### Agujeros para tornillos
 
 En robótica se usan mucho los tornillos **M3** (3 mm de diámetro). Para que pasen por un agujero sin forzarse, el agujero se hace un poco más grande: **3.2 mm**.
@@ -192,6 +204,12 @@ No solo se puede dibujar sobre los planos de referencia: también sobre **cualqu
 
 En la **lista de operaciones** está el historial completo de tu pieza. Si haces **doble clic** en el boceto original y cambias una cota, todas las operaciones que vienen después se recalculan solas. Esto permite probar variantes de un diseño en segundos.
 
+Esta es la pieza que harás en el Paso a paso. Toca cada operación para ver cómo se construye, y cambia el ancho del primer boceto:
+
+```widget
+historial-operaciones
+```
+
 ### Paso a paso
 
 Convierte la placa de M2 en una pieza con torres para tornillos:
@@ -251,7 +269,7 @@ Una pieza impresa **nunca sale exactamente con la medida del diseño**: los aguj
 
 Por eso se deja una **holgura** (espacio extra) donde una pieza debe encajar en otra.
 
-**Regla Nova para empezar:** agrega **0.2 mm por lado**. Es decir, al diámetro de un agujero o al ancho de una ranura le sumas **0.4 mm** en total.
+> **Regla Nova para empezar:** agrega **0.2 mm por lado**. Es decir, al diámetro de un agujero o al ancho de una ranura le sumas **0.4 mm** en total.
 
 | Componente | Medida real | Medida en el diseño |
 | --- | --- | --- |
@@ -260,6 +278,10 @@ Por eso se deja una **holgura** (espacio extra) donde una pieza debe encajar en 
 | Cuerpo del servo SG90 | ≈ 22.2 × 11.8 mm | **≈ 22.6 × 12.2 mm** |
 
 Cada impresora es un poco distinta. Ya en el equipo aprenderás a imprimir una pieza de prueba de holguras para ajustar estos valores.
+
+```widget
+holguras
+```
 
 #### Regla 2: espesores mínimos
 
@@ -276,6 +298,10 @@ La impresora no puede depositar plástico "en el aire". Una parte que sobresale 
 - Más de 45°, o una parte totalmente horizontal en el aire, necesita **soportes**: estructuras extra que se imprimen debajo y luego se retiran. Gastan material y dejan marcas.
 
 **Diseña pensando en cómo se va a apoyar la pieza en la cama de la impresora:** la cara más grande y plana, abajo.
+
+```widget
+voladizos
+```
 
 #### Regla 4: la resistencia depende de la orientación
 
@@ -346,6 +372,12 @@ Los ajustes más importantes del laminador:
 | **Soportes** | Las estructuras para los voladizos | Solo si hacen falta. Los de tipo **árbol** son los más fáciles de retirar |
 | **Orientación** | Cómo se apoya la pieza en la cama | La cara grande y plana, abajo |
 
+Prueba los ajustes antes de abrir Bambu Studio: mira cómo cambian el tiempo, el material y la resistencia.
+
+```widget
+laminador
+```
+
 ### Paso a paso
 
 **1. Exportar el STL**
@@ -412,6 +444,12 @@ Diseña la **caja del Panel de control Nova**, donde irían montados todos los c
 | Potenciómetro | | | |
 | Servo SG90 | | | |
 | ESP32 DevKit V1 | | | |
+
+Usa la calculadora para llenar la columna "Medida en el diseño":
+
+```widget
+holguras
+```
 
 ### Retos extra (opcionales)
 

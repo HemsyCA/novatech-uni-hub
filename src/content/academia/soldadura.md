@@ -42,6 +42,10 @@ Soldar en electrónica es unir un componente a la placa con **estaño**, un meta
 
 Más temperatura no siempre es mejor: demasiado calor quema el flux antes de tiempo, oxida la punta y puede despegar las pistas de cobre de la placa.
 
+```widget
+temperatura-cautin
+```
+
 #### Cuida la punta
 
 - **Estáñala** antes de guardar el cautín: una capa de estaño fresco protege la punta del óxido.
@@ -55,6 +59,10 @@ Más temperatura no siempre es mejor: demasiado calor quema el flux antes de tie
 - **Usa lentes de seguridad** al cortar patas: salen disparadas.
 - **Lávate las manos** después de soldar, sobre todo con estaño con plomo. No comas mientras sueldas.
 - **Aleja el cable** de la punta caliente y **apaga la estación** al terminar.
+
+```widget
+seguridad-soldadura
+```
 
 ### Videos de apoyo
 
@@ -129,6 +137,12 @@ Aprende a soldar en 3 segundos · Humberto Higinio
 
 > **Truco para headers y conectores:** suelda primero un solo pin, revisa que el conector esté recto y bien apoyado, y recién entonces suelda el resto. Si quedó torcido, basta con recalentar ese único pin.
 
+Practica el ritmo antes de la práctica presencial:
+
+```widget
+soldar-tht
+```
+
 ### Errores comunes
 
 - **Calentar solo la pata o solo el pad:** el estaño no moja la parte fría.
@@ -166,6 +180,10 @@ Reconocer los defectos más comunes de soldadura y saber corregirlos, incluyendo
 | **Pad levantado** | El cobre del pad se despegó de la placa. | Demasiado calor o demasiado tiempo. | Es difícil de reparar: evita el exceso de calor. |
 
 > **Importante:** un puente es un **cortocircuito**. Antes de conectar una placa a la batería, revísala con la lupa y, si puedes, con el multímetro en modo continuidad entre pines vecinos.
+
+```widget
+encuentra-defecto
+```
 
 #### Cómo desoldar con malla
 
@@ -229,6 +247,10 @@ Los componentes SMD de dos terminales se nombran con un código de su tamaño en
 
 Los circuitos integrados más comunes para soldar a mano son los **SOIC** (patas cada 1.27 mm) y los **SOT-23** (transistores y reguladores pequeños).
 
+```widget
+tamanos-smd
+```
+
 #### Por qué el flux es clave en SMD
 
 En SMD se trabaja con muy poco estaño, y el flux del alma del hilo se consume rápido. **Agregar flux extra** sobre los pads hace que el estaño corra solo hacia donde debe ir y evita puentes. Al terminar, limpia los restos con alcohol isopropílico.
@@ -244,6 +266,10 @@ Se usa la técnica de **estañar un pad primero**:
 5. Vuelve al primer extremo, agrega flux y retócalo para que quede igual de bien.
 
 Revisa la **polaridad**: los LEDs SMD tienen una marca (a menudo verde) en el lado del cátodo y los diodos tienen una raya.
+
+```widget
+orden-smd
+```
 
 #### Técnica para circuitos integrados
 
@@ -306,6 +332,10 @@ Los kits son limitados: por eso solo los reciben quienes llegaron hasta aquí. L
 - **THT:** calienta el pad y la pata a la vez, estaño a la unión, 3 a 5 segundos, junta en forma de volcán.
 - **SMD:** flux extra, estaña un pad primero, fija y suelda el otro extremo, revisa con lupa.
 - **Defectos:** soldadura fría y pad sin mojar se recalientan con flux; los puentes se quitan con flux y malla.
+
+```widget
+repaso-soldadura
+```
 
 ### Videos de apoyo
 

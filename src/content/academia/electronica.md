@@ -41,11 +41,17 @@ De ella salen las otras dos:
 
 > **Truco:** dibuja un triángulo con **V** arriba e **I** y **R** abajo. Tapa con el dedo la que quieres calcular y la posición de las otras dos te dice la operación: si están lado a lado se multiplican, si una está encima de la otra se dividen.
 
-**Ejemplo:** una resistencia de 1 kΩ conectada a 5 V. ¿Cuánta corriente pasa?
-
-I = V / R = 5 V / 1000 Ω = 0.005 A = **5 mA**
+> **Ejemplo:** una resistencia de 1 kΩ conectada a 5 V. ¿Cuánta corriente pasa?
+>
+> I = V / R = 5 V / 1000 Ω = 0.005 A = **5 mA**
 
 > **Cuidado:** antes de usar la fórmula, convierte todo a las unidades base: voltios, amperios y ohmios. 10 mA = 0.010 A; 2.2 kΩ = 2200 Ω.
+
+```phet
+ohms-law
+Juega con la Ley de Ohm
+Antes de mover nada, predice: si subes el voltaje, ¿la corriente sube o baja? Compruébalo. Luego sube la resistencia y mira qué le pasa a la corriente.
+```
 
 #### El LED
 
@@ -59,6 +65,10 @@ Un **LED** (diodo emisor de luz) es un componente que se ilumina cuando la corri
    - Rojo, amarillo y verde: unos **2.0 V**
    - Azul y blanco: unos **3.0 V**
 
+```widget
+diagrama-led
+```
+
 #### ¿Por qué el LED necesita una resistencia?
 
 Un LED casi no tiene resistencia propia. Si lo conectas directo a una fuente, deja pasar muchísima corriente y se quema en segundos (y además puede dañar el pin del ESP32 que lo alimenta). Por eso **siempre** se conecta con una resistencia en serie que limita la corriente.
@@ -69,16 +79,22 @@ Un LED casi no tiene resistencia propia. Si lo conectas directo a una fuente, de
 2. Eliges cuánta corriente quieres (10 mA es un buen valor para el ESP32).
 3. Aplicas R = V / I.
 
-**Ejemplo completo:** LED rojo conectado a un pin del ESP32 (3.3 V), queremos 10 mA.
+> **Ejemplo completo:** LED rojo conectado a un pin del ESP32 (3.3 V), queremos 10 mA.
+>
+> - Voltaje en la resistencia: 3.3 V − 2.0 V = **1.3 V**
+> - R = 1.3 V / 0.010 A = **130 Ω**
 
-- Voltaje en la resistencia: 3.3 V − 2.0 V = **1.3 V**
-- R = 1.3 V / 0.010 A = **130 Ω**
+Ahora pruébalo tú. Empieza con el ejemplo (3.3 V, LED rojo, 10 mA) y comprueba que salen 130 Ω. Después cambia el color del LED o la corriente y mira qué cambia.
+
+```widget
+calculadora-led
+```
 
 #### Valores comerciales
 
 Las resistencias no se fabrican en cualquier valor. Existen valores estándar como: 100, 120, 150, 180, **220**, 270, **330**, 470, 680, **1 k**, 2.2 k, 4.7 k, **10 k**…
 
-**Regla:** si tu cálculo no coincide con un valor comercial, elige el **siguiente valor más grande**. Una resistencia más grande deja pasar menos corriente (el LED brilla un poco menos, pero nada se daña). Una más pequeña puede quemar algo.
+> **Regla:** si tu cálculo no coincide con un valor comercial, elige el **siguiente valor más grande**. Una resistencia más grande deja pasar menos corriente (el LED brilla un poco menos, pero nada se daña). Una más pequeña puede quemar algo.
 
 En Nova usamos **220 Ω** para todos los LEDs conectados al ESP32. Con 220 Ω la corriente queda en:
 
@@ -157,13 +173,19 @@ Si conectas dos resistencias en serie entre un voltaje y tierra (GND), en el pun
 
 Donde **R1** es la resistencia que va hacia el voltaje de entrada y **R2** es la que va hacia GND.
 
-**Ejemplo 1:** 3.3 V con R1 = 10 kΩ y R2 = 10 kΩ.
+> **Ejemplo 1:** 3.3 V con R1 = 10 kΩ y R2 = 10 kΩ.
+>
+> V salida = 3.3 × 10 000 / 20 000 = **1.65 V** (exactamente la mitad, porque las resistencias son iguales).
 
-V salida = 3.3 × 10 000 / 20 000 = **1.65 V** (exactamente la mitad, porque las resistencias son iguales).
+> **Ejemplo 2 (muy usado en robótica):** muchos sensores entregan señales de 5 V, pero el ESP32 solo soporta 3.3 V. Con R1 = 1 kΩ y R2 = 2 kΩ:
+>
+> V salida = 5 × 2000 / 3000 = **3.33 V**. ¡Perfecto para el ESP32!
 
-**Ejemplo 2 (muy usado en robótica):** muchos sensores entregan señales de 5 V, pero el ESP32 solo soporta 3.3 V. Con R1 = 1 kΩ y R2 = 2 kΩ:
+Ahora arma tu propio divisor. Empieza con el ejemplo 2 (5 V, 1 kΩ y 2 kΩ) y luego cambia R1 o R2: ¿cuándo deja de ser seguro para el ESP32?
 
-V salida = 5 × 2000 / 3000 = **3.33 V**. ¡Perfecto para el ESP32!
+```widget
+divisor-voltaje
+```
 
 #### El potenciómetro
 
@@ -177,6 +199,10 @@ En la práctica, **un potenciómetro es un divisor de voltaje que puedes ajustar
 - Perilla en un extremo → **0 V**
 - Perilla en la mitad → **1.65 V**
 - Perilla en el otro extremo → **3.3 V**
+
+```widget
+potenciometro
+```
 
 #### Sensores que funcionan igual
 
@@ -267,7 +293,7 @@ El **ESP32** es un microcontrolador muy popular porque es rápido, barato y trae
 
 #### La regla de oro
 
-**Nunca conectes más de 3.3 V a un pin GPIO.** Si le llegan 5 V, puedes dañar el ESP32 de forma permanente. Si un sensor entrega 5 V, se usa un divisor de voltaje (E2) para bajarlo.
+> **Importante:** **nunca conectes más de 3.3 V a un pin GPIO.** Si le llegan 5 V, puedes dañar el ESP32 de forma permanente. Si un sensor entrega 5 V, se usa un divisor de voltaje (E2) para bajarlo.
 
 #### Los pines dan señal, no fuerza
 
@@ -300,12 +326,16 @@ Por eso elegimos estos pines para todas las lecciones y la tarea final:
 
 ### Paso a paso
 
-Con una imagen del pinout de la ESP32 DevKit V1 de 30 pines (búscala en internet como "ESP32 DevKit V1 30 pin pinout"):
+Usa la placa interactiva de abajo. Está con el USB hacia abajo, igual que la tendrás en la mano:
 
-1. Ubica el conector USB y orienta la imagen con el USB hacia abajo.
-2. Encuentra los pines **GND**, **3V3** y **VIN**.
-3. Encuentra los 6 pines del Mapa de pines Nova (18, 19, 23, 21, 34 y 25) y anota en qué lado y en qué posición está cada uno.
-4. Marca con otro color los pines que conviene evitar.
+1. Toca los filtros **Alimentación**, **Mapa Nova**, **Solo entrada** y **Evitar**, y fíjate dónde queda cada grupo.
+2. Toca algunos pines para leer qué hace cada uno.
+3. Cuando te sientas listo, presiona **Reto: encuentra los pines** y ubica GND, 3V3, VIN y los 6 pines del Mapa Nova.
+4. Anota en tu cuaderno en qué lado y en qué posición está cada pin del Mapa Nova: te servirá en E5 y en la tarea final.
+
+```widget
+pinout-esp32
+```
 
 ### Errores comunes
 
@@ -356,6 +386,10 @@ Un **esquemático** es el "plano" de un circuito. No muestra cómo se ven los co
 - **LED:** un triángulo con una raya y dos flechitas. La corriente circula en la dirección en que apunta el triángulo: del ánodo al cátodo.
 - **GND:** unas rayitas horizontales que se hacen más pequeñas hacia abajo.
 - **VCC / 3V3 / 5V:** una flecha o una barra que indica una fuente de voltaje.
+
+```widget
+simbolos-esquematico
+```
 
 #### Conceptos clave
 
@@ -470,6 +504,12 @@ Se conecta una resistencia de **10 kΩ** entre el GPIO y **GND**:
 
 > **Dato:** también existe la **resistencia pull-up** (hacia 3V3, con el botón hacia GND). Funciona al revés: presionado = LOW. Ambas son válidas; en Nova usamos pull-down porque es más intuitivo: **presionado = HIGH**.
 
+Presiona el botón y mira por dónde pasa la corriente. Prueba las tres opciones y cambia el valor de la resistencia.
+
+```widget
+resistencia-pull
+```
+
 #### El botón de 4 patas
 
 Los botones comunes tienen 4 patas, pero internamente están **unidas de dos en dos**. En el esquemático se dibujan con 2 terminales. Al diseñar la placa (E6), la huella tendrá 4 agujeros.
@@ -528,6 +568,12 @@ Una **PCB** (placa de circuito impreso) es una placa de fibra de vidrio con cami
 #### Las líneas de aire (ratsnest)
 
 Al pasar del esquemático a la PCB, los componentes aparecen sueltos y unidos por **líneas delgadas**. Esas líneas no son pistas: solo te indican **qué falta conectar**. Tu trabajo es reemplazarlas por pistas reales.
+
+Esta es la PCB del circuito de la E4. Enciende y apaga cada capa, pasa de **Recién convertida** a **Con pistas** y toca cada parte para saber qué es.
+
+```widget
+capas-pcb
+```
 
 #### Reglas básicas de ruteo para empezar
 
