@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, type LucideIcon } from "lucide-react";
+import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, NotebookPen, type LucideIcon } from "lucide-react";
 import { useAcademy } from "@/components/academia/academy-context";
 import { LessonRow, ProgressBar } from "@/components/academia/ui";
 import { courseModules, lessonPath, weeklyPlan, type ModuleId } from "@/lib/academia/course";
@@ -12,7 +12,8 @@ const moduleIcons: Record<ModuleId, LucideIcon> = {
 };
 
 export default function AcademiaHome() {
-  const { progress, activeMembership } = useAcademy();
+  const { progress, fichas, activeMembership } = useAcademy();
+  const moduleFichas = courseModules.filter((m) => fichas.moduleFicha(m.id)).length;
   const next = progress.nextLesson;
   const started = progress.done > 0;
 
@@ -52,6 +53,12 @@ export default function AcademiaHome() {
           </div>
           <ProgressBar value={progress.percent} label="Progreso del curso" />
           <p className="mt-4 text-sm text-white/70">{cta.message}</p>
+          <p className="mt-1 text-xs text-white/50">
+            Fichas de módulo: {moduleFichas} de {courseModules.length} ·{" "}
+            <Link to="/academia/bitacora" className="underline underline-offset-4 hover:text-white">
+              ver bitácora
+            </Link>
+          </p>
         </div>
         <Link
           to={cta.to}
@@ -71,6 +78,12 @@ export default function AcademiaHome() {
             <p className="mt-2 text-sm text-white/60">Cómo funciona el Nivel 0, qué necesitas y el Mapa de pines Nova.</p>
           </Link>
 
+          <Link to="/academia/bitacora" className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors">
+            <NotebookPen className="h-7 w-7 mb-4" />
+            <h3 className="font-display font-bold">Bitácora Nova</h3>
+            <p className="mt-2 text-sm text-white/60">Una ficha de cuatro preguntas para compartir lo que aprendes.</p>
+          </Link>
+
           {courseModules.map((module) => {
             const Icon = moduleIcons[module.id];
             const required = module.lessons.filter((l) => !l.optional);
@@ -85,7 +98,7 @@ export default function AcademiaHome() {
                 <h3 className="font-display font-bold">{module.name}</h3>
                 <p className="mt-2 text-sm text-white/60 flex-1">{module.summary}</p>
                 <p className="mt-4 text-xs text-white/40">
-                  {module.tool} · {module.duration}
+                  {module.tool} · {module.duration} · Ficha del módulo: {fichas.moduleFicha(module.id) ? "lista" : "pendiente"}
                 </p>
                 <div className="mt-3 flex items-center gap-3">
                   <ProgressBar value={Math.round((done / required.length) * 100)} label={`Progreso de ${module.name}`} />

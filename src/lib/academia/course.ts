@@ -1,8 +1,15 @@
 import electronicaMd from "@/content/academia/electronica.md?raw";
 import mecanicaMd from "@/content/academia/mecanica.md?raw";
 import programacionMd from "@/content/academia/programacion.md?raw";
+import { moduleInfo, type ModuleId, type ModuleInfo } from "@/lib/academia/modules";
 
-export type ModuleId = "electronica" | "mecanica" | "programacion";
+export type { ModuleId };
+
+const markdownByModule: Record<ModuleId, string> = {
+  electronica: electronicaMd,
+  mecanica: mecanicaMd,
+  programacion: programacionMd,
+};
 
 export interface Lesson {
   key: string;
@@ -15,56 +22,10 @@ export interface Lesson {
   optional: boolean;
 }
 
-export interface CourseModule {
-  id: ModuleId;
-  name: string;
-  tool: string;
-  duration: string;
-  needs: string;
-  summary: string;
+export interface CourseModule extends ModuleInfo {
   intro: string;
   lessons: Lesson[];
 }
-
-interface ModuleMeta {
-  id: ModuleId;
-  name: string;
-  tool: string;
-  duration: string;
-  needs: string;
-  summary: string;
-  markdown: string;
-}
-
-const moduleMeta: ModuleMeta[] = [
-  {
-    id: "electronica",
-    name: "Electrónica",
-    tool: "EasyEDA Pro",
-    duration: "5 a 6 horas",
-    needs: "Calculadora, cuaderno y una cuenta en EasyEDA",
-    summary: "Electricidad básica, el ESP32 y tus primeros esquemáticos y PCBs.",
-    markdown: electronicaMd,
-  },
-  {
-    id: "mecanica",
-    name: "Mecánica",
-    tool: "Onshape",
-    duration: "5 horas",
-    needs: "Una cuenta en Onshape y un mouse con rueda",
-    summary: "Diseño de piezas en 3D listas para imprimir.",
-    markdown: mecanicaMd,
-  },
-  {
-    id: "programacion",
-    name: "Programación",
-    tool: "Wokwi y Arduino IDE (opcional)",
-    duration: "7 horas",
-    needs: "Una cuenta en Wokwi",
-    summary: "Programar el ESP32: LEDs, botones, sensores, servos y comandos.",
-    markdown: programacionMd,
-  },
-];
 
 const parseHeading = (heading: string) => {
   const [code, ...rest] = heading.split(" · ");
@@ -73,8 +34,8 @@ const parseHeading = (heading: string) => {
   return { code, slug: code.toLowerCase(), title, isTask: false };
 };
 
-const parseModule = (meta: ModuleMeta): CourseModule => {
-  const [intro, ...sections] = meta.markdown.split(/^## /m);
+const parseModule = (meta: ModuleInfo): CourseModule => {
+  const [intro, ...sections] = markdownByModule[meta.id].split(/^## /m);
   const lessons = sections.map((section) => {
     const newline = section.indexOf("\n");
     const { code, slug, title, isTask } = parseHeading(section.slice(0, newline).trim());
@@ -92,7 +53,7 @@ const parseModule = (meta: ModuleMeta): CourseModule => {
   return { ...meta, intro: intro.trim(), lessons };
 };
 
-export const courseModules: CourseModule[] = moduleMeta.map(parseModule);
+export const courseModules: CourseModule[] = moduleInfo.map(parseModule);
 
 const lessonIndex = new Map(courseModules.flatMap((m) => m.lessons.map((l) => [l.key, l] as const)));
 

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
+import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
 import { useAcademy } from "@/components/academia/academy-context";
 import { Markdown } from "@/components/academia/Markdown";
 import { Breadcrumbs, LessonRow } from "@/components/academia/ui";
+import { LessonFichas } from "@/components/academia/LessonFichas";
 import { getLesson, getModule, lessonPath, type CourseModule } from "@/lib/academia/course";
 
 function LessonIndex({ module, activeKey }: { module: CourseModule; activeKey: string }) {
@@ -24,13 +25,20 @@ function LessonIndex({ module, activeKey }: { module: CourseModule; activeKey: s
 
 export default function AcademiaLesson() {
   const { moduleId, lessonId } = useParams();
-  const { progress } = useAcademy();
+  const { progress, fichas } = useAcademy();
   const module = getModule(moduleId);
   const lesson = getLesson(moduleId, lessonId);
 
+  const { hash } = useLocation();
+
   useEffect(() => {
-    window.scrollTo({ top: 0 });
-  }, [moduleId, lessonId]);
+    if (!hash) {
+      window.scrollTo({ top: 0 });
+      return;
+    }
+    const frame = requestAnimationFrame(() => document.getElementById(hash.slice(1))?.scrollIntoView({ behavior: "smooth" }));
+    return () => cancelAnimationFrame(frame);
+  }, [moduleId, lessonId, hash]);
 
   if (!module || !lesson) return <Navigate to={module ? `/academia/${module.id}` : "/academia"} replace />;
 
@@ -38,6 +46,7 @@ export default function AcademiaLesson() {
   const previous = module.lessons[index - 1];
   const following = module.lessons[index + 1];
   const isDone = progress.completed.has(lesson.key);
+  const needsModuleFicha = lesson.isTask && !isDone && !fichas.moduleFicha(lesson.moduleId);
   const pendingAfter = progress.nextLesson && progress.nextLesson.key !== lesson.key ? progress.nextLesson : null;
   const doneInModule = module.lessons.filter((l) => !l.optional && progress.completed.has(l.key)).length;
   const requiredInModule = module.lessons.filter((l) => !l.optional).length;
@@ -85,6 +94,8 @@ export default function AcademiaLesson() {
 
         <Markdown>{lesson.content}</Markdown>
 
+        <LessonFichas lesson={lesson} />
+
         <div className="mt-14 rounded-2xl border border-white/20 p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <p className="font-semibold">{isDone ? "Lección completada" : "¿Terminaste esta lección?"}</p>
@@ -93,7 +104,9 @@ export default function AcademiaLesson() {
                 ? pendingAfter
                   ? `Te recomendamos seguir con ${pendingAfter.code} · ${pendingAfter.title}.`
                   : "Ya completaste todas las lecciones del plan."
-                : "Márcala cuando hayas revisado el checklist “Puedo continuar si…”."}
+                : needsModuleFicha
+                  ? "Para completar esta parte, primero guarda la ficha del módulo."
+                  : "Márcala cuando hayas revisado el checklist “Puedo continuar si…”."}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
@@ -101,9 +114,10 @@ export default function AcademiaLesson() {
               type="button"
               onClick={() => progress.toggle(lesson.key)}
               aria-pressed={isDone}
+              disabled={needsModuleFicha}
               className={`inline-flex items-center justify-center gap-2 rounded-lg px-5 py-2.5 font-semibold transition-colors ${
                 isDone ? "border border-white/30 text-white hover:bg-white/10" : "bg-white text-black hover:bg-white/90"
-              }`}
+              } disabled:cursor-not-allowed disabled:opacity-40`}
             >
               <Check className="h-4 w-4" />
               {isDone ? "Desmarcar" : "Marcar como completada"}

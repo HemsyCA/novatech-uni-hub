@@ -139,3 +139,57 @@ export const removeAcademyProgress = async (userId: string, lessonKey: string) =
   const { error } = await supabase.from("academia_progreso").delete().eq("user_id", userId).eq("lesson_key", lessonKey);
   if (error) throw error;
 };
+
+export interface AcademyFicha {
+  id: string;
+  user_id: string;
+  modulo: string;
+  lesson_key: string;
+  es_del_modulo: boolean;
+  titulo: string;
+  queria: string;
+  hice: string;
+  paso: string;
+  aprendi: string;
+  fuentes: string;
+  evidencia_url: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AcademyFichaInput = Pick<
+  AcademyFicha,
+  "modulo" | "lesson_key" | "es_del_modulo" | "titulo" | "queria" | "hice" | "paso" | "aprendi" | "fuentes" | "evidencia_url"
+>;
+
+export const listMyAcademyFichas = async (userId: string): Promise<AcademyFicha[]> => {
+  const { data, error } = await supabase
+    .from("academia_fichas")
+    .select("*")
+    .eq("user_id", userId)
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+};
+
+export const createAcademyFicha = async (ficha: AcademyFichaInput): Promise<AcademyFicha> => {
+  const { data, error } = await supabase.from("academia_fichas").insert(ficha).select().single();
+  if (error) throw error;
+  return data;
+};
+
+export const updateAcademyFicha = async (id: string, ficha: AcademyFichaInput): Promise<AcademyFicha> => {
+  const { data, error } = await supabase
+    .from("academia_fichas")
+    .update({ ...ficha, updated_at: new Date().toISOString() })
+    .eq("id", id)
+    .select()
+    .single();
+  if (error) throw error;
+  return data;
+};
+
+export const deleteAcademyFicha = async (id: string) => {
+  const { error } = await supabase.from("academia_fichas").delete().eq("id", id);
+  if (error) throw error;
+};

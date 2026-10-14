@@ -4,6 +4,7 @@ import { ArrowLeft, Lock } from "lucide-react";
 import novatechLogo from "@/assets/novatech-logo.png";
 import { useAcademyAccess } from "@/hooks/use-academy-access";
 import { useAcademyProgress } from "@/hooks/use-academy-progress";
+import { useAcademyFichas } from "@/hooks/use-academy-fichas";
 import { getCurrentSession } from "@/services/supabase/auth";
 import { formatDate, limaToday } from "@/lib/academy-dates";
 import type { AcademyContext } from "@/components/academia/academy-context";
@@ -63,7 +64,8 @@ function LockedState({ memberships }: { memberships: AcademyMembership[] }) {
 export default function Academia() {
   const { loading, hasAccess, isStaff, activeMembership, memberships, userId } = useAcademyAccess();
   const progress = useAcademyProgress(userId);
-  const context: AcademyContext = { progress, activeMembership, isStaff };
+  const fichas = useAcademyFichas(userId);
+  const context: AcademyContext = { progress, fichas, activeMembership, isStaff };
 
   return (
     <div className="font-mono min-h-screen bg-black text-white">
@@ -85,7 +87,7 @@ export default function Academia() {
       </header>
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {loading || progress.loading ? (
+        {loading || progress.loading || fichas.loading ? (
           <div className="text-white/60 animate-pulse">Cargando…</div>
         ) : hasAccess ? (
           <Suspense fallback={<div className="text-white/60 animate-pulse">Cargando…</div>}>

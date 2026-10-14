@@ -12,7 +12,7 @@ const deliverables: Record<string, string> = {
 };
 
 export default function AcademiaFinalTask() {
-  const { progress } = useAcademy();
+  const { progress, fichas } = useAcademy();
   const parts = courseModules.map((module) => ({
     module,
     lesson: module.lessons.find((l) => l.isTask)!,
@@ -45,11 +45,23 @@ export default function AcademiaFinalTask() {
               </Link>
             </li>
           ))}
+          <li className="py-3">
+            <Link to="/academia/bitacora" className="flex items-start gap-3 group">
+              <StatusDot done={parts.every(({ module }) => fichas.moduleFicha(module.id))} />
+              <span className="flex-1">
+                <span className="block font-semibold text-white group-hover:underline underline-offset-4">Bitácora</span>
+                <span className="block text-sm text-white/60">
+                  Las tres fichas de módulo ({parts.filter(({ module }) => fichas.moduleFicha(module.id)).length} de 3 listas),
+                  más una reflexión final.
+                </span>
+              </span>
+            </Link>
+          </li>
           <li className="flex items-start gap-3 py-3">
             <span className="h-5 w-5 shrink-0 rounded-full border border-white/30" />
             <span>
-              <span className="block font-semibold text-white">Video y bitácora</span>
-              <span className="block text-sm text-white/60">Un video de 2 a 3 minutos y un texto corto sobre tu proceso.</span>
+              <span className="block font-semibold text-white">Video</span>
+              <span className="block text-sm text-white/60">De 2 a 3 minutos explicando tu proyecto.</span>
             </span>
           </li>
         </ul>

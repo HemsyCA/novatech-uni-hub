@@ -23,12 +23,14 @@ No necesita ser profesional. Lo importante es que se note que **entiendes lo que
 
 ## La bitácora
 
-Responde con tus palabras (media página a una página está bien):
+Tu bitácora se arma dentro de la Academia con la [ficha de bitácora Nova](/academia/bitacora) (Quería, Hice, Pasó, Aprendí):
 
-- ¿Qué fue lo más difícil y cómo lo resolviste?
-- ¿Qué tuviste que investigar por tu cuenta (fuera de estas lecciones)?
-- ¿Qué error te tomó más tiempo encontrar?
-- ¿Qué categoría de robots te llama más la atención y por qué?
+1. **Las tres fichas de módulo**, que llenas al cerrar Electrónica, Mecánica y Programación. Quedan guardadas en tu cuenta: no tienes que volver a enviarlas.
+2. **Una reflexión final** de media página, respondiendo:
+   - ¿Qué fue lo más difícil y cómo lo resolviste?
+   - ¿Qué tuviste que investigar por tu cuenta (fuera de estas lecciones)?
+   - ¿Qué error te tomó más tiempo encontrar?
+   - ¿Qué categoría de robots te llama más la atención y por qué?
 
 ## Cómo entregar
 
@@ -46,7 +48,7 @@ Antes de enviar, abre cada link en una **ventana de incógnito** para comprobar 
 - [ ] El esquemático usa los mismos pines que el código (Mapa de pines Nova).
 - [ ] La caja tiene medidas coherentes con los componentes reales, y explicas de dónde las sacaste.
 - [ ] El video demuestra que entiendes tu trabajo.
-- [ ] Entregaste la bitácora.
+- [ ] Entregaste la bitácora: tres fichas con su fuente y su evidencia, más la reflexión final.
 
 **Suma puntos (opcional):**
 
