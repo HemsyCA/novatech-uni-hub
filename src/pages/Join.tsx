@@ -47,24 +47,25 @@ const learningCycle = [
 
 const levels = [
   {
-    step: "Nivel 0",
+    step: "Parte 1",
     title: "Bienvenida",
     description:
       "Lees las lecciones de Academia Nova a tu ritmo, practicas en simuladores online y terminas con una tarea final. Nadie te dicta clases.",
     detail: "16 a 20 horas · 3 semanas",
   },
   {
-    step: "Nivel 1",
-    title: "Formación guiada",
+    step: "Parte 2",
+    title: "Soldadura y práctica",
     description:
-      "Entras al grupo del equipo, puedes hacer preguntas y trabajas con hardware real: drivers de motores, fuentes, soldadura, impresión 3D y ensamble.",
-    detail: "Al aprobar la tarea del Nivel 0",
+      "Aprendes soldadura THT y SMD con texto y videos. Luego vienes a una práctica presencial: recibes un kit de placa y la sueldas con guía del equipo.",
+    detail: "Al aprobar la tarea final de la Parte 1",
   },
   {
-    step: "Nivel 2",
-    title: "Competencia o investigación",
-    description: "Te integras a una categoría de competencia o a un proyecto de investigación del equipo.",
-    detail: "Según tu desempeño en el Nivel 1",
+    step: "Final",
+    title: "Miembro de Nova",
+    description:
+      "Accedes al material interno, al foro y a la bitácora del equipo, y te integras a una categoría de competencia o a un proyecto de investigación.",
+    detail: "La directiva decide tu ingreso",
   },
 ];
 
@@ -90,7 +91,7 @@ const steps = [
   },
   {
     title: "Entregas la tarea final",
-    description: "El Panel de control Nova, con un video y tu bitácora. Si apruebas, pasas al Nivel 1.",
+    description: "El Panel de control Nova, con un video y tu bitácora. Si la directiva la aprueba, sigues con la Parte 2.",
   },
 ];
 
@@ -154,7 +155,7 @@ const Join = () => (
     <section className="py-20 border-t border-white/10">
       <div className="container mx-auto px-4">
         <SectionHeading
-          eyebrow="Academia Nova · Nivel 0"
+          eyebrow="Academia Nova · Parte 1"
           title="Qué vas a investigar"
           subtitle="Todos los robots del equipo, del minisumo al OTTO, están hechos de las mismas piezas básicas. Al final las unes en tu propio Panel de control Nova con un ESP32."
         />
@@ -188,7 +189,7 @@ const Join = () => (
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-sm text-white">No necesitas comprar componentes: el hardware real llega en el Nivel 1.</p>
+          <p className="mt-6 text-sm text-white">No necesitas comprar componentes: el kit de práctica te lo da el equipo en la Parte 2.</p>
         </div>
         <div>
           <SectionHeading align="left" eyebrow="Convocatoria" title="Cómo funciona" />

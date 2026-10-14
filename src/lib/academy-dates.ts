@@ -29,3 +29,16 @@ export const statusLabel: Record<AcademyStatus, string> = {
   activo: "Activo",
   finalizado: "Finalizado",
 };
+
+// Perú no usa horario de verano: la hora de Lima siempre es UTC-5.
+export const limaDateTimeToIso = (date: string, time: string) => new Date(`${date}T${time}:00-05:00`).toISOString();
+
+export const formatLimaDateTime = (iso: string) =>
+  new Intl.DateTimeFormat("es-PE", {
+    timeZone: "America/Lima",
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    hour: "numeric",
+    minute: "2-digit",
+  }).format(new Date(iso));

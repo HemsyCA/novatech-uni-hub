@@ -193,3 +193,128 @@ export const deleteAcademyFicha = async (id: string) => {
   const { error } = await supabase.from("academia_fichas").delete().eq("id", id);
   if (error) throw error;
 };
+
+export type EntregaEstado = "enviada" | "observada" | "aprobada";
+
+export interface AcademyEntrega {
+  user_id: string;
+  wokwi_url: string;
+  diagrama_url: string;
+  electronica_url: string;
+  onshape_url: string;
+  mecanica_url: string;
+  video_url: string;
+  reflexion: string;
+  estado: EntregaEstado;
+  comentario: string | null;
+  revisado_por: string | null;
+  revisado_at: string | null;
+  enviado_at: string;
+  created_at: string;
+}
+
+export type AcademyEntregaInput = Pick<
+  AcademyEntrega,
+  "wokwi_url" | "diagrama_url" | "electronica_url" | "onshape_url" | "mecanica_url" | "video_url" | "reflexion"
+>;
+
+export const getMyAcademyEntrega = async (userId: string): Promise<AcademyEntrega | null> => {
+  const { data, error } = await supabase.from("academia_entregas").select("*").eq("user_id", userId).maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
+export const submitAcademyEntrega = async (input: AcademyEntregaInput) => {
+  const { error } = await supabase.rpc("enviar_entrega_academia", {
+    _wokwi_url: input.wokwi_url,
+    _diagrama_url: input.diagrama_url,
+    _electronica_url: input.electronica_url,
+    _onshape_url: input.onshape_url,
+    _mecanica_url: input.mecanica_url,
+    _video_url: input.video_url,
+    _reflexion: input.reflexion,
+  });
+  if (error) throw error;
+};
+
+export const listAcademyEntregas = async (): Promise<AcademyEntrega[]> => {
+  const { data, error } = await supabase.from("academia_entregas").select("*").order("enviado_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+};
+
+export const reviewAcademyEntrega = async (userId: string, approve: boolean, comment?: string) => {
+  const { error } = await supabase.rpc("revisar_entrega_academia", {
+    _user_id: userId,
+    _aprobar: approve,
+    _comentario: comment,
+  });
+  if (error) throw error;
+};
+
+export const listModuleFichasForUsers = async (userIds: string[]): Promise<AcademyFicha[]> => {
+  if (userIds.length === 0) return [];
+  const { data, error } = await supabase
+    .from("academia_fichas")
+    .select("*")
+    .in("user_id", userIds)
+    .eq("es_del_modulo", true);
+  if (error) throw error;
+  return data ?? [];
+};
+
+export type PracticaEstado = "programada" | "asistio" | "no_asistio";
+
+export interface AcademyPractica {
+  user_id: string;
+  fecha: string;
+  lugar: string;
+  indicaciones: string | null;
+  estado: PracticaEstado;
+  comentario: string | null;
+  asignado_por: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export type AcademyPracticaInput = Pick<AcademyPractica, "fecha" | "lugar" | "indicaciones">;
+
+export const getMyAcademyPractica = async (userId: string): Promise<AcademyPractica | null> => {
+  const { data, error } = await supabase.from("academia_practicas").select("*").eq("user_id", userId).maybeSingle();
+  if (error) throw error;
+  return data;
+};
+
+export const listAcademyPracticas = async (): Promise<AcademyPractica[]> => {
+  const { data, error } = await supabase.from("academia_practicas").select("*").order("fecha", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+};
+
+// Citar o reprogramar: la cita vuelve a quedar "programada" y sin comentario.
+export const scheduleAcademyPracticas = async (userIds: string[], input: AcademyPracticaInput) => {
+  const { error } = await supabase.from("academia_practicas").upsert(
+    userIds.map((user_id) => ({
+      user_id,
+      ...input,
+      estado: "programada" as const,
+      comentario: null,
+      updated_at: new Date().toISOString(),
+    })),
+    { onConflict: "user_id" },
+  );
+  if (error) throw error;
+};
+
+export const recordAcademyPracticaResult = async (userId: string, estado: PracticaEstado, comentario: string | null) => {
+  const { error } = await supabase
+    .from("academia_practicas")
+    .update({ estado, comentario, updated_at: new Date().toISOString() })
+    .eq("user_id", userId);
+  if (error) throw error;
+};
+
+export const cancelAcademyPractica = async (userId: string) => {
+  const { error } = await supabase.from("academia_practicas").delete().eq("user_id", userId);
+  if (error) throw error;
+};

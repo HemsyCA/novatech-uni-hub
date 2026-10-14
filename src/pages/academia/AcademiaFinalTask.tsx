@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import finalTaskMd from "@/content/academia/tarea-final.md?raw";
 import { useAcademy } from "@/components/academia/academy-context";
 import { Markdown } from "@/components/academia/Markdown";
+import { EntregaSection } from "@/components/academia/EntregaSection";
 import { Breadcrumbs, StatusDot } from "@/components/academia/ui";
 import { courseModules, lessonPath } from "@/lib/academia/course";
 
@@ -12,7 +13,7 @@ const deliverables: Record<string, string> = {
 };
 
 export default function AcademiaFinalTask() {
-  const { progress, fichas } = useAcademy();
+  const { progress, fichas, entrega } = useAcademy();
   const parts = courseModules.map((module) => ({
     module,
     lesson: module.lessons.find((l) => l.isTask)!,
@@ -58,7 +59,7 @@ export default function AcademiaFinalTask() {
             </Link>
           </li>
           <li className="flex items-start gap-3 py-3">
-            <span className="h-5 w-5 shrink-0 rounded-full border border-white/30" />
+            <StatusDot done={Boolean(entrega.entrega)} />
             <span>
               <span className="block font-semibold text-white">Video</span>
               <span className="block text-sm text-white/60">De 2 a 3 minutos explicando tu proyecto.</span>
@@ -66,6 +67,8 @@ export default function AcademiaFinalTask() {
           </li>
         </ul>
       </section>
+
+      <EntregaSection />
 
       <Markdown>{finalTaskMd}</Markdown>
     </article>

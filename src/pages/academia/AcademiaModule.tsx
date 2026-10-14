@@ -1,6 +1,7 @@
 import { Navigate, useParams } from "react-router-dom";
-import { useAcademy } from "@/components/academia/academy-context";
+import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
 import { Markdown } from "@/components/academia/Markdown";
+import { Part2Locked } from "@/components/academia/Part2Locked";
 import { Breadcrumbs, LessonRow, ProgressBar } from "@/components/academia/ui";
 import { getModule } from "@/lib/academia/course";
 
@@ -8,8 +9,10 @@ export default function AcademiaModule() {
   const { moduleId } = useParams();
   const { progress } = useAcademy();
   const module = getModule(moduleId);
+  const canAccessPart2 = useCanAccessPart2();
 
   if (!module) return <Navigate to="/academia" replace />;
+  if (module.id === "soldadura" && !canAccessPart2) return <Part2Locked />;
 
   const required = module.lessons.filter((l) => !l.optional);
   const done = required.filter((l) => progress.completed.has(l.key)).length;

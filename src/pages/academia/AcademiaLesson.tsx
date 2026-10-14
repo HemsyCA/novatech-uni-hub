@@ -1,11 +1,16 @@
 import { useEffect } from "react";
 import { Link, Navigate, useLocation, useParams } from "react-router-dom";
 import { ArrowLeft, ArrowRight, Check, ChevronDown } from "lucide-react";
-import { useAcademy } from "@/components/academia/academy-context";
+import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
 import { Markdown } from "@/components/academia/Markdown";
 import { Breadcrumbs, LessonRow } from "@/components/academia/ui";
 import { LessonFichas } from "@/components/academia/LessonFichas";
+import { Part2Locked } from "@/components/academia/Part2Locked";
+import { PracticaCard } from "@/components/academia/PracticaCard";
 import { getLesson, getModule, lessonPath, type CourseModule } from "@/lib/academia/course";
+
+// En esta lección el convocado ve la fecha de su práctica presencial.
+const PRACTICE_LESSON_KEY = "soldadura/s5";
 
 function LessonIndex({ module, activeKey }: { module: CourseModule; activeKey: string }) {
   const { progress } = useAcademy();
@@ -25,8 +30,9 @@ function LessonIndex({ module, activeKey }: { module: CourseModule; activeKey: s
 
 export default function AcademiaLesson() {
   const { moduleId, lessonId } = useParams();
-  const { progress, fichas } = useAcademy();
+  const { progress, fichas, practica } = useAcademy();
   const module = getModule(moduleId);
+  const canAccessPart2 = useCanAccessPart2();
   const lesson = getLesson(moduleId, lessonId);
 
   const { hash } = useLocation();
@@ -41,6 +47,7 @@ export default function AcademiaLesson() {
   }, [moduleId, lessonId, hash]);
 
   if (!module || !lesson) return <Navigate to={module ? `/academia/${module.id}` : "/academia"} replace />;
+  if (module.id === "soldadura" && !canAccessPart2) return <Part2Locked />;
 
   const index = module.lessons.findIndex((l) => l.key === lesson.key);
   const previous = module.lessons[index - 1];
@@ -93,6 +100,12 @@ export default function AcademiaLesson() {
         <h1 className="font-display text-2xl md:text-4xl font-black tracking-tight mt-2 mb-8">{lesson.title}</h1>
 
         <Markdown>{lesson.content}</Markdown>
+
+        {lesson.key === PRACTICE_LESSON_KEY && (
+          <div className="mt-10">
+            <PracticaCard practica={practica.practica} />
+          </div>
+        )}
 
         <LessonFichas lesson={lesson} />
 

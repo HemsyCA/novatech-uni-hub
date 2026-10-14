@@ -1,19 +1,21 @@
 import electronicaMd from "@/content/academia/electronica.md?raw";
 import mecanicaMd from "@/content/academia/mecanica.md?raw";
 import programacionMd from "@/content/academia/programacion.md?raw";
-import { moduleInfo, type ModuleId, type ModuleInfo } from "@/lib/academia/modules";
+import soldaduraMd from "@/content/academia/soldadura.md?raw";
+import { moduleInfo, part2Info, type CourseModuleId, type ModuleId, type ModuleInfo } from "@/lib/academia/modules";
 
-export type { ModuleId };
+export type { CourseModuleId, ModuleId };
 
-const markdownByModule: Record<ModuleId, string> = {
+const markdownByModule: Record<CourseModuleId, string> = {
   electronica: electronicaMd,
   mecanica: mecanicaMd,
   programacion: programacionMd,
+  soldadura: soldaduraMd,
 };
 
 export interface Lesson {
   key: string;
-  moduleId: ModuleId;
+  moduleId: CourseModuleId;
   slug: string;
   code: string;
   title: string;
@@ -22,7 +24,7 @@ export interface Lesson {
   optional: boolean;
 }
 
-export interface CourseModule extends ModuleInfo {
+export interface CourseModule extends ModuleInfo<CourseModuleId> {
   intro: string;
   lessons: Lesson[];
 }
@@ -34,7 +36,7 @@ const parseHeading = (heading: string) => {
   return { code, slug: code.toLowerCase(), title, isTask: false };
 };
 
-const parseModule = (meta: ModuleInfo): CourseModule => {
+const parseModule = (meta: ModuleInfo<CourseModuleId>): CourseModule => {
   const [intro, ...sections] = markdownByModule[meta.id].split(/^## /m);
   const lessons = sections.map((section) => {
     const newline = section.indexOf("\n");
@@ -55,9 +57,13 @@ const parseModule = (meta: ModuleInfo): CourseModule => {
 
 export const courseModules: CourseModule[] = moduleInfo.map(parseModule);
 
-const lessonIndex = new Map(courseModules.flatMap((m) => m.lessons.map((l) => [l.key, l] as const)));
+export const part2Module: CourseModule = parseModule(part2Info);
 
-export const getModule = (id: string | undefined) => courseModules.find((m) => m.id === id);
+const allModules = [...courseModules, part2Module];
+
+const lessonIndex = new Map(allModules.flatMap((m) => m.lessons.map((l) => [l.key, l] as const)));
+
+export const getModule = (id: string | undefined) => allModules.find((m) => m.id === id);
 
 export const getLesson = (moduleId: string | undefined, slug: string | undefined) =>
   lessonIndex.get(`${moduleId}/${slug}`);

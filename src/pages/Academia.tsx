@@ -5,6 +5,8 @@ import novatechLogo from "@/assets/novatech-logo.png";
 import { useAcademyAccess } from "@/hooks/use-academy-access";
 import { useAcademyProgress } from "@/hooks/use-academy-progress";
 import { useAcademyFichas } from "@/hooks/use-academy-fichas";
+import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
+import { useAcademyPractica } from "@/hooks/use-academy-practica";
 import { getCurrentSession } from "@/services/supabase/auth";
 import { formatDate, limaToday } from "@/lib/academy-dates";
 import type { AcademyContext } from "@/components/academia/academy-context";
@@ -65,7 +67,9 @@ export default function Academia() {
   const { loading, hasAccess, isStaff, activeMembership, memberships, userId } = useAcademyAccess();
   const progress = useAcademyProgress(userId);
   const fichas = useAcademyFichas(userId);
-  const context: AcademyContext = { progress, fichas, activeMembership, isStaff };
+  const entrega = useAcademyEntrega(userId);
+  const practica = useAcademyPractica(userId);
+  const context: AcademyContext = { progress, fichas, entrega, practica, activeMembership, isStaff };
 
   return (
     <div className="font-mono min-h-screen bg-black text-white">
@@ -87,7 +91,7 @@ export default function Academia() {
       </header>
 
       <main className="container mx-auto px-4 pt-24 pb-16">
-        {loading || progress.loading || fichas.loading ? (
+        {loading || progress.loading || fichas.loading || entrega.loading || practica.loading ? (
           <div className="text-white/60 animate-pulse">Cargando…</div>
         ) : hasAccess ? (
           <Suspense fallback={<div className="text-white/60 animate-pulse">Cargando…</div>}>

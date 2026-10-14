@@ -273,7 +273,7 @@ El **ESP32** es un microcontrolador muy popular porque es rápido, barato y trae
 
 Un GPIO puede entregar muy poca corriente: lo recomendable es no pasar de unos **20 mA** por pin. Eso alcanza para un LED, pero **no para mover un motor ni un servo**.
 
-- Los **motores** se conectan a través de un **driver** (lo verás en el Nivel 1): el ESP32 le da la orden y el driver entrega la fuerza.
+- Los **motores** se conectan a través de un **driver** (lo verás ya en el equipo): el ESP32 le da la orden y el driver entrega la fuerza.
 - Un **servo** recibe del ESP32 solo la **señal** (por un GPIO), mientras que su **alimentación** viene de 5 V (VIN) y GND. En este nivel alimentamos un solo servo pequeño desde VIN, porque la placa está conectada por USB. En robots reales se usa una fuente separada.
 - **Regla importante:** todos los componentes deben compartir el mismo **GND** (tierra común). Sin tierra común, las señales no tienen referencia y nada funciona bien.
 
@@ -368,7 +368,7 @@ Un **esquemático** es el "plano" de un circuito. No muestra cómo se ven los co
 #### Componentes THT y SMD
 
 - **THT (through-hole):** componentes con patas que atraviesan la placa. Son grandes y fáciles de soldar a mano. **En este nivel usamos solo THT.**
-- **SMD:** componentes diminutos que se sueldan sobre la superficie. Los verás en el Nivel 1.
+- **SMD:** componentes diminutos que se sueldan sobre la superficie. Aprenderás a soldarlos en la Parte 2.
 
 ### Paso a paso
 
@@ -554,7 +554,7 @@ La **verificación de reglas de diseño (DRC)** revisa que las pistas no estén 
 
 #### Los archivos de fabricación
 
-Para mandar a fabricar una placa se exportan los archivos **Gerber**. En este nivel **no** vas a fabricar nada, pero es bueno que sepas que existen: son los que usarás en el Nivel 1.
+Para mandar a fabricar una placa se exportan los archivos **Gerber**. En este nivel **no** vas a fabricar nada, pero es bueno que sepas que existen: los usarás cuando diseñes placas reales en el equipo.
 
 ### Paso a paso
 

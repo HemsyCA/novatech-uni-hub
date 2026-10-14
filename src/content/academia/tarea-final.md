@@ -34,9 +34,16 @@ Tu bitácora se arma dentro de la Academia con la [ficha de bitácora Nova](/aca
 
 ## Cómo entregar
 
-Completa el formulario de entrega con todos tus links y archivos. **El enlace al formulario se publicará en esta página.**
+Envía todo desde la sección **Entregar tarea final**, al inicio de esta página. Se habilita cuando completas las tres partes con sus fichas de módulo.
 
-Antes de enviar, abre cada link en una **ventana de incógnito** para comprobar que se puede ver sin iniciar sesión.
+Antes de enviar, abre cada enlace en una **ventana de incógnito** para comprobar que se puede ver sin iniciar sesión.
+
+## Qué pasa después
+
+1. **La directiva revisa tu entrega.** Puede aprobarla o devolverla con observaciones; si te deja observaciones, corriges y vuelves a enviar.
+2. **Si la aprueban, se abre la Parte 2 de Academia Nova:** soldadura THT y SMD, explicada con texto y videos.
+3. **Práctica presencial:** el encargado de la convocatoria te asignará una fecha para recibir tu kit de placa y soldarla con guía del equipo.
+4. **Decisión final:** con todo lo anterior, la directiva decide tu ingreso a Nova como miembro.
 
 ## Criterios de aprobación
 

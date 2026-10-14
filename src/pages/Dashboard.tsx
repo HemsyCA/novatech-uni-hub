@@ -19,9 +19,12 @@ import type { User as SupabaseUser } from "@supabase/supabase-js";
 import { useAcademyAccess } from "@/hooks/use-academy-access";
 import { useMemberAccess } from "@/hooks/use-member-access";
 import { useAcademyProgress } from "@/hooks/use-academy-progress";
+import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
+import { useAcademyPractica } from "@/hooks/use-academy-practica";
 import { daysLeft, formatDate, limaToday } from "@/lib/academy-dates";
 import { lessonPath } from "@/lib/academia/course";
 import { ProgressBar } from "@/components/academia/ui";
+import { PracticaCard } from "@/components/academia/PracticaCard";
 import { listOrders } from "@/services/supabase/orders";
 import { listUserReservations } from "@/services/supabase/reservations";
 
@@ -82,6 +85,8 @@ export default function Dashboard() {
   const navigate = useNavigate();
   const academy = useAcademyAccess();
   const progress = useAcademyProgress(academy.userId);
+  const entrega = useAcademyEntrega(academy.userId);
+  const practica = useAcademyPractica(academy.userId);
   const member = useMemberAccess();
 
   useEffect(() => {
@@ -147,7 +152,7 @@ export default function Dashboard() {
   const expiredMembership = academy.memberships.find((m) => m.ends_at < today);
   const next = progress.nextLesson;
 
-  const academySection = academy.loading || progress.loading ? null : academy.hasAccess ? (
+  const academySection = academy.loading || progress.loading || entrega.loading || practica.loading ? null : academy.hasAccess ? (
     <section>
       <SectionTitle>Academia Nova</SectionTitle>
       <div className="rounded-2xl border border-white/25 p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
@@ -156,7 +161,7 @@ export default function Dashboard() {
             <GraduationCap className="h-6 w-6" />
           </div>
           <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-widest text-white/50">Nivel 0 · Bienvenida</p>
+            <p className="text-xs uppercase tracking-widest text-white/50">Parte 1 · Bienvenida</p>
             <p className="mt-1 text-sm text-white/70">
               {academy.activeMembership
                 ? `Acceso hasta el ${formatDate(academy.activeMembership.ends_at)} · quedan ${daysLeft(academy.activeMembership.ends_at)} día(s)`
@@ -175,6 +180,12 @@ export default function Dashboard() {
                   : "Empieza por la guía de inicio."
                 : "Completaste todas las lecciones. Prepara tu entrega."}
             </p>
+            {entrega.entrega && (
+              <p className="mt-1 text-sm text-white">
+                Tarea final:{" "}
+                {{ enviada: "en revisión", observada: "con observaciones, revísalas", aprobada: "aprobada" }[entrega.entrega.estado]}
+              </p>
+            )}
           </div>
         </div>
         <div className="flex flex-col gap-2 sm:flex-row md:flex-col">
@@ -193,6 +204,11 @@ export default function Dashboard() {
           </Link>
         </div>
       </div>
+      {entrega.entrega?.estado === "aprobada" && (
+        <div className="mt-4">
+          <PracticaCard practica={practica.practica} />
+        </div>
+      )}
     </section>
   ) : (
     <section>
