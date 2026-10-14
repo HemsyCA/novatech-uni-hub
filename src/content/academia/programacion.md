@@ -612,7 +612,7 @@ Un pin digital solo tiene dos estados: 3.3 V o 0 V. Pero un robot necesita "cant
 - Si está encendido el **10 %** del tiempo, brilla muy poco.
 - A ese porcentaje se le llama **ciclo de trabajo (duty cycle)**.
 
-Con un motor pasa lo mismo: recibe "empujones" muy rápidos y gira a una velocidad proporcional al ciclo de trabajo. Por eso, en el Nivel 1, controlarás la velocidad de los motores con el mismo código que usarás aquí.
+Con un motor pasa lo mismo: recibe "empujones" muy rápidos y gira a una velocidad proporcional al ciclo de trabajo. Por eso, ya en el equipo, controlarás la velocidad de los motores con el mismo código que usarás aquí.
 
 #### La instrucción `analogWrite`
 
@@ -883,7 +883,7 @@ void encenderSolo(int pin) {      // recibe el número del pin
 encenderSolo(LED_ROJO);           // apaga todo y enciende solo el rojo
 ```
 
-**¿Por qué usar funciones?** Porque en vez de repetir las mismas 3 líneas en 5 lugares, escribes una vez y usas el nombre. Si hay un error, lo corriges en un solo lugar. Es lo que harás en el Nivel 1 con funciones como `adelante()`, `atras()` o `girarIzquierda()` para mover un robot.
+**¿Por qué usar funciones?** Porque en vez de repetir las mismas 3 líneas en 5 lugares, escribes una vez y usas el nombre. Si hay un error, lo corriges en un solo lugar. Es lo que harás en el equipo con funciones como `adelante()`, `atras()` o `girarIzquierda()` para mover un robot.
 
 #### El salto al Bluetooth
 
@@ -903,7 +903,7 @@ if (SerialBT.available() > 0) {
 }
 ```
 
-El simulador no puede probar Bluetooth, así que lo harás con una placa real en el Nivel 1. Lo importante es que **la lógica ya la sabes**.
+El simulador no puede probar Bluetooth, así que lo harás con una placa real ya en el equipo. Lo importante es que **la lógica ya la sabes**.
 
 > **Dato:** el Bluetooth "clásico" del ESP32 (el de `BluetoothSerial`) funciona con celulares Android, pero no con iPhone.
 
@@ -997,7 +997,7 @@ Agrega dos comandos nuevos, cada uno con su propia función:
 
 ## Extra · Pasar a una placa real con Arduino IDE
 
-> **Opcional:** esta lección es opcional en el Nivel 0. Hazla si tienes una ESP32 DevKit V1, o déjala lista para cuando llegues al Nivel 1.
+> **Opcional:** esta lección es opcional en la Parte 1. Hazla si tienes una ESP32 DevKit V1, o déjala lista para cuando tengas tu placa.
 
 ### Objetivo
 

@@ -10,6 +10,8 @@ import { AdminReservations } from "@/components/admin/AdminReservations";
 import { AdminContactMessages } from "@/components/admin/AdminContactMessages";
 import { AdminAcademia } from "@/components/admin/AdminAcademia";
 import { AdminMiembros } from "@/components/admin/AdminMiembros";
+import { AdminEntregas } from "@/components/admin/AdminEntregas";
+import { AdminPracticas } from "@/components/admin/AdminPracticas";
 import { useUserRole } from "@/hooks/use-user-role";
 
 export default function Admin() {
@@ -48,13 +50,15 @@ export default function Admin() {
 
         <Tabs defaultValue="products">
           <TabsList
-            className={`grid w-full h-auto bg-muted/50 mb-6 grid-cols-3 ${isSuperadmin ? "sm:grid-cols-7" : "sm:grid-cols-6"}`}
+            className={`grid w-full h-auto bg-muted/50 mb-6 grid-cols-3 ${isSuperadmin ? "sm:grid-cols-9" : "sm:grid-cols-8"}`}
           >
             <TabsTrigger value="products">Productos</TabsTrigger>
             <TabsTrigger value="orders">Pedidos</TabsTrigger>
             <TabsTrigger value="reservations">Reservas</TabsTrigger>
             <TabsTrigger value="messages">Mensajes</TabsTrigger>
             <TabsTrigger value="academia">Convocados</TabsTrigger>
+            <TabsTrigger value="entregas">Entregas</TabsTrigger>
+            <TabsTrigger value="practicas">Prácticas</TabsTrigger>
             <TabsTrigger value="miembros">Miembros</TabsTrigger>
             {isSuperadmin && <TabsTrigger value="roles">Roles</TabsTrigger>}
           </TabsList>
@@ -72,6 +76,12 @@ export default function Admin() {
           </TabsContent>
           <TabsContent value="academia">
             <AdminAcademia />
+          </TabsContent>
+          <TabsContent value="entregas">
+            <AdminEntregas />
+          </TabsContent>
+          <TabsContent value="practicas">
+            <AdminPracticas />
           </TabsContent>
           <TabsContent value="miembros">
             <AdminMiembros />

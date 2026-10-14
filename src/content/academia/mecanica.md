@@ -35,8 +35,8 @@ Onshape es un **CAD paramétrico**: cada pieza se construye con una secuencia de
 
 - **Página de documentos:** donde ves todos tus proyectos. Cada proyecto es un **documento**.
 - **Pestañas inferiores:** dentro de un documento hay pestañas.
-  - **Part Studio:** donde se diseñan las piezas. Aquí trabajaremos en todo el Nivel 0.
-  - **Assembly:** donde se juntan varias piezas (lo verás en el Nivel 1).
+  - **Part Studio:** donde se diseñan las piezas. Aquí trabajaremos en toda la Parte 1.
+  - **Assembly:** donde se juntan varias piezas (lo usarás ya en el equipo).
 - **Barra de herramientas** (arriba): las operaciones (boceto, extruir, redondear…).
 - **Lista de operaciones** (a la izquierda): el historial de pasos de tu pieza. Puedes hacer doble clic en cualquiera para editarlo.
 - **Cubo de vistas** (arriba a la derecha): haz clic en sus caras para ver la pieza de frente, de arriba, de lado.
@@ -259,7 +259,7 @@ Por eso se deja una **holgura** (espacio extra) donde una pieza debe encajar en 
 | Tornillo M3 | 3.0 mm | **3.2 a 3.4 mm** |
 | Cuerpo del servo SG90 | ≈ 22.2 × 11.8 mm | **≈ 22.6 × 12.2 mm** |
 
-Cada impresora es un poco distinta. En el Nivel 1 aprenderás a imprimir una pieza de prueba de holguras para ajustar estos valores.
+Cada impresora es un poco distinta. Ya en el equipo aprenderás a imprimir una pieza de prueba de holguras para ajustar estos valores.
 
 #### Regla 2: espesores mínimos
 

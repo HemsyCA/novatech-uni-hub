@@ -5,6 +5,36 @@ import remarkGfm from "remark-gfm";
 import { Check, ChevronRight, Copy } from "lucide-react";
 
 const ANSWERS_LANGUAGE = "language-respuestas";
+const VIDEO_LANGUAGE = "language-video";
+const YOUTUBE_ID = /^[\w-]{11}$/;
+
+function YouTubeVideo({ id, title }: { id: string; title: string }) {
+  return (
+    <figure className="not-prose my-6">
+      <div className="relative aspect-video overflow-hidden rounded-xl border border-white/15 bg-white/[0.04]">
+        <iframe
+          src={`https://www.youtube-nocookie.com/embed/${id}`}
+          title={title}
+          loading="lazy"
+          allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowFullScreen
+          className="absolute inset-0 h-full w-full"
+        />
+      </div>
+      <figcaption className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-white/50">
+        <span>{title}</span>
+        <a
+          href={`https://www.youtube.com/watch?v=${id}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white underline underline-offset-4"
+        >
+          Ver en YouTube
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
 
 function CodeBlock({ text, children }: { text: string; children: ReactNode }) {
   const [copied, setCopied] = useState(false);
@@ -62,8 +92,14 @@ const components: Components = {
     const code = node?.children[0];
     const classNames = code && "properties" in code ? code.properties.className : undefined;
     const isAnswers = Array.isArray(classNames) && classNames.includes(ANSWERS_LANGUAGE);
+    const isVideo = Array.isArray(classNames) && classNames.includes(VIDEO_LANGUAGE);
 
     const text = code && "children" in code ? code.children.map((c) => ("value" in c ? c.value : "")).join("") : "";
+
+    if (isVideo) {
+      const [id = "", title = "Video de apoyo"] = text.trim().split(/\r?\n/).map((line) => line.trim());
+      if (YOUTUBE_ID.test(id)) return <YouTubeVideo id={id} title={title} />;
+    }
 
     if (isAnswers) {
       return (

@@ -1,19 +1,24 @@
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, NotebookPen, type LucideIcon } from "lucide-react";
-import { useAcademy } from "@/components/academia/academy-context";
+import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, Flame, Lock, NotebookPen, type LucideIcon } from "lucide-react";
+import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
+import { Part2Status } from "@/components/academia/Part2Locked";
+import { PracticaCard } from "@/components/academia/PracticaCard";
 import { LessonRow, ProgressBar } from "@/components/academia/ui";
-import { courseModules, lessonPath, weeklyPlan, type ModuleId } from "@/lib/academia/course";
+import { courseModules, lessonPath, part2Module, weeklyPlan, type CourseModuleId } from "@/lib/academia/course";
 import { daysLeft, formatDate } from "@/lib/academy-dates";
 
-const moduleIcons: Record<ModuleId, LucideIcon> = {
+const moduleIcons: Record<CourseModuleId, LucideIcon> = {
   electronica: CircuitBoard,
   mecanica: Cog,
   programacion: Code2,
+  soldadura: Flame,
 };
 
 export default function AcademiaHome() {
-  const { progress, fichas, activeMembership } = useAcademy();
+  const { progress, fichas, practica, activeMembership } = useAcademy();
   const moduleFichas = courseModules.filter((m) => fichas.moduleFicha(m.id)).length;
+  const canAccessPart2 = useCanAccessPart2();
+  const part2Done = part2Module.lessons.filter((l) => progress.completed.has(l.key)).length;
   const next = progress.nextLesson;
   const started = progress.done > 0;
 
@@ -34,7 +39,7 @@ export default function AcademiaHome() {
   return (
     <div className="space-y-14">
       <section>
-        <p className="text-xs uppercase tracking-widest text-white/50">Nivel 0 · Bienvenida</p>
+        <p className="text-xs uppercase tracking-widest text-white/50">Parte 1 · Bienvenida</p>
         <h1 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight mt-2">Academia Nova</h1>
         <p className="mt-3 text-sm text-white/60">
           {activeMembership
@@ -75,7 +80,7 @@ export default function AcademiaHome() {
           <Link to="/academia/guia" className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors">
             <BookOpen className="h-7 w-7 mb-4" />
             <h3 className="font-display font-bold">Guía de inicio</h3>
-            <p className="mt-2 text-sm text-white/60">Cómo funciona el Nivel 0, qué necesitas y el Mapa de pines Nova.</p>
+            <p className="mt-2 text-sm text-white/60">Cómo funciona la Parte 1, qué necesitas y el Mapa de pines Nova.</p>
           </Link>
 
           <Link to="/academia/bitacora" className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors">
@@ -149,6 +154,48 @@ export default function AcademiaHome() {
           ))}
         </div>
         <p className="mt-4 text-xs text-white/40">Tu progreso se guarda en tu cuenta: puedes continuar desde cualquier dispositivo.</p>
+      </section>
+
+      <section>
+        <h2 className="font-display text-xl font-bold mb-5">Parte 2 · Soldadura</h2>
+        {canAccessPart2 ? (
+          <div className="space-y-4">
+            <Link
+              to="/academia/soldadura"
+              className="group flex flex-col gap-5 rounded-2xl border border-white/25 p-6 hover:border-white transition-colors sm:flex-row sm:items-center"
+            >
+              <Flame className="h-8 w-8 shrink-0" />
+              <div className="flex-1">
+                <p className="text-sm text-white/70">{part2Module.summary}</p>
+                <p className="mt-1 text-xs text-white/40">
+                  {part2Module.lessons.length} lecciones · {part2Module.tool} · {part2Module.duration}
+                </p>
+                <div className="mt-3 flex items-center gap-3">
+                  <ProgressBar value={Math.round((part2Done / part2Module.lessons.length) * 100)} label="Progreso de la Parte 2" />
+                  <span className="shrink-0 text-xs text-white/60">
+                    {part2Done}/{part2Module.lessons.length}
+                  </span>
+                </div>
+              </div>
+              <span className="inline-flex items-center gap-2 font-semibold">
+                Entrar <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </span>
+            </Link>
+            <PracticaCard practica={practica.practica} />
+          </div>
+        ) : (
+          <div className="flex gap-4 rounded-2xl border border-white/10 p-6">
+            <Lock className="h-6 w-6 shrink-0 text-white/50" />
+            <div>
+              <p className="text-sm text-white/70">
+                Soldadura THT y SMD, con teoría y videos, para prepararte antes de la práctica presencial.
+              </p>
+              <p className="mt-2 text-sm text-white/50">
+                <Part2Status />
+              </p>
+            </div>
+          </div>
+        )}
       </section>
     </div>
   );

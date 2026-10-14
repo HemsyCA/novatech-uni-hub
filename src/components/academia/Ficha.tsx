@@ -7,12 +7,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { useAcademy } from "@/components/academia/academy-context";
 import { getLesson } from "@/lib/academia/course";
-import { moduleInfo, type ModuleId } from "@/lib/academia/modules";
+import { moduleName, type CourseModuleId } from "@/lib/academia/modules";
 import type { AcademyFicha, AcademyFichaInput } from "@/services/supabase/academia";
 
 const inputClass = "bg-black border-white/20 focus-visible:ring-white/40";
-
-const moduleName = (id: string) => moduleInfo.find((m) => m.id === id)?.name ?? id;
 
 const lessonCode = (lessonKey: string) => {
   const [moduleId, slug] = lessonKey.split("/");
@@ -20,7 +18,7 @@ const lessonCode = (lessonKey: string) => {
 };
 
 interface FichaFormProps {
-  moduleId: ModuleId;
+  moduleId: CourseModuleId;
   lessonKey: string;
   isModuleFicha: boolean;
   initial?: AcademyFicha | null;

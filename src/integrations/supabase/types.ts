@@ -183,6 +183,57 @@ export type Database = {
         }
         Relationships: []
       }
+      academia_entregas: {
+        Row: {
+          comentario: string | null
+          created_at: string
+          diagrama_url: string
+          electronica_url: string
+          enviado_at: string
+          estado: Database["public"]["Enums"]["entrega_estado"]
+          mecanica_url: string
+          onshape_url: string
+          reflexion: string
+          revisado_at: string | null
+          revisado_por: string | null
+          user_id: string
+          video_url: string
+          wokwi_url: string
+        }
+        Insert: {
+          comentario?: string | null
+          created_at?: string
+          diagrama_url: string
+          electronica_url: string
+          enviado_at?: string
+          estado?: Database["public"]["Enums"]["entrega_estado"]
+          mecanica_url: string
+          onshape_url: string
+          reflexion: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          user_id: string
+          video_url: string
+          wokwi_url: string
+        }
+        Update: {
+          comentario?: string | null
+          created_at?: string
+          diagrama_url?: string
+          electronica_url?: string
+          enviado_at?: string
+          estado?: Database["public"]["Enums"]["entrega_estado"]
+          mecanica_url?: string
+          onshape_url?: string
+          reflexion?: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          user_id?: string
+          video_url?: string
+          wokwi_url?: string
+        }
+        Relationships: []
+      }
       academia_fichas: {
         Row: {
           aprendi: string
@@ -229,6 +280,42 @@ export type Database = {
           paso?: string
           queria?: string
           titulo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      academia_practicas: {
+        Row: {
+          asignado_por: string | null
+          comentario: string | null
+          created_at: string
+          estado: Database["public"]["Enums"]["practica_estado"]
+          fecha: string
+          indicaciones: string | null
+          lugar: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          asignado_por?: string | null
+          comentario?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["practica_estado"]
+          fecha: string
+          indicaciones?: string | null
+          lugar: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          asignado_por?: string | null
+          comentario?: string | null
+          created_at?: string
+          estado?: Database["public"]["Enums"]["practica_estado"]
+          fecha?: string
+          indicaciones?: string | null
+          lugar?: string
           updated_at?: string
           user_id?: string
         }
@@ -792,6 +879,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      enviar_entrega_academia: {
+        Args: {
+          _diagrama_url: string
+          _electronica_url: string
+          _mecanica_url: string
+          _onshape_url: string
+          _reflexion: string
+          _video_url: string
+          _wokwi_url: string
+        }
+        Returns: undefined
+      }
+      revisar_entrega_academia: {
+        Args: { _aprobar: boolean; _comentario?: string; _user_id: string }
+        Returns: undefined
+      }
       has_academy_access: { Args: { _user_id: string }; Returns: boolean }
       my_academy_memberships: {
         Args: Record<PropertyKey, never>
@@ -818,6 +921,8 @@ export type Database = {
     }
     Enums: {
       app_role: "superadmin" | "directiva"
+      entrega_estado: "enviada" | "observada" | "aprobada"
+      practica_estado: "programada" | "asistio" | "no_asistio"
       inscripcion_estado: "pendiente" | "aprobada" | "rechazada"
       order_status: "pending" | "paid" | "preparing" | "delivered" | "cancelled"
       print_status:
@@ -955,6 +1060,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["superadmin", "directiva"],
+      entrega_estado: ["enviada", "observada", "aprobada"],
+      practica_estado: ["programada", "asistio", "no_asistio"],
       inscripcion_estado: ["pendiente", "aprobada", "rechazada"],
       order_status: ["pending", "paid", "preparing", "delivered", "cancelled"],
       print_status: [

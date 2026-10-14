@@ -25,7 +25,7 @@ Acostúmbrate a leer la web de Nova: ahí vamos publicando todo lo que el equipo
 2. En cada lección: lee la explicación → haz el paso a paso → resuelve la mini práctica → revisa el checklist.
 3. Al final de cada parte encontrarás **su pieza de la tarea final**.
 4. Cuando tengas las 3 piezas, grabas un video corto, ordenas tu bitácora y lo entregas todo.
-5. El equipo revisa tu entrega y te da acceso al **Nivel 1**.
+5. La directiva revisa tu entrega. Si la aprueba, se abre la **Parte 2: soldadura**.
 
 **Tiempo estimado:** entre 16 y 20 horas en total.
 
@@ -38,7 +38,7 @@ Acostúmbrate a leer la web de Nova: ahí vamos publicando todo lo que el equipo
 - Cuentas gratuitas en: **Wokwi** (simulador), **EasyEDA** (diseño electrónico) y **Onshape** (diseño 3D). En cada parte te explicamos cómo crearlas.
 - Un cuaderno para cálculos, dibujos y tu bitácora.
 
-**No necesitas comprar ningún componente.** Todo el Nivel 0 se hace en programas y simuladores online. El hardware real llega en el Nivel 1.
+**No necesitas comprar ningún componente.** Toda la Parte 1 se hace en programas y simuladores online. El hardware real llega con la práctica presencial de la Parte 2.
 
 ## ¿Por qué aprendemos estas cosas?
 
@@ -90,13 +90,14 @@ Todas las lecciones siguen la misma estructura, para que siempre sepas dónde es
 - **Mini práctica:** un ejercicio para hacer por tu cuenta.
 - **Puedo continuar si…:** una autoevaluación rápida.
 
-## La ruta de niveles
+## Tu camino en Nova
 
-| Nivel | Qué es | Cómo se accede |
+| Etapa | Qué es | Cómo se accede |
 | --- | --- | --- |
-| **Nivel 0 – Bienvenida** | Este contenido. Autónomo, sin mentores. | Inscribiéndote en la convocatoria |
-| **Nivel 1 – Formación guiada** | Acceso al grupo del equipo, preguntas a los integrantes, hardware real (drivers de motores, fuentes de alimentación, soldadura, impresión 3D y ensamble de robots). | Aprobando la tarea final del Nivel 0 |
-| **Nivel 2 – Competencia o investigación** | Integración a una categoría de competencia o a un proyecto de investigación. | Según tu desempeño en el Nivel 1 |
+| **Parte 1 – Bienvenida** | Este contenido: Electrónica, Mecánica y Programación. Autónomo, en texto y simuladores. | Inscribiéndote en la convocatoria |
+| **Parte 2 – Soldadura** | Soldadura THT y SMD, en texto y videos, para prepararte antes de tocar el hardware. | Cuando la directiva aprueba tu tarea final |
+| **Práctica presencial** | Recibes un kit de placa y la sueldas con guía del equipo. | El encargado de la convocatoria te asigna una fecha |
+| **Miembro de Nova** | Material interno, foro y bitácora del equipo; luego, competencias o investigación. | La directiva decide tu ingreso |
 
 ## Consejos para aprender por tu cuenta
 
