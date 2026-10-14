@@ -26,6 +26,7 @@ const Admin = lazy(() => import("./pages/Admin"));
 const Academia = lazy(() => import("./pages/Academia"));
 const AcademiaHome = lazy(() => import("./pages/academia/AcademiaHome"));
 const AcademiaGuide = lazy(() => import("./pages/academia/AcademiaGuide"));
+const AcademiaBitacora = lazy(() => import("./pages/academia/AcademiaBitacora"));
 const AcademiaFinalTask = lazy(() => import("./pages/academia/AcademiaFinalTask"));
 const AcademiaModule = lazy(() => import("./pages/academia/AcademiaModule"));
 const AcademiaLesson = lazy(() => import("./pages/academia/AcademiaLesson"));
@@ -65,6 +66,7 @@ const App = () => (
               <Route path="/academia" element={<Academia />}>
                 <Route index element={<AcademiaHome />} />
                 <Route path="guia" element={<AcademiaGuide />} />
+                <Route path="bitacora" element={<AcademiaBitacora />} />
                 <Route path="tarea-final" element={<AcademiaFinalTask />} />
                 <Route path=":moduleId" element={<AcademiaModule />} />
                 <Route path=":moduleId/:lessonId" element={<AcademiaLesson />} />

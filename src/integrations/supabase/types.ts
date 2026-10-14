@@ -183,6 +183,57 @@ export type Database = {
         }
         Relationships: []
       }
+      academia_fichas: {
+        Row: {
+          aprendi: string
+          created_at: string
+          es_del_modulo: boolean
+          evidencia_url: string
+          fuentes: string
+          hice: string
+          id: string
+          lesson_key: string
+          modulo: string
+          paso: string
+          queria: string
+          titulo: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          aprendi: string
+          created_at?: string
+          es_del_modulo?: boolean
+          evidencia_url: string
+          fuentes: string
+          hice: string
+          id?: string
+          lesson_key: string
+          modulo: string
+          paso: string
+          queria: string
+          titulo: string
+          updated_at?: string
+          user_id?: string
+        }
+        Update: {
+          aprendi?: string
+          created_at?: string
+          es_del_modulo?: boolean
+          evidencia_url?: string
+          fuentes?: string
+          hice?: string
+          id?: string
+          lesson_key?: string
+          modulo?: string
+          paso?: string
+          queria?: string
+          titulo?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       academia_progreso: {
         Row: {
           completed_at: string

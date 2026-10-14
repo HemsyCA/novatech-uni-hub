@@ -8,12 +8,23 @@ Al terminar, entregas una **tarea final**. Si la apruebas, obtienes acceso al gr
 
 No esperamos que sepas nada de robótica antes de empezar. Lo que sí buscamos es gente que **intente, se equivoque, investigue y encuentre soluciones por su cuenta**. Esa actitud es justamente lo que evalúa esta etapa.
 
+## Aprender investigando
+
+En Nova no se dictan clases: se aprende investigando. Estas lecciones son una guía para que avances por tu cuenta, y el ciclo es siempre el mismo:
+
+1. **Lee.** Todo lo que sabe el equipo se publica en la web de Nova: las lecciones de esta Academia, nuestros robots y su documentación. Es tu punto de partida.
+2. **Investiga.** Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no.
+3. **Prueba.** Lleva lo que aprendiste a los simuladores y, más adelante, al hardware real. Equivocarte es parte del proceso.
+4. **Documenta.** Llena una [ficha de bitácora](/academia/bitacora) de cuatro preguntas: Quería, Hice, Pasó y Aprendí. Es obligatoria al cerrar cada módulo y opcional al final de cualquier lección. Es la forma en que el equipo comparte lo que aprende.
+
+Acostúmbrate a leer la web de Nova: ahí vamos publicando todo lo que el equipo aprende.
+
 ## ¿Cómo funciona?
 
 1. Avanza por las 3 partes: **Electrónica**, **Mecánica** y **Programación**.
 2. En cada lección: lee la explicación → haz el paso a paso → resuelve la mini práctica → revisa el checklist.
 3. Al final de cada parte encontrarás **su pieza de la tarea final**.
-4. Cuando tengas las 3 piezas, grabas un video corto, escribes tu bitácora y lo entregas todo.
+4. Cuando tengas las 3 piezas, grabas un video corto, ordenas tu bitácora y lo entregas todo.
 5. El equipo revisa tu entrega y te da acceso al **Nivel 1**.
 
 **Tiempo estimado:** entre 16 y 20 horas en total.
@@ -91,5 +102,5 @@ Todas las lecciones siguen la misma estructura, para que siempre sepas dónde es
 
 - **Lee los errores.** Cuando algo falla, el programa casi siempre te dice por qué. Copia el mensaje de error y búscalo en internet: alguien ya tuvo el mismo problema.
 - **Avanza en pasos pequeños.** Prueba cada parte por separado antes de juntarlas.
-- **Escribe tu bitácora desde el día 1.** Anota lo que te cuesta y cómo lo resuelves; al final solo tendrás que ordenarlo.
+- **Escribe tu bitácora desde el día 1.** Llena una [ficha](/academia/bitacora) cada vez que resuelvas algo; al final solo tendrás que elegir tus mejores fichas.
 - **No te quedes trabado días en lo mismo.** Si algo no sale, busca otra explicación o avanza con otra lección y vuelve después.

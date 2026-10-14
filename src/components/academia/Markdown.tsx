@@ -1,11 +1,44 @@
+import { useState, type ReactNode } from "react";
+import { Link } from "react-router-dom";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { ChevronRight } from "lucide-react";
+import { Check, ChevronRight, Copy } from "lucide-react";
 
 const ANSWERS_LANGUAGE = "language-respuestas";
 
+function CodeBlock({ text, children }: { text: string; children: ReactNode }) {
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  return (
+    <div className="not-prose relative my-6">
+      <button
+        type="button"
+        onClick={copy}
+        className="absolute right-2 top-2 inline-flex items-center gap-1.5 rounded-md border border-white/20 bg-black px-2.5 py-1 text-xs text-white/80 hover:text-white hover:border-white/50 transition-colors"
+      >
+        {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+        {copied ? "Copiado" : "Copiar"}
+      </button>
+      <pre className="overflow-x-auto rounded-xl border border-white/15 bg-white/[0.04] p-4 pr-24 text-[13px] leading-relaxed text-white/90">
+        {children}
+      </pre>
+    </div>
+  );
+}
+
 const components: Components = {
   a: ({ href, children }) => {
+    if (href?.startsWith("/")) return <Link to={href}>{children}</Link>;
     const external = href?.startsWith("http");
     return (
       <a href={href} target={external ? "_blank" : undefined} rel={external ? "noopener noreferrer" : undefined}>
@@ -30,8 +63,9 @@ const components: Components = {
     const classNames = code && "properties" in code ? code.properties.className : undefined;
     const isAnswers = Array.isArray(classNames) && classNames.includes(ANSWERS_LANGUAGE);
 
-    if (isAnswers && code && "children" in code) {
-      const text = code.children.map((c) => ("value" in c ? c.value : "")).join("");
+    const text = code && "children" in code ? code.children.map((c) => ("value" in c ? c.value : "")).join("") : "";
+
+    if (isAnswers) {
       return (
         <details className="group my-6 rounded-xl border border-white/20">
           <summary className="flex cursor-pointer list-none items-center gap-2 px-5 py-3 text-sm font-semibold text-white [&::-webkit-details-marker]:hidden">
@@ -45,11 +79,7 @@ const components: Components = {
       );
     }
 
-    return (
-      <pre className="not-prose my-6 overflow-x-auto rounded-xl border border-white/15 bg-white/[0.04] p-4 text-[13px] leading-relaxed text-white/90">
-        {children}
-      </pre>
-    );
+    return <CodeBlock text={text}>{children}</CodeBlock>;
   },
   input: ({ type, checked }) =>
     type === "checkbox" ? (
