@@ -27,6 +27,7 @@ export interface AccountState {
   aportes: Aporte[];
   reloadAportes: () => void;
   signOut: () => Promise<void>;
+  signOutEverywhere: () => Promise<void>;
 }
 
 export const AccountContext = createContext<AccountState | null>(null);

@@ -70,3 +70,8 @@ export const updatePassword = async (password: string) => {
 export const signOut = async () => {
   return supabase.auth.signOut();
 };
+
+// Cierra la sesión en todos los dispositivos: invalida las sesiones en el servidor.
+export const signOutEverywhere = async () => {
+  return supabase.auth.signOut({ scope: "global" });
+};
