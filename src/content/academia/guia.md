@@ -2,22 +2,32 @@
 
 Si estás leyendo esto, ya diste el primer paso para formar parte del equipo. Antes de empezar, es importante que sepas cómo funciona esta etapa:
 
-**Aquí nadie te va a dictar clases.** Este nivel es 100% autónomo: aprendes a tu ritmo, en el horario que puedas, siguiendo las lecciones de la Academia. Cada lección tiene una explicación escrita paso a paso.
+**Aquí no hay clases dictadas, pero no estás solo.** Avanzas a tu ritmo, en el horario que puedas, siguiendo las lecciones de la Academia. Cada lección tiene una explicación escrita paso a paso. Y durante toda la convocatoria tienes a un **encargado de convocatoria** del equipo, a quien puedes preguntarle tus dudas.
 
-Al terminar, entregas una **tarea final**. Si la apruebas, obtienes acceso al grupo del equipo, donde ya puedes hacer preguntas, trabajar con hardware real y prepararte para competir.
+Al terminar, entregas una **tarea final**. Si la apruebas, sigues con la Parte 2 (soldadura) y una práctica presencial con el equipo; después, la directiva decide tu ingreso.
 
-No esperamos que sepas nada de robótica antes de empezar. Lo que sí buscamos es gente que **intente, se equivoque, investigue y encuentre soluciones por su cuenta**. Esa actitud es justamente lo que evalúa esta etapa.
+No esperamos que sepas nada de robótica antes de empezar. Lo que sí buscamos es gente que **intente, se equivoque, investigue y busque soluciones**. Esa actitud es justamente lo que evalúa esta etapa.
 
 ## Aprender investigando
 
 En Nova no se dictan clases: se aprende investigando. Estas lecciones son una guía para que avances por tu cuenta, y el ciclo es siempre el mismo:
 
 1. **Lee.** Todo lo que sabe el equipo se publica en la web de Nova: las lecciones de esta Academia, nuestros robots y su documentación. Es tu punto de partida.
-2. **Investiga.** Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no.
+2. **Investiga.** Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no. Si sigues trabado, pregúntale al encargado de la convocatoria.
 3. **Prueba.** Lleva lo que aprendiste a los simuladores y, más adelante, al hardware real. Equivocarte es parte del proceso.
 4. **Documenta.** Llena una [ficha de bitácora](/academia/bitacora) de cuatro preguntas: Quería, Hice, Pasó y Aprendí. Es obligatoria al cerrar cada módulo y opcional al final de cualquier lección. Es la forma en que el equipo comparte lo que aprende.
 
 Acostúmbrate a leer la web de Nova: ahí vamos publicando todo lo que el equipo aprende.
+
+## Tu encargado de convocatoria
+
+Durante toda la convocatoria, una persona del equipo te acompaña:
+
+- **Pregúntale tus dudas.** Si ya leíste e investigaste y sigues trabado, escríbele. Cuéntale qué intentaste y qué pasó: así te ayuda más rápido.
+- **Reuniones de refuerzo.** Según su disponibilidad, puede organizar reuniones para repasar los temas que más cuestan.
+- **Un compartir.** A veces también se organiza un encuentro para conocerse con el equipo y compartir algo de comer.
+
+Preguntar está bien: lo que valoramos es que lo hayas intentado antes.
 
 ## ¿Cómo funciona?
 
@@ -99,9 +109,9 @@ Todas las lecciones siguen la misma estructura, para que siempre sepas dónde es
 | **Práctica presencial** | Recibes un kit de placa y la sueldas con guía del equipo. | El encargado de la convocatoria te asigna una fecha |
 | **Miembro de Nova** | Material interno, foro y bitácora del equipo; luego, competencias o investigación. | La directiva decide tu ingreso |
 
-## Consejos para aprender por tu cuenta
+## Consejos para avanzar
 
 - **Lee los errores.** Cuando algo falla, el programa casi siempre te dice por qué. Copia el mensaje de error y búscalo en internet: alguien ya tuvo el mismo problema.
 - **Avanza en pasos pequeños.** Prueba cada parte por separado antes de juntarlas.
 - **Escribe tu bitácora desde el día 1.** Llena una [ficha](/academia/bitacora) cada vez que resuelvas algo; al final solo tendrás que elegir tus mejores fichas.
-- **No te quedes trabado días en lo mismo.** Si algo no sale, busca otra explicación o avanza con otra lección y vuelve después.
+- **No te quedes trabado días en lo mismo.** Si algo no sale, busca otra explicación, avanza con otra lección y vuelve después, o pregúntale al encargado de la convocatoria.
