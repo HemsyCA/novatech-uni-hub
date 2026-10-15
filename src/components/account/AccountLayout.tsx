@@ -1,0 +1,128 @@
+import { Suspense, useCallback, useEffect, useState } from "react";
+import { Outlet, useMatch, useNavigate } from "react-router-dom";
+import { AccountContext, type AccountState } from "@/components/account/account-context";
+import { AccountHeader, AccountTabBar } from "@/components/account/AccountHeader";
+import { useSession } from "@/hooks/use-session";
+import { useAcademyAccess } from "@/hooks/use-academy-access";
+import { useAcademyProgress } from "@/hooks/use-academy-progress";
+import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
+import { useAcademyPractica } from "@/hooks/use-academy-practica";
+import { useMemberAccess } from "@/hooks/use-member-access";
+import { signOut as signOutSession } from "@/services/supabase/auth";
+import { listAllOrders, listOrders } from "@/services/supabase/orders";
+import { listAllReservations, listUserReservations } from "@/services/supabase/reservations";
+import { listAcademyEntregas, listPendingApplications } from "@/services/supabase/academia";
+import { listAportesPorRevisar, listMyAportes, type Aporte } from "@/services/supabase/conocimientos";
+import type { Order, Reservation } from "@/types/domain";
+
+// Marco común de todas las páginas de la cuenta: un solo encabezado, la barra inferior en el celular
+// y los datos que comparten.
+export default function AccountLayout() {
+  const navigate = useNavigate();
+  const { user, loading: sessionLoading } = useSession();
+  const academy = useAcademyAccess();
+  const progress = useAcademyProgress(academy.userId);
+  const entrega = useAcademyEntrega(academy.userId);
+  const practica = useAcademyPractica(academy.userId);
+  const member = useMemberAccess();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [staffPending, setStaffPending] = useState<AccountState["staffPending"]>(null);
+  const [academicPending, setAcademicPending] = useState<number | null>(null);
+  const [aportes, setAportes] = useState<Aporte[]>([]);
+
+  // Dentro de una lección se ocultan las pestañas de abajo: ahí va la navegación entre pasos.
+  const inLesson = useMatch("/academia/:moduleId/:lessonId");
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    Promise.all([listOrders(user.id), listUserReservations(user.id)])
+      .then(([o, r]) => {
+        if (!active) return;
+        setOrders(o);
+        setReservations(r);
+      })
+      .catch(() => {
+        // Sin pedidos ni reservas el panel sigue funcionando; solo no habrá avisos de servicios.
+      });
+    return () => {
+      active = false;
+    };
+  }, [user]);
+
+  useEffect(() => {
+    if (!academy.isStaff) {
+      setStaffPending(null);
+      return;
+    }
+    let active = true;
+    Promise.all([listAcademyEntregas(), listPendingApplications(), listAllOrders(), listAllReservations()])
+      .then(([entregas, inscripciones, allOrders, allReservations]) => {
+        if (active)
+          setStaffPending({
+            entregas: entregas.filter((e) => e.estado === "enviada").length,
+            inscripciones: inscripciones.length,
+            pedidos: allOrders.filter((o) => o.status === "pending").length,
+            reservas: allReservations.filter((r) => r.status === "pending").length,
+          });
+      })
+      .catch(() => {
+        if (active) setStaffPending(null);
+      });
+    return () => {
+      active = false;
+    };
+  }, [academy.isStaff]);
+
+  const reloadAportes = useCallback(() => {
+    if (!user) return;
+    listMyAportes(user.id)
+      .then(setAportes)
+      .catch(() => setAportes([]));
+    if (academy.isAcademic)
+      listAportesPorRevisar()
+        .then((list) => setAcademicPending(list.length))
+        .catch(() => setAcademicPending(null));
+  }, [user, academy.isAcademic]);
+
+  // Los aportes son de la Comunidad: solo para miembros y el Área académica.
+  useEffect(() => {
+    if (member.isMember || academy.isAcademic) reloadAportes();
+    if (!academy.isAcademic) setAcademicPending(null);
+  }, [member.isMember, academy.isAcademic, reloadAportes]);
+
+  const account: AccountState = {
+    user,
+    sessionLoading,
+    academy,
+    progress,
+    entrega,
+    practica,
+    member,
+    orders,
+    reservations,
+    staffPending,
+    academicPending,
+    aportes,
+    reloadAportes,
+    signOut: async () => {
+      await signOutSession();
+      navigate("/");
+    },
+  };
+
+  return (
+    <AccountContext.Provider value={account}>
+      <div className="nova-shell font-mono min-h-screen bg-black text-white">
+        <AccountHeader />
+        <div className={inLesson ? "" : "pb-20 md:pb-0"}>
+          <Suspense fallback={<div className="container mx-auto px-4 pt-28 text-white/60 animate-pulse">Cargando…</div>}>
+            <Outlet />
+          </Suspense>
+        </div>
+        {!inLesson && <AccountTabBar />}
+      </div>
+    </AccountContext.Provider>
+  );
+}

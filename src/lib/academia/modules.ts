@@ -9,7 +9,7 @@ export interface ModuleInfo<Id extends CourseModuleId = ModuleId> {
   duration: string;
   needs: string;
   summary: string;
-  // Color del módulo en formato "R G B" para usarlo con transparencias: rgb(var(--accent) / 0.2).
+  // Color del módulo en formato "R G B" para usarlo con transparencias: rgb(var(--tone) / 0.2).
   accent: string;
 }
 

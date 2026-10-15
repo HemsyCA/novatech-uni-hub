@@ -54,7 +54,7 @@ function Question({
                     ? "border-rose-400 bg-rose-400/10 text-white animate-shake"
                     : solved
                       ? "border-white/10 text-white/40"
-                      : "border-white/20 text-white/85 hover:border-[rgb(var(--accent))] hover:bg-[rgb(var(--accent)/0.08)]"
+                      : "border-white/20 text-white/85 hover:border-[rgb(var(--tone))] hover:bg-[rgb(var(--tone)/0.08)]"
               }`}
             >
               <span

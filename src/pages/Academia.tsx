@@ -1,12 +1,8 @@
 import { Suspense, useEffect, useState } from "react";
 import { Link, Outlet } from "react-router-dom";
-import { ArrowLeft, Lock } from "lucide-react";
-import novatechLogo from "@/assets/novatech-logo.png";
-import { useAcademyAccess } from "@/hooks/use-academy-access";
-import { useAcademyProgress } from "@/hooks/use-academy-progress";
+import { Lock } from "lucide-react";
+import { useAccount } from "@/components/account/account-context";
 import { useAcademyFichas } from "@/hooks/use-academy-fichas";
-import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
-import { useAcademyPractica } from "@/hooks/use-academy-practica";
 import { getCurrentSession } from "@/services/supabase/auth";
 import { formatDate, limaToday } from "@/lib/academy-dates";
 import type { AcademyContext } from "@/components/academia/academy-context";
@@ -64,33 +60,14 @@ function LockedState({ memberships }: { memberships: AcademyMembership[] }) {
 }
 
 export default function Academia() {
-  const { loading, hasAccess, isStaff, activeMembership, memberships, userId } = useAcademyAccess();
-  const progress = useAcademyProgress(userId);
+  const { academy, progress, entrega, practica } = useAccount();
+  const { loading, hasAccess, isStaff, activeMembership, memberships, userId } = academy;
   const fichas = useAcademyFichas(userId);
-  const entrega = useAcademyEntrega(userId);
-  const practica = useAcademyPractica(userId);
   const context: AcademyContext = { progress, fichas, entrega, practica, activeMembership, isStaff };
 
   return (
-    <div className="font-mono min-h-screen bg-black text-white">
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <Link to="/academia" className="flex items-center gap-3 min-w-0">
-            <img src={novatechLogo} alt="NovaTech" className="h-9 w-9 shrink-0" />
-            <span className="font-display font-bold truncate">ACADEMIA NOVA</span>
-          </Link>
-          <Link
-            to="/dashboard"
-            className="inline-flex shrink-0 items-center gap-2 text-sm text-white/60 hover:text-white transition-colors"
-          >
-            <ArrowLeft size={16} />
-            <span className="hidden sm:inline">Volver al panel</span>
-            <span className="sm:hidden">Panel</span>
-          </Link>
-        </div>
-      </header>
-
-      <main className="container mx-auto px-4 pt-24 pb-16">
+    <div className="font-mono text-white">
+      <main className="container mx-auto px-4 pt-28 pb-16">
         {loading || progress.loading || fichas.loading || entrega.loading || practica.loading ? (
           <div className="text-white/60 animate-pulse">Cargando…</div>
         ) : hasAccess ? (

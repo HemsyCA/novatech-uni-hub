@@ -38,7 +38,7 @@ function Choice({ selected, onClick, children }: { selected: boolean; onClick: (
       onClick={onClick}
       className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
         selected
-          ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.12)] text-white"
+          ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.12)] text-white"
           : "border-white/15 text-white/70 hover:border-white/35"
       }`}
     >
@@ -49,11 +49,11 @@ function Choice({ selected, onClick, children }: { selected: boolean; onClick: (
 
 function Row({ label, math, result, highlight = false }: { label: string; math: string; result: string; highlight?: boolean }) {
   return (
-    <div className={`rounded-xl px-4 py-3 ${highlight ? "bg-[rgb(var(--accent,255_255_255)/0.12)]" : "bg-white/[0.04]"}`}>
+    <div className={`rounded-xl px-4 py-3 ${highlight ? "bg-[rgb(var(--tone,255_255_255)/0.12)]" : "bg-white/[0.04]"}`}>
       <p className="text-xs text-white/50">{label}</p>
       <p className="mt-1 flex flex-wrap items-baseline justify-between gap-x-3 text-sm">
         <span className="text-white/70">{math}</span>
-        <span className={`font-semibold ${highlight ? "text-[rgb(var(--accent,255_255_255))] text-lg" : "text-white"}`}>{result}</span>
+        <span className={`font-semibold ${highlight ? "text-[rgb(var(--tone,255_255_255))] text-lg" : "text-white"}`}>{result}</span>
       </p>
     </div>
   );
@@ -73,8 +73,8 @@ export function LedResistorCalculator() {
   const glow = Math.min(realCurrent / 0.02, 1);
 
   return (
-    <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--accent,255_255_255)/0.4)] p-5">
-      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--accent,255_255_255))]">
+    <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--tone,255_255_255)/0.4)] p-5">
+      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--tone,255_255_255))]">
         <Calculator className="h-4 w-4" /> Calculadora · pruébalo tú
       </p>
       <h4 className="mt-1 font-semibold text-white">¿Qué resistencia necesita mi LED?</h4>
@@ -112,7 +112,7 @@ export function LedResistorCalculator() {
             max={20}
             value={currentMa}
             onChange={(e) => setCurrentMa(Number(e.target.value))}
-            className="w-full accent-[rgb(var(--accent,255_255_255))]"
+            className="w-full accent-[rgb(var(--tone,255_255_255))]"
           />
         </div>
       </div>

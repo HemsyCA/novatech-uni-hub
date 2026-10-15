@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,7 @@ import {
   subscribeToAuth,
 } from "@/services/supabase/auth";
 import { domainHasMailServers } from "@/lib/email-validation";
+import { rememberReturnPath, takeReturnPath } from "@/lib/auth-return";
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" className="h-4 w-4" aria-hidden="true">
@@ -52,23 +53,27 @@ export default function Auth() {
   const [resendLoading, setResendLoading] = useState(false);
   const [resendOpen, setResendOpen] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  // ?next=/store: después de iniciar sesión vuelve a esa página.
+  const nextPath = searchParams.get("next");
   const { toast } = useToast();
 
   useEffect(() => {
-    const { data: { subscription } } = subscribeToAuth((_event, session) => {
+    rememberReturnPath(nextPath);
+    const { data: { subscription } } = subscribeToAuth(async (_event, session) => {
       if (session?.user) {
-        navigate("/dashboard");
+        navigate(takeReturnPath(), { replace: true });
       }
     });
 
     getCurrentSession().then(({ data: { session } }) => {
       if (session?.user) {
-        navigate("/dashboard");
+        navigate(takeReturnPath(), { replace: true });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, [navigate, nextPath]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();

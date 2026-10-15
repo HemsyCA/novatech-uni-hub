@@ -35,7 +35,7 @@ export function IntegerDivision() {
       inputMode="decimal"
       aria-label={label}
       onChange={(e) => onChange(e.target.value.replace(",", "."))}
-      className="w-16 rounded border border-[rgb(var(--accent,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--accent,255_255_255))]"
+      className="w-16 rounded border border-[rgb(var(--tone,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--tone,255_255_255))]"
     />
   );
 

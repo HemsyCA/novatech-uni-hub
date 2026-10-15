@@ -135,7 +135,7 @@ export function FeatureHistory() {
                 onClick={() => setUpTo(index)}
                 className={`flex w-full items-baseline gap-2 rounded-lg px-3 py-1.5 text-left text-sm transition-colors ${
                   index === upTo
-                    ? "bg-[rgb(var(--accent,255_255_255)/0.15)] text-white"
+                    ? "bg-[rgb(var(--tone,255_255_255)/0.15)] text-white"
                     : index < upTo
                       ? "text-white/80 hover:bg-white/[0.05]"
                       : "text-white/30 hover:bg-white/[0.05]"

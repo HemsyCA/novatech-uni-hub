@@ -7,7 +7,7 @@ type Config = "ninguna" | "pulldown" | "pullup";
 const VALUES = [10, 1000, 10000, 100000];
 const ohms = (value: number) => (value >= 1000 ? `${value / 1000} kΩ` : `${value} Ω`);
 
-const ON = "rgb(var(--accent, 255 255 255))";
+const ON = "rgb(var(--tone, 255 255 255))";
 const OFF = "rgba(255,255,255,0.45)";
 
 function Schematic({ config, pressed, resistor }: { config: Config; pressed: boolean; resistor: number }) {
@@ -113,14 +113,14 @@ export function PullResistor() {
             onKeyUp={() => setPressed(false)}
             aria-pressed={pressed}
             className={`w-full touch-none select-none rounded-xl border-2 px-4 py-4 font-semibold transition-colors ${
-              pressed ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.15)]" : "border-white/25"
+              pressed ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.15)]" : "border-white/25"
             }`}
           >
             {pressed ? "Presionado" : "Mantén presionado el botón"}
           </button>
           <div className="rounded-xl bg-white/[0.04] px-4 py-3">
             <p className="text-xs text-white/50">El ESP32 lee en GPIO21</p>
-            <p className="text-2xl font-semibold text-[rgb(var(--accent,255_255_255))]">{reading}</p>
+            <p className="text-2xl font-semibold text-[rgb(var(--tone,255_255_255))]">{reading}</p>
           </div>
           {config !== "ninguna" && (
             <div>

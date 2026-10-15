@@ -22,7 +22,7 @@ function SquareWave({ duty }: { duty: number }) {
       <text x="246" y="12" fill="rgba(255,255,255,0.5)" fontSize="9" fontFamily="inherit">3.3 V</text>
       <text x="246" y="55" fill="rgba(255,255,255,0.5)" fontSize="9" fontFamily="inherit">0 V</text>
       <line x1="0" y1={high + (low - high) * (1 - duty)} x2="240" y2={high + (low - high) * (1 - duty)} stroke="rgba(255,255,255,0.35)" strokeDasharray="3 3" />
-      <path d={d} fill="none" stroke="rgb(var(--accent, 255 255 255))" strokeWidth="2" />
+      <path d={d} fill="none" stroke="rgb(var(--tone, 255 255 255))" strokeWidth="2" />
     </svg>
   );
 }
@@ -59,7 +59,7 @@ export function PwmDemo() {
         max={255}
         value={value}
         onChange={(e) => setValue(Number(e.target.value))}
-        className="w-full accent-[rgb(var(--accent,255_255_255))]"
+        className="w-full accent-[rgb(var(--tone,255_255_255))]"
       />
       <div className="mt-4">
         <CodeLine>analogWrite(LED_ROJO, {value});</CodeLine>
@@ -114,7 +114,7 @@ export function ForLoop() {
       value={value}
       aria-label={label}
       onChange={(e) => onChange(Math.max(-999, Math.min(999, Math.trunc(Number(e.target.value)) || 0)))}
-      className="w-14 rounded border border-[rgb(var(--accent,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--accent,255_255_255))]"
+      className="w-14 rounded border border-[rgb(var(--tone,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--tone,255_255_255))]"
     />
   );
 
@@ -145,14 +145,14 @@ export function ForLoop() {
             value={op}
             aria-label="Comparador"
             onChange={(e) => setOp(e.target.value as Op)}
-            className="rounded border border-[rgb(var(--accent,255_255_255)/0.6)] bg-black text-[rgb(var(--accent,255_255_255))]"
+            className="rounded border border-[rgb(var(--tone,255_255_255)/0.6)] bg-black text-[rgb(var(--tone,255_255_255))]"
           >
             {["<", "<=", ">", ">="].map((o) => (
               <option key={o}>{o}</option>
             ))}
           </select>{" "}
           {numberInput(limit, setLimit, "Límite")};{" "}
-          <button type="button" onClick={() => setUp(!up)} className="rounded border border-[rgb(var(--accent,255_255_255)/0.6)] px-1 text-[rgb(var(--accent,255_255_255))]">
+          <button type="button" onClick={() => setUp(!up)} className="rounded border border-[rgb(var(--tone,255_255_255)/0.6)] px-1 text-[rgb(var(--tone,255_255_255))]">
             i{up ? "++" : "--"}
           </button>
           ) {"{ … }"}
@@ -170,7 +170,7 @@ export function ForLoop() {
         ) : (
           <div className="space-y-2">
             <p className="text-sm text-white/70">
-              Se repite <strong className="text-[rgb(var(--accent,255_255_255))]">{values.length} veces</strong>. Valores de i:
+              Se repite <strong className="text-[rgb(var(--tone,255_255_255))]">{values.length} veces</strong>. Valores de i:
             </p>
             <div className="flex flex-wrap gap-1.5">
               {values.slice(0, MAX_SHOWN).map((v, index) => (

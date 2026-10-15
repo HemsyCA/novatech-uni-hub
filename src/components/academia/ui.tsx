@@ -15,7 +15,7 @@ export function ProgressBar({ value, label }: { value: number; label: string }) 
       aria-label={label}
       className="h-1.5 w-full overflow-hidden rounded-full bg-white/10"
     >
-      <div className="h-full rounded-full bg-[rgb(var(--accent,255_255_255))] transition-[width] duration-500" style={{ width: `${value}%` }} />
+      <div className="h-full rounded-full bg-[rgb(var(--tone,255_255_255))] transition-[width] duration-500" style={{ width: `${value}%` }} />
     </div>
   );
 }
@@ -54,7 +54,7 @@ export function StatusDot({ done }: { done: boolean }) {
   );
 }
 
-const accentStyle = (moduleId: string) => ({ "--accent": moduleAccent(moduleId) }) as CSSProperties;
+const accentStyle = (moduleId: string) => ({ "--tone": moduleAccent(moduleId) }) as CSSProperties;
 
 export function LessonRow({ lesson, state, active = false }: { lesson: Lesson; state: LessonState; active?: boolean }) {
   const content = (
@@ -65,14 +65,14 @@ export function LessonRow({ lesson, state, active = false }: { lesson: Lesson; s
         <span
           className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
             state === "done"
-              ? "border-[rgb(var(--accent))] bg-[rgb(var(--accent))] text-black"
+              ? "border-[rgb(var(--tone))] bg-[rgb(var(--tone))] text-black"
               : state === "current"
-                ? "border-[rgb(var(--accent))]"
+                ? "border-[rgb(var(--tone))]"
                 : "border-white/30"
           }`}
         >
           {state === "done" && <Check className="h-3 w-3" strokeWidth={3} />}
-          {state === "current" && <span className="h-2 w-2 rounded-full bg-[rgb(var(--accent))]" />}
+          {state === "current" && <span className="h-2 w-2 rounded-full bg-[rgb(var(--tone))]" />}
           <span className="sr-only">{state === "done" ? "Completada" : state === "current" ? "Actual" : "Pendiente"}</span>
         </span>
       )}

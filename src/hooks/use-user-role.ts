@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
-import { getMyRoles, isStaff } from "@/services/supabase/roles";
+import { getMyRoles, isAcademic, isStaff } from "@/services/supabase/roles";
 import type { AppRole } from "@/types/domain";
 
 export const useUserRole = () => {
@@ -52,6 +52,7 @@ export const useUserRole = () => {
     loading,
     userId,
     isStaff: isStaff(roles),
+    isAcademic: isAcademic(roles),
     isSuperadmin: roles.includes("superadmin"),
     isDirectiva: roles.includes("directiva"),
   };

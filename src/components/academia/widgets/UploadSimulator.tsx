@@ -159,7 +159,7 @@ export function UploadSimulator() {
                 onKeyUp={() => setBootHeld(false)}
                 aria-pressed={bootHeld}
                 className={`touch-none select-none rounded border px-2 py-1 text-[11px] font-semibold ${
-                  bootHeld ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255))] text-black" : "border-white/30 text-white"
+                  bootHeld ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255))] text-black" : "border-white/30 text-white"
                 }`}
               >
                 BOOT
@@ -177,7 +177,7 @@ export function UploadSimulator() {
         type="button"
         onClick={upload}
         disabled={busy}
-        className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--accent,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black disabled:opacity-40"
+        className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--tone,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black disabled:opacity-40"
       >
         <Upload className="h-4 w-4" /> {busy ? "Subiendo…" : "Subir"}
       </button>

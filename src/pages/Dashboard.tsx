@@ -1,332 +1,318 @@
 import { useEffect, useState, type ReactNode } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Calendar,
-  Cpu,
-  GraduationCap,
-  LogOut,
-  Package,
-  Printer,
-  ShieldCheck,
-  ShoppingCart,
-  type LucideIcon,
-} from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import novatechLogo from "@/assets/novatech-logo.png";
-import type { User as SupabaseUser } from "@supabase/supabase-js";
-import { useAcademyAccess } from "@/hooks/use-academy-access";
-import { useMemberAccess } from "@/hooks/use-member-access";
-import { useAcademyProgress } from "@/hooks/use-academy-progress";
-import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
-import { useAcademyPractica } from "@/hooks/use-academy-practica";
-import { daysLeft, formatDate, limaToday } from "@/lib/academy-dates";
-import { lessonPath } from "@/lib/academia/course";
+import { ArrowRight, BookOpen, Package, Printer, ShoppingCart, type LucideIcon } from "lucide-react";
+import { useAccount } from "@/components/account/account-context";
+import { NextStepCard } from "@/components/account/Journey";
+import { AuthorCredit } from "@/components/account/Conocimiento";
+import { StatusPill, type StatusTone } from "@/components/account/ui";
 import { ProgressBar } from "@/components/academia/ui";
-import { PracticaCard } from "@/components/academia/PracticaCard";
-import { listOrders } from "@/services/supabase/orders";
-import { listUserReservations } from "@/services/supabase/reservations";
+import { StatusTracker } from "@/components/StatusTracker";
+import { displayNameOf } from "@/hooks/use-session";
+import { daysLeft, formatDate } from "@/lib/academy-dates";
+import { nextStepFor } from "@/lib/account/journey";
+import { urgentFor } from "@/lib/account/urgent";
+import { secondaryButton } from "@/lib/account/styles";
+import { orderSteps, reservationSteps } from "@/lib/tracker-steps";
+import { listConocimientos, type Conocimiento } from "@/services/supabase/conocimientos";
 
-const ACTIVE_ORDER_STATUSES = ["pending", "paid", "preparing"];
-const ACTIVE_RESERVATION_STATUSES = ["pending", "approved", "in_progress"];
+const ORDER_STATUS: Record<string, { label: string; tone: StatusTone }> = {
+  pending: { label: "Pendiente", tone: "neutral" },
+  paid: { label: "Confirmado", tone: "progress" },
+  preparing: { label: "Preparando", tone: "progress" },
+  delivered: { label: "Listo para recoger", tone: "attention" },
+};
+const RESERVATION_STATUS: Record<string, { label: string; tone: StatusTone }> = {
+  pending: { label: "Enviada", tone: "neutral" },
+  approved: { label: "Aceptada", tone: "progress" },
+  in_progress: { label: "Imprimiendo", tone: "progress" },
+  completed: { label: "Lista para recoger", tone: "attention" },
+};
 
-interface Activity {
-  orders: number;
-  reservations: number;
-}
-
-function SectionTitle({ children, hint }: { children: ReactNode; hint?: string }) {
+function SectionLabel({ children, action }: { children: ReactNode; action?: ReactNode }) {
   return (
-    <div className="mb-4">
-      <h2 className="font-display text-lg font-bold">{children}</h2>
-      {hint && <p className="text-sm text-white/50 mt-1">{hint}</p>}
+    <div className="mb-3 flex items-center justify-between gap-3">
+      <h2 className="text-xs font-semibold uppercase tracking-widest text-white/50">{children}</h2>
+      {action}
     </div>
   );
 }
 
+// Los dos servicios: la razón principal por la que la mayoría entra a su cuenta.
 function ServiceCard({
   to,
   icon: Icon,
   title,
   description,
-  badge,
+  cta,
+  active,
+  activeTo,
 }: {
   to: string;
   icon: LucideIcon;
   title: string;
   description: string;
-  badge?: string;
+  cta: string;
+  active: number;
+  activeTo: string;
 }) {
+  return (
+    <article className="flex flex-col rounded-2xl border border-white/15 p-6">
+      <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-black">
+        <Icon className="h-6 w-6" />
+      </span>
+      <h3 className="mt-4 font-display text-xl font-bold">{title}</h3>
+      <p className="mt-1 flex-1 text-sm text-white/60">{description}</p>
+      <div className="mt-5 flex flex-wrap items-center justify-between gap-3">
+        <Link to={to} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 font-semibold text-black transition-colors hover:bg-white/90">
+          {cta} <ArrowRight className="h-4 w-4" />
+        </Link>
+        {active > 0 && (
+          <Link to={activeTo} className="text-sm text-white/60 underline underline-offset-4 hover:text-white">
+            {active} en curso
+          </Link>
+        )}
+      </div>
+    </article>
+  );
+}
+
+function ReviewTile({ to, count, label }: { to: string; count: number; label: string }) {
   return (
     <Link
       to={to}
-      className="group flex h-full items-start gap-4 rounded-2xl border border-white/10 p-5 transition-colors hover:border-white/40"
+      className={`rounded-xl border p-4 transition-colors hover:border-white/40 ${count > 0 ? "border-nova/60 bg-nova/10" : "border-white/10"}`}
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-white/15">
-        <Icon className="h-5 w-5" />
-      </div>
-      <div className="min-w-0 flex-1">
-        <div className="flex items-center gap-2">
-          <h3 className="font-display font-bold">{title}</h3>
-          {badge && <span className="rounded-full bg-white px-2 py-0.5 text-[10px] font-semibold text-black">{badge}</span>}
-        </div>
-        <p className="mt-1 text-sm text-white/60">{description}</p>
-      </div>
-      <ArrowRight className="h-4 w-4 shrink-0 self-center text-white/40 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+      <p className={`font-display text-2xl font-black ${count > 0 ? "text-white" : "text-white/30"}`}>{count}</p>
+      <p className="mt-1 text-xs text-white/60">{label}</p>
     </Link>
   );
 }
 
 export default function Dashboard() {
-  const [user, setUser] = useState<SupabaseUser | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [activity, setActivity] = useState<Activity | null>(null);
-  const navigate = useNavigate();
-  const academy = useAcademyAccess();
-  const progress = useAcademyProgress(academy.userId);
-  const entrega = useAcademyEntrega(academy.userId);
-  const practica = useAcademyPractica(academy.userId);
-  const member = useMemberAccess();
+  const account = useAccount();
+  const { user, sessionLoading, academy, progress, entrega, practica, member, orders, reservations, staffPending, academicPending } = account;
+  const isTeam = member.isMember || academy.isAcademic;
+  const [recent, setRecent] = useState<Conocimiento[]>([]);
 
   useEffect(() => {
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (!session?.user) {
-        navigate("/auth");
-      }
-    });
+    if (!isTeam) return;
+    listConocimientos()
+      .then((items) => setRecent(items.slice(0, 3)))
+      .catch(() => setRecent([]));
+  }, [isTeam]);
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
-      if (!session?.user) {
-        navigate("/auth");
-      }
-    });
-
-    return () => subscription.unsubscribe();
-  }, [navigate]);
-
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    Promise.all([listOrders(user.id), listUserReservations(user.id)])
-      .then(([orders, reservations]) => {
-        if (!active) return;
-        setActivity({
-          orders: orders.filter((o) => ACTIVE_ORDER_STATUSES.includes(o.status)).length,
-          reservations: reservations.filter((r) => ACTIVE_RESERVATION_STATUSES.includes(r.status)).length,
-        });
-      })
-      .catch(() => {
-        if (active) setActivity(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [user]);
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    navigate("/");
-  };
-
-  if (loading) {
-    return (
-      <div className="font-mono min-h-screen bg-black text-white flex items-center justify-center">
-        <div className="animate-pulse text-white/60">Cargando…</div>
-      </div>
-    );
+  if (sessionLoading || academy.loading || member.loading) {
+    return <div className="container mx-auto px-4 pt-32 text-white/60 animate-pulse">Cargando…</div>;
   }
 
-  const displayName = user?.user_metadata?.full_name || user?.email?.split("@")[0] || "";
-  const firstName = displayName.split(" ")[0];
-  const inProgress = (count: number | undefined) => (count ? `${count} en curso` : undefined);
+  const firstName = displayNameOf(user).split(" ")[0];
+  const role = academy.isStaff
+    ? "Directiva"
+    : academy.isAcademic
+      ? "Área académica"
+      : member.isMember
+        ? "Miembro"
+        : academy.hasAccess
+          ? "Convocado"
+          : "Cliente";
+  const isConvocado = academy.hasAccess && !academy.isStaff && !member.isMember;
+  const urgent = urgentFor(account);
 
-  const today = limaToday();
-  const upcomingMembership = academy.memberships
-    .filter((m) => m.starts_at > today)
-    .sort((a, b) => a.starts_at.localeCompare(b.starts_at))[0];
-  const expiredMembership = academy.memberships.find((m) => m.ends_at < today);
-  const next = progress.nextLesson;
+  const activeOrders = orders.filter((o) => o.status in ORDER_STATUS);
+  const activeReservations = reservations.filter((r) => r.status in RESERVATION_STATUS);
+  const academyStep =
+    academy.hasAccess && !progress.loading && !entrega.loading
+      ? nextStepFor({
+          hasAccess: true,
+          isStaff: false,
+          isMember: false,
+          memberships: academy.memberships,
+          completed: progress.completed,
+          done: progress.done,
+          total: progress.total,
+          nextLesson: progress.nextLesson,
+          entrega: entrega.entrega,
+          practica: practica.practica,
+        })
+      : null;
 
-  const academySection = academy.loading || progress.loading || entrega.loading || practica.loading ? null : academy.hasAccess ? (
-    <section>
-      <SectionTitle>Academia Nova</SectionTitle>
-      <div className="rounded-2xl border border-white/25 p-6 md:p-8 grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-        <div className="flex items-start gap-4">
-          <div className="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-white text-black">
-            <GraduationCap className="h-6 w-6" />
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-xs uppercase tracking-widest text-white/50">Parte 1 · Bienvenida</p>
-            <p className="mt-1 text-sm text-white/70">
-              {academy.activeMembership
-                ? `Acceso hasta el ${formatDate(academy.activeMembership.ends_at)} · quedan ${daysLeft(academy.activeMembership.ends_at)} día(s)`
-                : "Acceso permanente como parte de la directiva"}
-            </p>
-            <div className="mt-4 flex items-center gap-3">
-              <ProgressBar value={progress.percent} label="Progreso en Academia Nova" />
-              <span className="shrink-0 text-xs text-white/60">
-                {progress.done}/{progress.total}
-              </span>
-            </div>
-            <p className="mt-3 text-sm text-white/80">
-              {next
-                ? progress.done > 0
-                  ? `Siguiente: ${next.code} · ${next.title}`
-                  : "Empieza por la guía de inicio."
-                : "Completaste todas las lecciones. Prepara tu entrega."}
-            </p>
-            {entrega.entrega && (
-              <p className="mt-1 text-sm text-white">
-                Tarea final:{" "}
-                {{ enviada: "en revisión", observada: "con observaciones, revísalas", aprobada: "aprobada" }[entrega.entrega.estado]}
-              </p>
-            )}
-          </div>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row md:flex-col">
-          <Link
-            to={next ? (progress.done > 0 ? lessonPath(next) : "/academia/guia") : "/academia/tarea-final"}
-            className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3 font-semibold text-black hover:bg-white/90 transition-colors"
-          >
-            {next ? (progress.done > 0 ? "Continuar" : "Empezar") : "Ver tarea final"}
-            <ArrowRight className="h-4 w-4" />
-          </Link>
-          <Link
-            to="/academia"
-            className="inline-flex items-center justify-center rounded-lg border border-white/25 px-6 py-3 text-sm text-white hover:bg-white/10 transition-colors"
-          >
-            Ver el curso
-          </Link>
-        </div>
-      </div>
-      {entrega.entrega?.estado === "aprobada" && (
-        <div className="mt-4">
-          <PracticaCard practica={practica.practica} />
-        </div>
-      )}
-    </section>
-  ) : (
-    <section>
-      <SectionTitle>Academia Nova</SectionTitle>
-      <div className="rounded-2xl border border-white/10 p-5 flex flex-col sm:flex-row sm:items-center gap-4">
-        <GraduationCap className="h-6 w-6 shrink-0 text-white/60" />
-        <p className="flex-1 text-sm text-white/70">
-          {upcomingMembership
-            ? `Formas parte de ${upcomingMembership.grupo_nombre}. Tu acceso empieza el ${formatDate(upcomingMembership.starts_at)}.`
-            : expiredMembership
-              ? `Tu periodo en la convocatoria terminó el ${formatDate(expiredMembership.ends_at)}.`
-              : "Academia Nova se abre para los convocados de cada convocatoria."}
-        </p>
-        {!upcomingMembership && !expiredMembership && (
-          <Link to="/unete" className="text-sm text-white underline underline-offset-4 shrink-0">
-            Conoce cómo unirte
-          </Link>
-        )}
-      </div>
-    </section>
-  );
-
-  const servicesSection = (
-    <section>
-      <SectionTitle hint="Pide una impresión o compra componentes, y sigue el estado de tus solicitudes.">
-        Servicios
-      </SectionTitle>
-      <div className="grid gap-6 lg:grid-cols-2">
-        <div>
-          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">Solicitar</h3>
-          <div className="grid gap-3">
-            <ServiceCard to="/print3d" icon={Printer} title="Impresión 3D" description="Reserva un turno en nuestras impresoras." />
-            <ServiceCard to="/store" icon={ShoppingCart} title="Tienda Nova" description="Componentes electrónicos para tus proyectos." />
-          </div>
-        </div>
-        <div>
-          <h3 className="mb-3 text-xs uppercase tracking-widest text-white/50">Mi historial</h3>
-          <div className="grid gap-3">
-            <ServiceCard
-              to="/print3d#mis-reservas"
-              icon={Calendar}
-              title="Mis reservas"
-              description="Estado e historial de tus impresiones 3D."
-              badge={inProgress(activity?.reservations)}
-            />
-            <ServiceCard
-              to="/store?pedidos=1"
-              icon={Package}
-              title="Mis pedidos"
-              description="Estado e historial de tus compras en la tienda."
-              badge={inProgress(activity?.orders)}
-            />
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-
-  const membersSection = member.isMember ? (
-    <section>
-      <SectionTitle>Miembros</SectionTitle>
-      <ServiceCard
-        to="/miembros"
-        icon={Cpu}
-        title="Zona de miembros"
-        description="Material interno de robots, componentes y PCBs."
-      />
-    </section>
-  ) : null;
-
-  // A un miembro sin acceso a Academia no le sirve el aviso de "conoce cómo unirte".
-  const showAcademyNotice = !academy.hasAccess && !member.loading && !member.isMember;
+  const showReviews = staffPending !== null || academicPending !== null;
 
   return (
-    <div className="font-mono min-h-screen bg-black text-white">
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-white/10 bg-black/80 backdrop-blur-xl">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-4">
-          <Link to="/" className="flex items-center gap-3">
-            <img src={novatechLogo} alt="NovaTech" className="h-9 w-9" />
-            <span className="font-display font-bold hidden sm:block">NOVATECH</span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-white/50 hidden md:block">{user?.email}</span>
-            {academy.isStaff && (
-              <Link
-                to="/admin"
-                title="Panel de directiva"
-                aria-label="Panel de directiva"
-                className="inline-flex h-9 w-9 items-center justify-center rounded-lg hover:bg-white/10 transition-colors"
-              >
-                <ShieldCheck className="h-5 w-5" />
+    <main className="container mx-auto max-w-5xl space-y-10 px-4 pb-16 pt-28">
+      <motion.header initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="font-display text-2xl font-black tracking-tight md:text-3xl">Hola{firstName ? `, ${firstName}` : ""}</h1>
+        <p className="mt-1 text-sm text-white/50">
+          {role}
+          {isConvocado && academy.activeMembership && ` · ${academy.activeMembership.grupo_nombre} · quedan ${daysLeft(academy.activeMembership.ends_at)} día(s)`}
+        </p>
+      </motion.header>
+
+      {/* 1. Ahora: solo si algo pide tu acción. */}
+      {urgent && <NextStepCard step={urgent} />}
+
+      {/* Para la directiva y el Área académica, revisar es su tarea principal. */}
+      {showReviews && (
+        <section>
+          <SectionLabel>Por revisar</SectionLabel>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+            {academicPending !== null && <ReviewTile to="/comunidad?vista=revisar" count={academicPending} label="Aportes de la Comunidad" />}
+            {staffPending && (
+              <>
+                <ReviewTile to="/admin" count={staffPending.entregas} label="Tareas finales" />
+                <ReviewTile to="/admin" count={staffPending.inscripciones} label="Inscripciones" />
+                <ReviewTile to="/admin" count={staffPending.pedidos} label="Pedidos por confirmar" />
+                <ReviewTile to="/admin" count={staffPending.reservas} label="Reservas por aprobar" />
+              </>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 2. Los servicios. */}
+      <section>
+        <SectionLabel>Servicios</SectionLabel>
+        <div className="grid gap-4 md:grid-cols-2">
+          <ServiceCard
+            to="/print3d"
+            icon={Printer}
+            title="Impresión 3D"
+            description="Envía los datos de tu pieza, elige el día y la imprimimos por ti."
+            cta="Pedir una impresión"
+            active={activeReservations.length}
+            activeTo="/print3d?vista=reservas"
+          />
+          <ServiceCard
+            to="/store"
+            icon={ShoppingCart}
+            title="Tienda Nova"
+            description="Componentes electrónicos para tus proyectos, listos para recoger."
+            cta="Comprar componentes"
+            active={activeOrders.length}
+            activeTo="/store?vista=pedidos"
+          />
+        </div>
+      </section>
+
+      {/* 3. En curso: cómo va lo tuyo, sin entrar a otra página. */}
+      {activeOrders.length + activeReservations.length > 0 && (
+        <section>
+          <SectionLabel>En curso</SectionLabel>
+          <div className="space-y-3">
+            {activeReservations.map((r) => (
+              <Link key={r.id} to="/print3d?vista=reservas" className="block space-y-4 rounded-2xl border border-white/10 p-5 transition-colors hover:border-white/30">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-2 font-semibold">
+                      <Printer className="h-4 w-4 text-white/60" /> {r.project_name}
+                    </p>
+                    <p className="mt-0.5 text-xs text-white/50">Impresión 3D · {formatDate(r.scheduled_date)}</p>
+                  </div>
+                  <StatusPill tone={RESERVATION_STATUS[r.status].tone}>{RESERVATION_STATUS[r.status].label}</StatusPill>
+                </div>
+                <StatusTracker steps={reservationSteps} currentKey={r.status} />
+              </Link>
+            ))}
+            {activeOrders.map((o) => (
+              <Link key={o.id} to="/store?vista=pedidos" className="block space-y-4 rounded-2xl border border-white/10 p-5 transition-colors hover:border-white/30">
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="flex items-center gap-2 font-semibold">
+                      <Package className="h-4 w-4 text-white/60" /> Pedido · S/ {Number(o.total).toFixed(2)}
+                    </p>
+                    <p className="mt-0.5 text-xs text-white/50">Tienda Nova · {formatDate(o.created_at.slice(0, 10))}</p>
+                  </div>
+                  <StatusPill tone={ORDER_STATUS[o.status].tone}>{ORDER_STATUS[o.status].label}</StatusPill>
+                </div>
+                <StatusTracker steps={orderSteps} currentKey={o.status} />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* 4. Según tu rol. */}
+      {academyStep && (
+        <section>
+          <SectionLabel
+            action={
+              <Link to="/academia" className="text-xs text-white/50 underline underline-offset-4 hover:text-white">
+                Ver mi recorrido
+              </Link>
+            }
+          >
+            Academia Nova
+          </SectionLabel>
+          <div className="flex flex-col gap-4 rounded-2xl border border-white/10 p-5 sm:flex-row sm:items-center">
+            <div className="min-w-0 flex-1">
+              <p className="text-xs text-white/50">{academyStep.eyebrow}</p>
+              <p className="mt-0.5 font-semibold first-letter:uppercase">{academyStep.title}</p>
+              <div className="mt-3 flex items-center gap-3">
+                <ProgressBar value={progress.percent} label="Progreso de la Parte 1" />
+                <span className="shrink-0 text-xs text-white/50">
+                  Parte 1 · {progress.done}/{progress.total}
+                </span>
+              </div>
+            </div>
+            {academyStep.cta && (
+              <Link to={academyStep.cta.to} className={secondaryButton}>
+                {academyStep.cta.label} <ArrowRight className="h-4 w-4" />
               </Link>
             )}
-            <button
-              type="button"
-              onClick={handleSignOut}
-              className="inline-flex items-center gap-2 rounded-lg border border-white/20 px-3 py-1.5 text-sm hover:bg-white/10 transition-colors"
-            >
-              <LogOut className="h-4 w-4" />
-              Salir
-            </button>
           </div>
-        </div>
-      </header>
+        </section>
+      )}
 
-      <main className="container mx-auto px-4 pt-28 pb-16 max-w-5xl space-y-12">
-        <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}>
-          <h1 className="font-display text-3xl md:text-4xl font-black tracking-tight">
-            Hola{firstName ? `, ${firstName}` : ""}
-          </h1>
-          <p className="mt-2 text-white/60">Tu panel de Nova Tech: aprendizaje y servicios en un solo lugar.</p>
-        </motion.div>
+      {isTeam && (
+        <section>
+          <SectionLabel
+            action={
+              <Link to="/comunidad?vista=compartir" className="text-xs text-white/50 underline underline-offset-4 hover:text-white">
+                Compartir un descubrimiento
+              </Link>
+            }
+          >
+            <span className="text-nova">Zona de miembros</span> · Nuevo en Conocimientos
+          </SectionLabel>
+          {recent.length === 0 ? (
+            <p className="rounded-2xl border border-dashed border-white/15 px-5 py-6 text-sm text-white/50">
+              Aún no hay conocimientos publicados.{" "}
+              <Link to="/conocimientos" className="text-white underline underline-offset-4">
+                Ir a Conocimientos Nova
+              </Link>
+            </p>
+          ) : (
+            <ul className="divide-y divide-white/10 rounded-2xl border border-white/10">
+              {recent.map((item) => (
+                <li key={item.id}>
+                  <Link to={`/conocimientos/${item.id}`} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-white/[0.04]">
+                    <BookOpen className="h-4 w-4 shrink-0 text-white/50" />
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-semibold">{item.titulo}</span>
+                      <span className="block text-xs">
+                        <AuthorCredit item={item} />
+                      </span>
+                    </span>
+                    <ArrowRight className="h-4 w-4 shrink-0 text-white/30" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      )}
 
-        {academy.hasAccess && academySection}
-        {membersSection}
-        {servicesSection}
-        {showAcademyNotice && academySection}
-      </main>
-    </div>
+      {/* 5. Solo para clientes: una invitación discreta, al final. */}
+      {!academy.hasAccess && !isTeam && !academy.isStaff && (
+        <Link
+          to="/unete"
+          className="group flex items-center justify-between gap-4 rounded-2xl border border-white/10 px-5 py-4 text-sm text-white/60 transition-colors hover:border-white/30 hover:text-white"
+        >
+          ¿Te gusta la robótica? Conoce cómo ser parte de Nova Tech.
+          <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
+        </Link>
+      )}
+    </main>
   );
 }

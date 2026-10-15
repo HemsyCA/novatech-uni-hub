@@ -5,6 +5,7 @@ import { CheckCircle2, Loader2, XCircle } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { getCurrentSession, subscribeToAuth } from "@/services/supabase/auth";
+import { takeReturnPath } from "@/lib/auth-return";
 
 type CallbackStatus = "loading" | "success" | "error";
 
@@ -15,17 +16,17 @@ export default function AuthCallback() {
   useEffect(() => {
     let active = true;
 
-    const { data: { subscription } } = subscribeToAuth((_event, session) => {
+    const { data: { subscription } } = subscribeToAuth(async (_event, session) => {
       if (!active || !session?.user) return;
       setStatus("success");
-      setTimeout(() => active && navigate("/dashboard", { replace: true }), 1200);
+      setTimeout(() => active && navigate(takeReturnPath(), { replace: true }), 1200);
     });
 
     getCurrentSession().then(({ data: { session } }) => {
       if (!active) return;
       if (session?.user) {
         setStatus("success");
-        setTimeout(() => active && navigate("/dashboard", { replace: true }), 1200);
+        setTimeout(() => active && navigate(takeReturnPath(), { replace: true }), 1200);
       } else {
         setStatus("error");
       }

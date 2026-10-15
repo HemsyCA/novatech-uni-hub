@@ -17,16 +17,16 @@ function Node({ lesson, state }: { lesson: Lesson; state: LessonState }) {
   return (
     <span className="relative flex h-11 w-11 shrink-0 items-center justify-center">
       {state === "current" && (
-        <span className="absolute inset-0 animate-ping rounded-full bg-[rgb(var(--accent)/0.35)] motion-reduce:animate-none" />
+        <span className="absolute inset-0 animate-ping rounded-full bg-[rgb(var(--tone)/0.35)] motion-reduce:animate-none" />
       )}
       <span
         className={`relative flex h-11 w-11 items-center justify-center rounded-full border-2 ${
           state === "done"
-            ? "border-[rgb(var(--accent))] bg-[rgb(var(--accent))] text-black"
+            ? "border-[rgb(var(--tone))] bg-[rgb(var(--tone))] text-black"
             : state === "current"
-              ? "border-[rgb(var(--accent))] bg-black text-[rgb(var(--accent))]"
+              ? "border-[rgb(var(--tone))] bg-black text-[rgb(var(--tone))]"
               : state === "open"
-                ? "border-[rgb(var(--accent)/0.6)] bg-black text-[rgb(var(--accent))]"
+                ? "border-[rgb(var(--tone)/0.6)] bg-black text-[rgb(var(--tone))]"
                 : "border-white/10 bg-white/[0.03] text-white/25"
         }`}
       >
@@ -47,7 +47,7 @@ function PathStep({ lesson, state, isLast, nextDone }: { lesson: Lesson; state: 
     <span className="min-w-0 flex-1">
       <span
         className={`block text-[11px] uppercase tracking-widest ${
-          state === "locked" ? "text-white/25" : "text-[rgb(var(--accent))]"
+          state === "locked" ? "text-white/25" : "text-[rgb(var(--tone))]"
         }`}
       >
         {lesson.code} · {moduleName(lesson.moduleId)}
@@ -57,12 +57,12 @@ function PathStep({ lesson, state, isLast, nextDone }: { lesson: Lesson; state: 
   );
 
   return (
-    <li style={{ "--accent": moduleAccent(lesson.moduleId) } as CSSProperties} className="relative flex gap-4 pb-3">
+    <li style={{ "--tone": moduleAccent(lesson.moduleId) } as CSSProperties} className="relative flex gap-4 pb-3">
       {!isLast && (
         <span
           aria-hidden
           className={`absolute left-[21px] top-11 h-[calc(100%-2.75rem)] w-0.5 ${
-            state === "done" && nextDone ? "bg-[rgb(var(--accent)/0.6)]" : "bg-white/10"
+            state === "done" && nextDone ? "bg-[rgb(var(--tone)/0.6)]" : "bg-white/10"
           }`}
         />
       )}
@@ -70,15 +70,15 @@ function PathStep({ lesson, state, isLast, nextDone }: { lesson: Lesson; state: 
       {state === "current" ? (
         <Link
           to={lessonPath(lesson)}
-          className="group -mt-1 flex flex-1 flex-col gap-3 rounded-2xl border border-[rgb(var(--accent)/0.6)] bg-[rgb(var(--accent)/0.08)] p-4 sm:flex-row sm:items-center"
+          className="group -mt-1 flex flex-1 flex-col gap-2 rounded-2xl border border-[rgb(var(--tone)/0.6)] bg-[rgb(var(--tone)/0.08)] p-4"
         >
           <span className="min-w-0 flex-1">
-            <span className="mb-1 inline-block rounded-full bg-[rgb(var(--accent))] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black">
+            <span className="mb-1 inline-block rounded-full bg-[rgb(var(--tone))] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-black">
               Estás aquí
             </span>
             {label}
           </span>
-          <span className="inline-flex items-center justify-center gap-2 rounded-xl bg-[rgb(var(--accent))] px-4 py-2.5 text-sm font-semibold text-black">
+          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-[rgb(var(--tone))]">
             Continuar <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </span>
         </Link>

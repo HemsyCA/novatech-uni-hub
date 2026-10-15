@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import type { LucideIcon } from "lucide-react";
 
-// Marco común de los apoyos interactivos: toman el color del módulo (--accent).
+// Marco común de los apoyos interactivos: toman el color del módulo (--tone).
 export function WidgetCard({
   icon: Icon,
   label = "Pruébalo tú",
@@ -14,8 +14,8 @@ export function WidgetCard({
   children: ReactNode;
 }) {
   return (
-    <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--accent,255_255_255)/0.4)] p-5">
-      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--accent,255_255_255))]">
+    <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--tone,255_255_255)/0.4)] p-5">
+      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--tone,255_255_255))]">
         <Icon className="h-4 w-4" aria-hidden /> {label}
       </p>
       <h4 className="mt-1 font-semibold text-white">{title}</h4>
@@ -32,7 +32,7 @@ export function Choice({ selected, onClick, children }: { selected: boolean; onC
       onClick={onClick}
       className={`inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-sm transition-colors ${
         selected
-          ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.12)] text-white"
+          ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.12)] text-white"
           : "border-white/15 text-white/70 hover:border-white/35"
       }`}
     >

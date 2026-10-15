@@ -6,9 +6,11 @@ import { Part2Status } from "@/components/academia/Part2Locked";
 import { PracticaCard } from "@/components/academia/PracticaCard";
 import { ProgressBar } from "@/components/academia/ui";
 import { CoursePath } from "@/components/academia/CoursePath";
-import { courseModules, lessonPath, part2Module, type CourseModuleId } from "@/lib/academia/course";
+import { JourneyStepper, NextStepCard } from "@/components/account/Journey";
+import { courseModules, part2Module, type CourseModuleId } from "@/lib/academia/course";
 import { moduleAccent } from "@/lib/academia/modules";
 import { daysLeft, formatDate } from "@/lib/academy-dates";
+import { buildJourney, nextStepFor, type JourneyInput } from "@/lib/account/journey";
 
 const moduleIcons: Record<CourseModuleId, LucideIcon> = {
   electronica: CircuitBoard,
@@ -17,81 +19,75 @@ const moduleIcons: Record<CourseModuleId, LucideIcon> = {
   soldadura: Flame,
 };
 
+const ENTREGA_LABEL = { enviada: "en revisión", observada: "con observaciones", aprobada: "aprobada" } as const;
+
+function ResourceLink({ to, icon: Icon, title, detail }: { to: string; icon: LucideIcon; title: string; detail: string }) {
+  return (
+    <Link to={to} className="group flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 transition-colors hover:border-white/40">
+      <Icon className="h-5 w-5 shrink-0 text-white/70" />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm font-semibold">{title}</span>
+        <span className="block truncate text-xs text-white/50">{detail}</span>
+      </span>
+      <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+    </Link>
+  );
+}
+
 export default function AcademiaHome() {
-  const { progress, fichas, practica, activeMembership } = useAcademy();
+  const { progress, fichas, entrega, practica, activeMembership, isStaff } = useAcademy();
   const moduleFichas = courseModules.filter((m) => fichas.moduleFicha(m.id)).length;
   const canAccessPart2 = useCanAccessPart2();
   const part2Done = part2Module.lessons.filter((l) => progress.completed.has(l.key)).length;
-  const next = progress.nextLesson;
-  const started = progress.done > 0;
+  const estado = entrega.entrega?.estado;
 
-  const cta = !next
-    ? {
-        to: "/academia/tarea-final",
-        label: "Ir a la tarea final",
-        message: "Completaste todas las lecciones. Revisa los criterios y prepara tu entrega.",
-      }
-    : started
-      ? { to: lessonPath(next), label: "Continuar", message: `Siguiente: ${next.code} · ${next.title}` }
-      : {
-          to: "/academia/guia",
-          label: "Empezar",
-          message: "Empieza por la guía: te explica cómo funciona esta etapa y qué necesitas.",
-        };
+  const journeyInput: JourneyInput = {
+    hasAccess: true,
+    isStaff,
+    isMember: false,
+    memberships: [],
+    completed: progress.completed,
+    done: progress.done,
+    total: progress.total,
+    nextLesson: progress.nextLesson,
+    entrega: entrega.entrega,
+    practica: practica.practica,
+  };
+  const step = nextStepFor(journeyInput);
 
   return (
-    <div className="space-y-14">
-      <section>
-        <p className="text-xs uppercase tracking-widest text-white/50">Parte 1 · Bienvenida</p>
-        <h1 className="font-display text-3xl md:text-5xl font-black uppercase tracking-tight mt-2">Academia Nova</h1>
-        <p className="mt-3 text-sm text-white/60">
+    <div className="mx-auto max-w-5xl space-y-12">
+      <header>
+        <h1 className="font-display text-3xl font-black tracking-tight md:text-4xl">Academia Nova</h1>
+        <p className="mt-1 text-sm text-white/50">
           {activeMembership
             ? `${activeMembership.grupo_nombre} · acceso hasta el ${formatDate(activeMembership.ends_at)} · quedan ${daysLeft(activeMembership.ends_at)} día(s)`
             : "Acceso permanente como parte de la directiva."}
         </p>
-      </section>
+      </header>
 
-      <section className="rounded-2xl border border-white/20 p-6 md:p-8 grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
-        <div>
-          <div className="flex items-baseline justify-between gap-4 mb-3">
-            <h2 className="font-display text-lg font-bold">Tu progreso</h2>
-            <span className="text-sm text-white/60">
-              {progress.done} de {progress.total} lecciones · {progress.percent}%
-            </span>
-          </div>
-          <ProgressBar value={progress.percent} label="Progreso del curso" />
-          <p className="mt-4 text-sm text-white/70">{cta.message}</p>
-          <p className="mt-1 text-xs text-white/50">
-            Fichas de módulo: {moduleFichas} de {courseModules.length} ·{" "}
-            <Link to="/academia/bitacora" className="underline underline-offset-4 hover:text-white">
-              ver bitácora
-            </Link>
-          </p>
+      <NextStepCard step={step}>
+        <div className="flex items-center gap-3">
+          <ProgressBar value={progress.percent} label="Progreso de la Parte 1" />
+          <span className="shrink-0 text-xs text-white/60">
+            Parte 1 · {progress.done}/{progress.total}
+          </span>
         </div>
-        <Link
-          to={cta.to}
-          className="inline-flex items-center justify-center gap-2 rounded-lg bg-white px-6 py-3 font-semibold text-black hover:bg-white/90 transition-colors"
-        >
-          {cta.label}
-          <ArrowRight className="h-4 w-4" />
-        </Link>
-      </section>
+      </NextStepCard>
+
+      {/* El recorrido de la convocatoria vive aquí: es el contexto de quien está en la Academia. */}
+      {!isStaff && <JourneyStepper stages={buildJourney(journeyInput)} />}
 
       <section>
-        <h2 className="font-display text-xl font-bold mb-5">Contenido</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Link to="/academia/guia" className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors">
-            <BookOpen className="h-7 w-7 mb-4" />
-            <h3 className="font-display font-bold">Guía de inicio</h3>
-            <p className="mt-2 text-sm text-white/60">Cómo funciona la Parte 1, qué necesitas y el Mapa de pines Nova.</p>
-          </Link>
-
-          <Link to="/academia/bitacora" className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors">
-            <NotebookPen className="h-7 w-7 mb-4" />
-            <h3 className="font-display font-bold">Bitácora Nova</h3>
-            <p className="mt-2 text-sm text-white/60">Una ficha de cuatro preguntas para compartir lo que aprendes.</p>
-          </Link>
-
+        <div className="mb-5">
+          <h2 className="font-display text-xl font-bold">Parte 1 · Tu camino</h2>
+          <p className="mt-1 text-sm text-white/50">
+            Electrónica, programación y mecánica en 3 semanas. Las lecciones se abren en orden; al terminar podrás repasar
+            cualquiera.
+          </p>
+        </div>
+        <CoursePath />
+        <div className="mt-4 flex flex-wrap gap-2">
           {courseModules.map((module) => {
             const Icon = moduleIcons[module.id];
             const required = module.lessons.filter((l) => !l.optional);
@@ -100,61 +96,27 @@ export default function AcademiaHome() {
               <Link
                 key={module.id}
                 to={`/academia/${module.id}`}
-                style={{ "--accent": moduleAccent(module.id) } as CSSProperties}
-                className="group rounded-2xl border border-white/10 p-5 hover:border-[rgb(var(--accent)/0.6)] transition-colors flex flex-col"
+                style={{ "--tone": moduleAccent(module.id) } as CSSProperties}
+                className="inline-flex items-center gap-2 rounded-full border border-white/10 px-3 py-1.5 text-xs text-white/70 transition-colors hover:border-[rgb(var(--tone)/0.6)] hover:text-white"
               >
-                <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[rgb(var(--accent)/0.15)] text-[rgb(var(--accent))]">
-                  <Icon className="h-6 w-6" />
-                </span>
-                <h3 className="font-display font-bold">{module.name}</h3>
-                <p className="mt-2 text-sm text-white/60 flex-1">{module.summary}</p>
-                <p className="mt-4 text-xs text-white/40">
-                  {module.tool} · {module.duration} · Ficha del módulo: {fichas.moduleFicha(module.id) ? "lista" : "pendiente"}
-                </p>
-                <div className="mt-3 flex items-center gap-3">
-                  <ProgressBar value={Math.round((done / required.length) * 100)} label={`Progreso de ${module.name}`} />
-                  <span className="shrink-0 text-xs text-white/60">
-                    {done}/{required.length}
-                  </span>
-                </div>
+                <Icon className="h-3.5 w-3.5 text-[rgb(var(--tone))]" />
+                {module.name} · {done}/{required.length}
               </Link>
             );
           })}
-
-          <Link
-            to="/academia/tarea-final"
-            className="group rounded-2xl border border-white/10 p-5 hover:border-white/40 transition-colors"
-          >
-            <Flag className="h-7 w-7 mb-4" />
-            <h3 className="font-display font-bold">Tarea final</h3>
-            <p className="mt-2 text-sm text-white/60">
-              El Panel de control Nova: une electrónica, mecánica y programación en un solo proyecto.
-            </p>
-          </Link>
         </div>
       </section>
 
       <section>
-        <div className="mb-5">
-          <h2 className="font-display text-xl font-bold">Tu camino</h2>
-          <p className="mt-2 text-sm text-white/60">
-            Las lecciones se abren en orden porque cada una se apoya en la anterior. Al terminar la Parte 1 podrás volver a
-            cualquiera para repasar.
-          </p>
-        </div>
-        <CoursePath />
-        <p className="mt-4 text-xs text-white/40">Tu progreso se guarda en tu cuenta: puedes continuar desde cualquier dispositivo.</p>
-      </section>
-
-      <section>
-        <h2 className="font-display text-xl font-bold mb-5">Parte 2 · Soldadura</h2>
+        <h2 className="mb-5 font-display text-xl font-bold">Parte 2 · Soldadura</h2>
         {canAccessPart2 ? (
           <div className="space-y-4">
             <Link
               to="/academia/soldadura"
-              className="group flex flex-col gap-5 rounded-2xl border border-white/25 p-6 hover:border-white transition-colors sm:flex-row sm:items-center"
+              style={{ "--tone": moduleAccent("soldadura") } as CSSProperties}
+              className="group flex flex-col gap-5 rounded-2xl border border-[rgb(var(--tone)/0.4)] p-6 transition-colors hover:border-[rgb(var(--tone))] sm:flex-row sm:items-center"
             >
-              <Flame className="h-8 w-8 shrink-0" />
+              <Flame className="h-8 w-8 shrink-0 text-[rgb(var(--tone))]" />
               <div className="flex-1">
                 <p className="text-sm text-white/70">{part2Module.summary}</p>
                 <p className="mt-1 text-xs text-white/40">
@@ -174,18 +136,35 @@ export default function AcademiaHome() {
             <PracticaCard practica={practica.practica} />
           </div>
         ) : (
-          <div className="flex gap-4 rounded-2xl border border-white/10 p-6">
-            <Lock className="h-6 w-6 shrink-0 text-white/50" />
+          <div className="flex gap-4 rounded-2xl border border-dashed border-white/15 p-6">
+            <Lock className="h-6 w-6 shrink-0 text-white/40" />
             <div>
-              <p className="text-sm text-white/70">
-                Soldadura THT y SMD, con teoría y videos, para prepararte antes de la práctica presencial.
-              </p>
+              <p className="text-sm text-white/70">Soldadura THT y SMD, y después una práctica presencial con tu propio kit.</p>
               <p className="mt-2 text-sm text-white/50">
                 <Part2Status />
               </p>
             </div>
           </div>
         )}
+      </section>
+
+      <section>
+        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/50">Recursos</h2>
+        <div className="grid gap-2 sm:grid-cols-3">
+          <ResourceLink to="/academia/guia" icon={BookOpen} title="Guía de inicio" detail="Cómo funciona y el Mapa de pines Nova" />
+          <ResourceLink
+            to="/academia/bitacora"
+            icon={NotebookPen}
+            title="Bitácora Nova"
+            detail={`Fichas de módulo: ${moduleFichas} de ${courseModules.length}`}
+          />
+          <ResourceLink
+            to="/academia/tarea-final"
+            icon={Flag}
+            title="Tarea final"
+            detail={estado ? `Tu entrega está ${ENTREGA_LABEL[estado]}` : "El Panel de control Nova"}
+          />
+        </div>
       </section>
     </div>
   );

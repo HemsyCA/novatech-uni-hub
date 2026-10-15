@@ -126,8 +126,77 @@ export type Database = {
           },
         ]
       }
+      aportes: {
+        Row: {
+          aprendi: string
+          autor_id: string
+          autor_nombre: string
+          categoria: string
+          comentario: string | null
+          conocimiento_id: string | null
+          created_at: string
+          disciplina: string | null
+          estado: Database["public"]["Enums"]["aporte_estado"]
+          evidencia_url: string | null
+          hice: string
+          id: string
+          paso: string
+          queria: string
+          revisado_at: string | null
+          revisado_por: string | null
+          titulo: string
+          updated_at: string
+        }
+        Insert: {
+          aprendi: string
+          autor_id: string
+          autor_nombre: string
+          categoria?: string
+          comentario?: string | null
+          conocimiento_id?: string | null
+          created_at?: string
+          disciplina?: string | null
+          estado?: Database["public"]["Enums"]["aporte_estado"]
+          evidencia_url?: string | null
+          hice: string
+          id?: string
+          paso: string
+          queria: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          titulo: string
+          updated_at?: string
+        }
+        Update: {
+          aprendi?: string
+          autor_id?: string
+          autor_nombre?: string
+          categoria?: string
+          comentario?: string | null
+          conocimiento_id?: string | null
+          created_at?: string
+          disciplina?: string | null
+          estado?: Database["public"]["Enums"]["aporte_estado"]
+          evidencia_url?: string | null
+          hice?: string
+          id?: string
+          paso?: string
+          queria?: string
+          revisado_at?: string | null
+          revisado_por?: string | null
+          titulo?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       material_miembros: {
         Row: {
+          aporte_id: string | null
+          autor_id: string | null
+          autor_nombre: string | null
+          contenido: string | null
+          disciplina: string | null
+          publicado_at: string
           categoria: string
           created_at: string
           descripcion: string | null
@@ -139,6 +208,12 @@ export type Database = {
           url: string | null
         }
         Insert: {
+          aporte_id?: string | null
+          autor_id?: string | null
+          autor_nombre?: string | null
+          contenido?: string | null
+          disciplina?: string | null
+          publicado_at?: string
           categoria?: string
           created_at?: string
           descripcion?: string | null
@@ -150,6 +225,12 @@ export type Database = {
           url?: string | null
         }
         Update: {
+          aporte_id?: string | null
+          autor_id?: string | null
+          autor_nombre?: string | null
+          contenido?: string | null
+          disciplina?: string | null
+          publicado_at?: string
           categoria?: string
           created_at?: string
           descripcion?: string | null
@@ -913,6 +994,25 @@ export type Database = {
         Returns: boolean
       }
       is_member: { Args: { _user_id: string }; Returns: boolean }
+      is_academic: { Args: { _user_id: string }; Returns: boolean }
+      enviar_aporte: {
+        Args: {
+          _id: string | null
+          _titulo: string
+          _disciplina: string
+          _categoria: string
+          _queria: string
+          _hice: string
+          _paso: string
+          _aprendi: string
+          _evidencia_url: string
+        }
+        Returns: string
+      }
+      revisar_aporte: {
+        Args: { _id: string; _aprobar: boolean; _comentario: string | null }
+        Returns: undefined
+      }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
       revisar_inscripcion: {
         Args: { _aprobar: boolean; _grupo_id?: string; _id: string }
@@ -920,7 +1020,8 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "superadmin" | "directiva"
+      app_role: "superadmin" | "directiva" | "academica"
+      aporte_estado: "enviado" | "observado" | "aprobado"
       entrega_estado: "enviada" | "observada" | "aprobada"
       practica_estado: "programada" | "asistio" | "no_asistio"
       inscripcion_estado: "pendiente" | "aprobada" | "rechazada"
@@ -1059,7 +1160,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["superadmin", "directiva"],
+      app_role: ["superadmin", "directiva", "academica"],
+      aporte_estado: ["enviado", "observado", "aprobado"],
       entrega_estado: ["enviada", "observada", "aprobada"],
       practica_estado: ["programada", "asistio", "no_asistio"],
       inscripcion_estado: ["pendiente", "aprobada", "rechazada"],

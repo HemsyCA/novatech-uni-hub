@@ -104,8 +104,8 @@ const calloutStyles: Record<CalloutKind, { icon: LucideIcon | null; box: string;
   info: { icon: Info, box: "border-sky-400/40 bg-sky-400/[0.08]", iconColor: "text-sky-400" },
   example: {
     icon: Wrench,
-    box: "border-[rgb(var(--accent,255_255_255)/0.4)] bg-[rgb(var(--accent,255_255_255)/0.07)]",
-    iconColor: "text-[rgb(var(--accent,255_255_255))]",
+    box: "border-[rgb(var(--tone,255_255_255)/0.4)] bg-[rgb(var(--tone,255_255_255)/0.07)]",
+    iconColor: "text-[rgb(var(--tone,255_255_255))]",
   },
   plain: { icon: null, box: "border-white/20 bg-white/[0.04]", iconColor: "" },
 };
@@ -194,12 +194,12 @@ function TaskItem({ node, className, children }: { node?: HastNode; className?: 
         aria-pressed={done}
         onClick={() => checklist.toggle(item)}
         className={`flex w-full items-start gap-3 rounded-xl border px-4 py-2.5 text-left text-sm leading-relaxed transition-colors [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_strong]:text-white ${
-          done ? "border-[rgb(var(--accent,255_255_255)/0.5)] bg-[rgb(var(--accent,255_255_255)/0.08)] text-white" : "border-white/15 text-white/80 hover:border-white/30"
+          done ? "border-[rgb(var(--tone,255_255_255)/0.5)] bg-[rgb(var(--tone,255_255_255)/0.08)] text-white" : "border-white/15 text-white/80 hover:border-white/30"
         }`}
       >
         <span
           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
-            done ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255))] text-black" : "border-white/40"
+            done ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255))] text-black" : "border-white/40"
           }`}
         >
           {done && <Check className="h-3.5 w-3.5" strokeWidth={3} />}

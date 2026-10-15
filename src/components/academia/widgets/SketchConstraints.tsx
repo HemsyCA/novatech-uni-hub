@@ -161,7 +161,7 @@ export function SketchConstraints() {
             aria-pressed={has(rule.id)}
             onClick={() => toggle(rule.id)}
             className={`flex w-full items-center gap-3 rounded-xl border px-3 py-2.5 text-left text-sm transition-colors ${
-              has(rule.id) ? "border-[rgb(var(--accent,255_255_255)/0.6)] bg-[rgb(var(--accent,255_255_255)/0.1)]" : "border-white/15 hover:border-white/35"
+              has(rule.id) ? "border-[rgb(var(--tone,255_255_255)/0.6)] bg-[rgb(var(--tone,255_255_255)/0.1)]" : "border-white/15 hover:border-white/35"
             }`}
           >
             <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-white/10 font-mono text-xs">{rule.tool}</span>

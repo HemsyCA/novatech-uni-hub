@@ -97,7 +97,7 @@ export function ViewCube() {
               style={{ transform: face.transform, backfaceVisibility: "hidden" } as CSSProperties}
               className={`absolute inset-0 flex items-center justify-center border-2 text-sm font-bold ${
                 face.plane
-                  ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.2)] text-white"
+                  ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.2)] text-white"
                   : "border-white/25 bg-white/[0.06] text-white/40"
               }`}
             >

@@ -14,6 +14,9 @@ export const getMyRoles = async (userId: string): Promise<AppRole[]> => {
 
 export const isStaff = (roles: AppRole[]) => roles.includes("superadmin") || roles.includes("directiva");
 
+// El Área académica revisa y aprueba los aportes de la Comunidad (el superadmin también puede).
+export const isAcademic = (roles: AppRole[]) => roles.includes("superadmin") || roles.includes("academica");
+
 // user_roles referencia auth.users (no profiles), así que PostgREST no puede
 // hacer el join; se buscan los perfiles en una segunda consulta.
 export const listAllUserRoles = async (): Promise<UserRoleWithProfile[]> => {

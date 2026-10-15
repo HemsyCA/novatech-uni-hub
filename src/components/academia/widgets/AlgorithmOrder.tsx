@@ -51,11 +51,11 @@ function TrafficFlowchart() {
       <path
         d={`M190 ${bottom - boxH / 2} H225 V${top + boxH / 2} H194`}
         fill="none"
-        stroke="rgb(var(--accent, 255 255 255))"
+        stroke="rgb(var(--tone, 255 255 255))"
         strokeWidth="2"
         markerEnd="url(#flow-arrow)"
       />
-      <text x="232" y={(top + bottom) / 2} fill="rgb(var(--accent, 255 255 255))" fontSize="10" fontFamily="inherit" transform={`rotate(90 232 ${(top + bottom) / 2})`} textAnchor="middle">
+      <text x="232" y={(top + bottom) / 2} fill="rgb(var(--tone, 255 255 255))" fontSize="10" fontFamily="inherit" transform={`rotate(90 232 ${(top + bottom) / 2})`} textAnchor="middle">
         se repite para siempre
       </text>
     </svg>
@@ -125,7 +125,7 @@ export function AlgorithmOrder() {
                   key={index}
                   type="button"
                   onClick={() => setPlaced((current) => [...current, index])}
-                  className="rounded-lg border border-white/20 px-3 py-2 text-sm text-white/85 transition-colors hover:border-[rgb(var(--accent,255_255_255))]"
+                  className="rounded-lg border border-white/20 px-3 py-2 text-sm text-white/85 transition-colors hover:border-[rgb(var(--tone,255_255_255))]"
                 >
                   {SOLUTION[index]}
                 </button>
@@ -137,7 +137,7 @@ export function AlgorithmOrder() {
             <button
               type="button"
               onClick={() => setChecked(true)}
-              className="rounded-xl bg-[rgb(var(--accent,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black"
+              className="rounded-xl bg-[rgb(var(--tone,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black"
             >
               Comprobar
             </button>

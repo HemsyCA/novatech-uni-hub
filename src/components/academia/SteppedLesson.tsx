@@ -54,9 +54,9 @@ function StepProgress({ steps, current, onSelect }: { steps: LessonStep[]; curre
           <span
             className={`block h-1.5 rounded-full transition-colors ${
               index < current
-                ? "bg-[rgb(var(--accent))]"
+                ? "bg-[rgb(var(--tone))]"
                 : index === current
-                  ? "bg-[rgb(var(--accent)/0.6)]"
+                  ? "bg-[rgb(var(--tone)/0.6)]"
                   : "bg-white/10 group-hover:bg-white/25"
             }`}
           />
@@ -85,8 +85,8 @@ function IntroStep({
     <div className="space-y-4">
       {step.note && <Markdown>{step.note}</Markdown>}
       {aside}
-      <div className="rounded-2xl border border-[rgb(var(--accent)/0.4)] bg-[rgb(var(--accent)/0.08)] p-6">
-        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[rgb(var(--accent))]">
+      <div className="rounded-2xl border border-[rgb(var(--tone)/0.4)] bg-[rgb(var(--tone)/0.08)] p-6">
+        <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[rgb(var(--tone))]">
           <Target className="h-4 w-4" /> {isTask ? "Tu objetivo" : "Al terminar podrás"}
         </p>
         <p className="mt-3 text-lg leading-relaxed text-white">{step.content.replace(/\*\*/g, "")}</p>
@@ -126,7 +126,7 @@ function IntroStep({
       <button
         type="button"
         onClick={onStart}
-        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[rgb(var(--accent))] px-6 py-3.5 font-semibold text-black transition-transform hover:scale-[1.01] sm:w-auto"
+        className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[rgb(var(--tone))] px-6 py-3.5 font-semibold text-black transition-transform hover:scale-[1.01] sm:w-auto"
       >
         Empezar <ArrowRight className="h-4 w-4" />
       </button>
@@ -159,12 +159,12 @@ function Checklist({ items }: { items: string[] }) {
                 })
               }
               className={`flex w-full items-start gap-3 rounded-xl border px-4 py-3 text-left text-sm transition-colors ${
-                isChecked ? "border-[rgb(var(--accent)/0.5)] bg-[rgb(var(--accent)/0.08)] text-white" : "border-white/15 text-white/75 hover:border-white/30"
+                isChecked ? "border-[rgb(var(--tone)/0.5)] bg-[rgb(var(--tone)/0.08)] text-white" : "border-white/15 text-white/75 hover:border-white/30"
               }`}
             >
               <span
                 className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border ${
-                  isChecked ? "border-[rgb(var(--accent))] bg-[rgb(var(--accent))] text-black" : "border-white/40"
+                  isChecked ? "border-[rgb(var(--tone))] bg-[rgb(var(--tone))] text-black" : "border-white/40"
                 }`}
               >
                 {isChecked && <Check className="h-3.5 w-3.5" strokeWidth={3} />}
@@ -239,7 +239,7 @@ function Celebration({ lesson, onClose }: { lesson: Lesson; onClose: () => void 
         initial={{ scale: 0.85, y: 20 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="relative w-full max-w-md rounded-3xl border border-[rgb(var(--accent)/0.5)] bg-black p-8 text-center"
+        className="relative w-full max-w-md rounded-3xl border border-[rgb(var(--tone)/0.5)] bg-black p-8 text-center"
       >
         {!reduceMotion &&
           pieces.map((piece, i) => (
@@ -257,7 +257,7 @@ function Celebration({ lesson, onClose }: { lesson: Lesson; onClose: () => void 
           initial={{ scale: 0, rotate: -30 }}
           animate={{ scale: 1, rotate: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 15, delay: 0.1 }}
-          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(var(--accent))] text-black"
+          className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[rgb(var(--tone))] text-black"
         >
           <Check className="h-8 w-8" strokeWidth={3} />
         </motion.div>
@@ -273,10 +273,10 @@ function Celebration({ lesson, onClose }: { lesson: Lesson; onClose: () => void 
 
         {next ? (
           <div
-            style={{ "--accent": moduleAccent(next.moduleId) } as CSSProperties}
-            className="mt-6 rounded-2xl border border-[rgb(var(--accent)/0.4)] bg-[rgb(var(--accent)/0.08)] p-4 text-left"
+            style={{ "--tone": moduleAccent(next.moduleId) } as CSSProperties}
+            className="mt-6 rounded-2xl border border-[rgb(var(--tone)/0.4)] bg-[rgb(var(--tone)/0.08)] p-4 text-left"
           >
-            <p className="text-xs uppercase tracking-widest text-[rgb(var(--accent))]">
+            <p className="text-xs uppercase tracking-widest text-[rgb(var(--tone))]">
               {track.nextLabel} · {moduleName(next.moduleId)}
             </p>
             <p className="mt-1 font-semibold">
@@ -328,13 +328,13 @@ function CheckStep({ lesson, step }: { lesson: Lesson; step: LessonStep }) {
 
       <div
         className={`rounded-2xl border p-5 ${
-          isDone ? "border-[rgb(var(--accent)/0.5)] bg-[rgb(var(--accent)/0.08)]" : "border-white/20"
+          isDone ? "border-[rgb(var(--tone)/0.5)] bg-[rgb(var(--tone)/0.08)]" : "border-white/20"
         }`}
       >
         {isDone ? (
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-center gap-2 font-semibold">
-              <Check className="h-5 w-5 text-[rgb(var(--accent))]" /> Lección completada
+              <Check className="h-5 w-5 text-[rgb(var(--tone))]" /> Lección completada
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <button type="button" onClick={() => progress.toggle(lesson.key)} className="text-xs text-white/50 underline underline-offset-4 hover:text-white">
@@ -363,7 +363,7 @@ function CheckStep({ lesson, step }: { lesson: Lesson; step: LessonStep }) {
               type="button"
               onClick={complete}
               disabled={!canComplete}
-              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[rgb(var(--accent))] px-6 py-3 font-semibold text-black transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:hover:scale-100"
+              className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[rgb(var(--tone))] px-6 py-3 font-semibold text-black transition-all hover:scale-[1.02] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/40 disabled:hover:scale-100"
             >
               <Trophy className="h-4 w-4" /> {lesson.isTask ? "Completar esta parte" : "Completar lección"}
             </button>
@@ -439,7 +439,7 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
 
   return (
     <div>
-      <p className="text-xs uppercase tracking-widest text-[rgb(var(--accent))]">
+      <p className="text-xs uppercase tracking-widest text-[rgb(var(--tone))]">
         {lesson.isTask ? `Tarea final · ${moduleName(lesson.moduleId)}` : `${moduleName(lesson.moduleId)} · ${lesson.code}`}
         {lesson.optional && " · Opcional"}
       </p>
@@ -463,7 +463,7 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
         >
           {step.kind !== "intro" && (
             <div className="mb-6 flex items-center gap-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[rgb(var(--accent)/0.15)] text-[rgb(var(--accent))]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[rgb(var(--tone)/0.15)] text-[rgb(var(--tone))]">
                 <Icon className="h-5 w-5" />
               </span>
               <div>
@@ -505,7 +505,7 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
             <button
               type="button"
               onClick={() => goTo(current + 1)}
-              className="inline-flex flex-1 items-center justify-between gap-3 rounded-xl bg-[rgb(var(--accent))] px-5 py-3 text-left font-semibold text-black transition-transform hover:scale-[1.01] md:flex-none md:min-w-[260px] md:ml-auto"
+              className="inline-flex flex-1 items-center justify-between gap-3 rounded-xl bg-[rgb(var(--tone))] px-5 py-3 text-left font-semibold text-black transition-transform hover:scale-[1.01] md:flex-none md:min-w-[260px] md:ml-auto"
             >
               <span className="min-w-0">
                 <span className="block text-[10px] font-normal uppercase tracking-widest text-black/60">Siguiente</span>

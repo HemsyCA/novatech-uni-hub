@@ -192,7 +192,7 @@ export function SchematicSymbols() {
                       ? "border-emerald-400 bg-emerald-400/15"
                       : isWrong
                         ? "animate-shake border-rose-400 bg-rose-400/10"
-                        : "border-white/20 hover:border-[rgb(var(--accent,255_255_255))]"
+                        : "border-white/20 hover:border-[rgb(var(--tone,255_255_255))]"
                   }`}
                 >
                   {SYMBOLS[index].name}
@@ -205,7 +205,7 @@ export function SchematicSymbols() {
               <Feedback tone="ok">
                 <strong>{symbol.name}</strong> · designador {symbol.designator}. {symbol.note}
               </Feedback>
-              <button type="button" onClick={next} className="rounded-xl bg-[rgb(var(--accent,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
+              <button type="button" onClick={next} className="rounded-xl bg-[rgb(var(--tone,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
                 {round + 1 === ORDER.length ? "Ver resumen" : "Siguiente símbolo"}
               </button>
             </div>

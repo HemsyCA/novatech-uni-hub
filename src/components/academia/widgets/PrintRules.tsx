@@ -42,10 +42,10 @@ export function Clearance() {
       <div className="mt-4 rounded-xl bg-white/[0.03] p-3">
         <svg viewBox="0 0 240 120" className="h-auto w-full" role="img" aria-label={fits ? "La pieza entra en el agujero" : "La pieza no entra en el agujero"}>
           {/* Pieza impresa vista en corte: el agujero diseñado y lo que realmente sale. */}
-          <rect x="0" y="60" width="240" height="56" fill="rgb(var(--accent, 255 255 255) / 0.25)" />
+          <rect x="0" y="60" width="240" height="56" fill="rgb(var(--tone, 255 255 255) / 0.25)" />
           <rect x={120 - holeW / 2} y="60" width={holeW} height="56" fill="#111" />
-          <rect x={120 - holeW / 2} y="60" width={(holeW - printedW) / 2} height="56" fill="rgb(var(--accent, 255 255 255) / 0.5)" />
-          <rect x={120 + printedW / 2} y="60" width={(holeW - printedW) / 2} height="56" fill="rgb(var(--accent, 255 255 255) / 0.5)" />
+          <rect x={120 - holeW / 2} y="60" width={(holeW - printedW) / 2} height="56" fill="rgb(var(--tone, 255 255 255) / 0.5)" />
+          <rect x={120 + printedW / 2} y="60" width={(holeW - printedW) / 2} height="56" fill="rgb(var(--tone, 255 255 255) / 0.5)" />
           <line x1={120 - holeW / 2} y1="56" x2={120 + holeW / 2} y2="56" stroke="rgba(255,255,255,0.4)" strokeDasharray="3 3" />
           <text x="120" y="52" textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize="9" fontFamily="inherit">
             diseño: {mm(design)}
@@ -96,7 +96,7 @@ export function Clearance() {
           <span className="text-sm text-white/70">
             {customValue > 0 ? (
               <>
-                → en el diseño: <strong className="text-[rgb(var(--accent,255_255_255))]">{mm(customValue + CLEARANCE)}</strong>
+                → en el diseño: <strong className="text-[rgb(var(--tone,255_255_255))]">{mm(customValue + CLEARANCE)}</strong>
               </>
             ) : (
               "→ te digo cuánto poner en el diseño"
@@ -134,7 +134,7 @@ export function Overhang() {
         step={5}
         value={angle}
         onChange={(e) => setAngle(Number(e.target.value))}
-        className="w-full accent-[rgb(var(--accent,255_255_255))]"
+        className="w-full accent-[rgb(var(--tone,255_255_255))]"
       />
 
       <div className="mt-4 rounded-xl bg-white/[0.03] p-3">
@@ -149,7 +149,7 @@ export function Overhang() {
             return (
               <g key={i}>
                 {/* Pared vertical de la pieza */}
-                <rect x={baseX - 40} y={y} width="40" height={LAYER_H - 1} rx="4" fill="rgb(var(--accent, 255 255 255) / 0.7)" />
+                <rect x={baseX - 40} y={y} width="40" height={LAYER_H - 1} rx="4" fill="rgb(var(--tone, 255 255 255) / 0.7)" />
                 {/* Capa del voladizo */}
                 <rect
                   x={x}
@@ -157,7 +157,7 @@ export function Overhang() {
                   width={LINE_W}
                   height={LAYER_H - 1}
                   rx="4"
-                  fill={falling ? "#f87171" : "rgb(var(--accent, 255 255 255) / 0.7)"}
+                  fill={falling ? "#f87171" : "rgb(var(--tone, 255 255 255) / 0.7)"}
                   style={{ transition: "all 0.3s ease" }}
                 />
                 {supports && unsupported && i > 0 && (
