@@ -165,7 +165,7 @@ Deno.serve(async (req) => {
 
   try {
     await transporter.sendMail({
-      from: { name: "Nova Tech", address: Deno.env.get("GMAIL_USER")! },
+      from: { name: "NovaTech", address: Deno.env.get("GMAIL_USER")! },
       to: email.to,
       subject: email.subject,
       html: email.html,
