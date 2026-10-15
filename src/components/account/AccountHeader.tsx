@@ -7,6 +7,7 @@ import {
   Home,
   LogOut,
   MessagesSquare,
+  MonitorSmartphone,
   Printer,
   ShieldCheck,
   ShoppingCart,
@@ -203,6 +204,15 @@ function AccountMenu({ overflow }: { overflow: Section[] }) {
         <DropdownMenuSeparator className="bg-white/10" />
         <DropdownMenuItem onSelect={() => account.signOut()} className={menuItem}>
           <LogOut className="mr-2 h-4 w-4" /> Cerrar sesión
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onSelect={() => {
+            if (window.confirm("Se cerrará tu sesión en todos los celulares y computadoras donde hayas ingresado. ¿Continuar?"))
+              account.signOutEverywhere();
+          }}
+          className={`${menuItem} text-xs text-white/60`}
+        >
+          <MonitorSmartphone className="mr-2 h-4 w-4" /> Cerrar sesión en todos los dispositivos
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

@@ -8,12 +8,16 @@ import { useAcademyProgress } from "@/hooks/use-academy-progress";
 import { useAcademyEntrega } from "@/hooks/use-academy-entrega";
 import { useAcademyPractica } from "@/hooks/use-academy-practica";
 import { useMemberAccess } from "@/hooks/use-member-access";
-import { signOut as signOutSession } from "@/services/supabase/auth";
+import { signOut as signOutSession, signOutEverywhere } from "@/services/supabase/auth";
+import { useIdleSignOut } from "@/hooks/use-idle-sign-out";
+import { toast } from "@/hooks/use-toast";
 import { listAllOrders, listOrders } from "@/services/supabase/orders";
 import { listAllReservations, listUserReservations } from "@/services/supabase/reservations";
 import { listAcademyEntregas, listPendingApplications } from "@/services/supabase/academia";
 import { listAportesPorRevisar, listMyAportes, type Aporte } from "@/services/supabase/conocimientos";
 import type { Order, Reservation } from "@/types/domain";
+
+const STAFF_IDLE_LIMIT_MS = 8 * 60 * 60 * 1000;
 
 // Marco común de todas las páginas de la cuenta: un solo encabezado, la barra inferior en el celular
 // y los datos que comparten.
@@ -92,6 +96,15 @@ export default function AccountLayout() {
     if (!academy.isAcademic) setAcademicPending(null);
   }, [member.isMember, academy.isAcademic, reloadAportes]);
 
+  // La directiva maneja pagos, entregas y roles: su sesión se cierra tras 8 horas sin actividad.
+  const expireIdleSession = useCallback(async () => {
+    await signOutSession();
+    navigate("/auth", { replace: true });
+    toast({ title: "Cerramos tu sesión", description: "Por seguridad, tras 8 horas sin actividad. Vuelve a ingresar para continuar." });
+  }, [navigate]);
+  const signedInAt = user?.last_sign_in_at ? Date.parse(user.last_sign_in_at) : null;
+  useIdleSignOut(user?.id ?? null, academy.isStaff, STAFF_IDLE_LIMIT_MS, signedInAt, expireIdleSession);
+
   const account: AccountState = {
     user,
     sessionLoading,
@@ -106,6 +119,11 @@ export default function AccountLayout() {
     academicPending,
     aportes,
     reloadAportes,
+    signOutEverywhere: async () => {
+      await signOutEverywhere();
+      navigate("/");
+      toast({ title: "Cerraste sesión en todos tus dispositivos" });
+    },
     signOut: async () => {
       await signOutSession();
       navigate("/");
