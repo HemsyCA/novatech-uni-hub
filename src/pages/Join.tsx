@@ -1,6 +1,8 @@
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
+  ArrowDown,
   BookOpen,
   CircuitBoard,
   Code2,
@@ -14,7 +16,6 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { PageLayout } from "@/components/landing/PageLayout";
-import { SectionHeading } from "@/components/landing/SectionHeading";
 import { ApplicationForm } from "@/components/landing/ApplicationForm";
 import { moduleInfo, type ModuleId } from "@/lib/academia/modules";
 
@@ -95,136 +96,203 @@ const steps = [
   },
 ];
 
+const fadeIn = {
+  initial: { opacity: 0, y: 16 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-60px" },
+  transition: { duration: 0.5 },
+};
+
+function Label({ index, children }: { index?: string; children: ReactNode }) {
+  return (
+    <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">
+      {index && <span className="text-nova">{index} · </span>}
+      {children}
+    </p>
+  );
+}
+
+interface SectionProps {
+  id?: string;
+  index: string;
+  label: string;
+  title: string;
+  subtitle?: string;
+  aside?: ReactNode;
+  children: ReactNode;
+}
+
+// Título fijo a la izquierda y contenido a la derecha en pantallas grandes.
+function Section({ id, index, label, title, subtitle, aside, children }: SectionProps) {
+  return (
+    <section id={id} className="border-t border-white/10 py-20 md:py-28">
+      <div className="container mx-auto px-4 max-w-6xl grid gap-10 lg:grid-cols-12 lg:gap-16">
+        <motion.header {...fadeIn} className="lg:col-span-4 lg:sticky lg:top-28 self-start">
+          <Label index={index}>{label}</Label>
+          <h2 className="mt-4 font-sans text-3xl md:text-4xl font-semibold tracking-tight text-white">{title}</h2>
+          {subtitle && <p className="mt-4 text-base font-light leading-relaxed text-white/60">{subtitle}</p>}
+          {aside}
+        </motion.header>
+        <div className="lg:col-span-8">{children}</div>
+      </div>
+    </section>
+  );
+}
+
 const Join = () => (
   <PageLayout>
-    <section className="py-20">
-      <div className="container mx-auto px-4">
-        <SectionHeading
-          as="h1"
-          eyebrow="Únete"
-          title="Forma parte de Nova"
-          subtitle="En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria."
-        />
-
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {learningCycle.map((item, index) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="rounded-2xl border border-white/10 p-6"
+    <div className="font-sans">
+      <section className="py-24 md:py-32">
+        <div className="container mx-auto px-4 max-w-6xl">
+          <motion.div {...fadeIn} className="max-w-3xl">
+            <Label>Únete · Convocatoria</Label>
+            <h1 className="mt-6 font-display text-4xl md:text-6xl font-bold uppercase leading-[1.05] text-white">
+              Forma parte de <span className="text-nova">Nova</span>
+            </h1>
+            <p className="mt-8 text-lg md:text-xl font-light leading-relaxed text-white/70">
+              En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que
+              intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria.
+            </p>
+            <a
+              href="#inscripcion"
+              className="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
             >
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-xs text-white/40">0{index + 1}</span>
-                <item.icon className="w-6 h-6 text-white" />
-              </div>
-              <h2 className="font-display text-lg font-bold text-white mb-2">{item.title}</h2>
-              <p className="text-sm text-white/60 leading-relaxed">{item.description}</p>
-            </motion.div>
-          ))}
-        </div>
-        <p className="mt-8 text-center text-sm text-white/70 max-w-2xl mx-auto">
-          Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
-          estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones
-          de refuerzo o algún compartir con el equipo.
-        </p>
-      </div>
-    </section>
+              Ir a la inscripción
+              <ArrowDown className="h-3.5 w-3.5" />
+            </a>
+          </motion.div>
 
-    <section className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4">
-        <SectionHeading
-          eyebrow="Ruta"
-          title="Cómo avanzas en Nova"
-          subtitle="Cada nivel se gana demostrando lo que aprendiste en el anterior."
-        />
-        <ol className="grid md:grid-cols-3 gap-4">
-          {levels.map((level) => (
-            <li key={level.step} className="rounded-2xl border border-white/10 p-6 flex flex-col">
-              <span className="text-xs uppercase tracking-widest text-white/50">{level.step}</span>
-              <h3 className="font-display text-xl font-bold text-white mt-2 mb-3">{level.title}</h3>
-              <p className="text-sm text-white/60 leading-relaxed flex-1">{level.description}</p>
-              <p className="mt-5 pt-4 border-t border-white/10 text-xs text-white/80">{level.detail}</p>
-            </li>
+          <ol className="mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+            {learningCycle.map((item, index) => (
+              <motion.li
+                key={item.title}
+                {...fadeIn}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className="border-t border-white/15 pt-6"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-xs text-nova">0{index + 1}</span>
+                  <item.icon className="h-4 w-4 text-white/50" strokeWidth={1.5} />
+                </div>
+                <h3 className="mt-5 font-sans text-lg font-medium text-white">{item.title}</h3>
+                <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{item.description}</p>
+              </motion.li>
+            ))}
+          </ol>
+
+          <motion.p
+            {...fadeIn}
+            className="mt-20 max-w-3xl border-l border-nova/60 pl-6 text-lg font-light leading-relaxed text-white/80"
+          >
+            Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
+            estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones
+            de refuerzo o algún compartir con el equipo.
+          </motion.p>
+        </div>
+      </section>
+
+      <Section
+        index="01"
+        label="Ruta"
+        title="Cómo avanzas en Nova"
+        subtitle="Cada nivel se gana demostrando lo que aprendiste en el anterior."
+      >
+        <ol className="relative border-l border-white/15">
+          {levels.map((level, index) => (
+            <motion.li
+              key={level.step}
+              {...fadeIn}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className="relative pl-8 pb-12 last:pb-0"
+            >
+              <span
+                className={`absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full ${
+                  index === 0 ? "bg-nova" : "border border-white/40 bg-black"
+                }`}
+              />
+              <Label>{level.step}</Label>
+              <h3 className="mt-3 font-sans text-xl font-medium text-white">{level.title}</h3>
+              <p className="mt-2 max-w-xl text-[15px] font-light leading-relaxed text-white/60">{level.description}</p>
+              <p className="mt-4 font-mono text-xs text-white/50">{level.detail}</p>
+            </motion.li>
           ))}
         </ol>
-      </div>
-    </section>
+      </Section>
 
-    <section className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4">
-        <SectionHeading
-          eyebrow="Academia Nova · Parte 1"
-          title="Qué vas a investigar"
-          subtitle="Todos los robots del equipo, del minisumo al OTTO, están hechos de las mismas piezas básicas. Al final las unes en tu propio Panel de control Nova con un ESP32."
-        />
-        <div className="grid md:grid-cols-3 gap-4">
+      <Section
+        index="02"
+        label="Academia Nova · Parte 1"
+        title="Qué vas a investigar"
+        subtitle="Todos los robots del equipo, del minisumo al OTTO, están hechos de las mismas piezas básicas. Al final las unes en tu propio Panel de control Nova con un ESP32."
+      >
+        <ul className="divide-y divide-white/10 border-y border-white/10">
           {moduleInfo.map((module) => {
             const Icon = moduleIcons[module.id];
             return (
-              <div key={module.id} className="rounded-2xl border border-white/10 p-6 flex flex-col">
-                <Icon className="w-8 h-8 text-white mb-4" />
-                <h3 className="font-display text-lg font-bold text-white mb-2">{module.name}</h3>
-                <p className="text-sm text-white/60 leading-relaxed flex-1">{module.summary}</p>
-                <p className="mt-5 pt-4 border-t border-white/10 text-xs text-white/80">
-                  {module.tool} · {module.duration}
+              <motion.li key={module.id} {...fadeIn} className="grid gap-4 py-8 sm:grid-cols-[auto_1fr_auto] sm:items-start">
+                <Icon className="h-5 w-5 text-white/60" strokeWidth={1.5} />
+                <div>
+                  <h3 className="font-sans text-lg font-medium text-white">{module.name}</h3>
+                  <p className="mt-1 text-[15px] font-light leading-relaxed text-white/60">{module.summary}</p>
+                </div>
+                <p className="font-mono text-xs text-white/50 sm:text-right">
+                  {module.tool}
+                  <br className="hidden sm:block" />
+                  <span className="sm:hidden"> · </span>
+                  {module.duration}
                 </p>
-              </div>
+              </motion.li>
             );
           })}
-        </div>
-      </div>
-    </section>
+        </ul>
+      </Section>
 
-    <section className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12">
-        <div>
-          <SectionHeading align="left" eyebrow="Requisitos" title="Lo que necesitas" />
-          <ul className="space-y-4">
-            {requirements.map((item) => (
-              <li key={item.text} className="flex items-start gap-3 text-sm text-white/80">
-                <item.icon className="w-5 h-5 mt-0.5 shrink-0" />
-                {item.text}
-              </li>
-            ))}
-          </ul>
-          <p className="mt-6 text-sm text-white">No necesitas comprar componentes: el kit de práctica te lo da el equipo en la Parte 2.</p>
-        </div>
-        <div>
-          <SectionHeading align="left" eyebrow="Convocatoria" title="Cómo funciona" />
-          <ol className="space-y-4">
-            {steps.map((step, index) => (
-              <li key={step.title} className="rounded-2xl border border-white/10 p-5 flex gap-4">
-                <span className="font-display text-2xl font-black text-white/30">{index + 1}</span>
-                <div>
-                  <h3 className="font-display font-bold text-white">{step.title}</h3>
-                  <p className="text-sm text-white/60 mt-1">{step.description}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </div>
-    </section>
-
-    <section id="inscripcion" className="py-20 border-t border-white/10">
-      <div className="container mx-auto px-4 max-w-xl">
-        <SectionHeading
-          eyebrow="Inscripción"
-          title="¿Listo para empezar?"
-          subtitle="Déjanos tus datos y la directiva te asignará a un grupo de la convocatoria."
-        />
-        <ApplicationForm />
-        <p className="mt-6 text-center text-sm text-white/50">
-          ¿Tienes dudas?{" "}
-          <Link to="/#contacto" className="text-white hover:underline">
-            Escríbenos
-          </Link>
+      <Section index="03" label="Requisitos" title="Lo que necesitas">
+        <ul className="divide-y divide-white/10 border-y border-white/10">
+          {requirements.map((item) => (
+            <li key={item.text} className="flex items-start gap-4 py-5 text-[15px] font-light text-white/80">
+              <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-white/50" strokeWidth={1.5} />
+              {item.text}
+            </li>
+          ))}
+        </ul>
+        <p className="mt-6 text-[15px] text-white">
+          No necesitas comprar componentes: el kit de práctica te lo da el equipo en la Parte 2.
         </p>
-      </div>
-    </section>
+      </Section>
+
+      <Section index="04" label="Convocatoria" title="Cómo funciona">
+        <ol className="divide-y divide-white/10 border-y border-white/10">
+          {steps.map((step, index) => (
+            <motion.li key={step.title} {...fadeIn} className="flex gap-6 py-6">
+              <span className="font-mono text-sm text-nova pt-0.5">0{index + 1}</span>
+              <div>
+                <h3 className="font-sans text-lg font-medium text-white">{step.title}</h3>
+                <p className="mt-1 text-[15px] font-light leading-relaxed text-white/60">{step.description}</p>
+              </div>
+            </motion.li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section
+        id="inscripcion"
+        index="05"
+        label="Inscripción"
+        title="¿Listo para empezar?"
+        subtitle="Déjanos tus datos y la directiva te asignará a un grupo de la convocatoria."
+        aside={
+          <p className="mt-8 text-sm font-light text-white/50">
+            ¿Tienes dudas?{" "}
+            <Link to="/#contacto" className="text-white underline-offset-4 hover:underline">
+              Escríbenos
+            </Link>
+          </p>
+        }
+      >
+        <ApplicationForm />
+      </Section>
+    </div>
   </PageLayout>
 );
 
