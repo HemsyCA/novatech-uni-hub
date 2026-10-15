@@ -29,7 +29,7 @@ const learningCycle = [
     icon: Search,
     title: "Investiga",
     description:
-      "Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no.",
+      "Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no. Si sigues trabado, pregúntale al encargado de la convocatoria.",
   },
   {
     icon: FlaskConical,
@@ -103,7 +103,7 @@ const Join = () => (
           as="h1"
           eyebrow="Únete"
           title="Forma parte de Nova"
-          subtitle="En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que intente, se equivoque, investigue y encuentre soluciones por su cuenta."
+          subtitle="En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria."
         />
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -126,8 +126,9 @@ const Join = () => (
           ))}
         </div>
         <p className="mt-8 text-center text-sm text-white/70 max-w-2xl mx-auto">
-          Por eso Academia Nova no tiene clases: es una guía escrita para que investigues por tu cuenta. Acostúmbrate a
-          leer esta web, porque aquí vamos publicando todo lo que el equipo aprende.
+          Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
+          estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones
+          de refuerzo o algún compartir con el equipo.
         </p>
       </div>
     </section>
