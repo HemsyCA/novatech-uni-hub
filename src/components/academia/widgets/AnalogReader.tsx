@@ -20,7 +20,7 @@ function Scale({ label, value, max, unit }: { label: string; value: number; max:
         </span>
       </div>
       <div className="relative h-2 rounded-full bg-white/10">
-        <div className="absolute inset-y-0 left-0 rounded-full bg-[rgb(var(--accent,255_255_255))]" style={{ width: `${(value / max) * 100}%` }} />
+        <div className="absolute inset-y-0 left-0 rounded-full bg-[rgb(var(--tone,255_255_255))]" style={{ width: `${(value / max) * 100}%` }} />
       </div>
       <div className="mt-0.5 flex justify-between text-[10px] text-white/35">
         <span>0</span>
@@ -56,7 +56,7 @@ export function AnalogReader() {
         step={0.01}
         value={volts}
         onChange={(e) => setVolts(Number(e.target.value))}
-        className="w-full accent-[rgb(var(--accent,255_255_255))]"
+        className="w-full accent-[rgb(var(--tone,255_255_255))]"
       />
 
       <div className="mt-5 space-y-4">
@@ -73,7 +73,7 @@ export function AnalogReader() {
           <div
             key={b.code}
             className={`flex items-center justify-between rounded-lg px-3 py-2 font-mono text-[13px] transition-colors ${
-              index === branch ? "bg-[rgb(var(--accent,255_255_255)/0.15)] text-white" : "text-white/40"
+              index === branch ? "bg-[rgb(var(--tone,255_255_255)/0.15)] text-white" : "text-white/40"
             }`}
           >
             <span>{b.code}</span>

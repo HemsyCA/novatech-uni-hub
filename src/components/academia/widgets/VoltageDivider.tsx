@@ -11,7 +11,7 @@ const volts = (value: number) => `${(Math.round(value * 100) / 100).toFixed(2)} 
 function OutputBar({ value, max }: { value: number; max: number }) {
   return (
     <div className="h-3 w-full overflow-hidden rounded-full bg-white/10" aria-hidden>
-      <div className="h-full rounded-full bg-[rgb(var(--accent,255_255_255))] transition-[width] duration-300" style={{ width: `${(value / max) * 100}%` }} />
+      <div className="h-full rounded-full bg-[rgb(var(--tone,255_255_255))] transition-[width] duration-300" style={{ width: `${(value / max) * 100}%` }} />
     </div>
   );
 }
@@ -27,10 +27,10 @@ function DividerSchematic({ vin, r1, r2, vout }: { vin: number; r1: number; r2: 
       <text x="84" y="64" {...text}>R1</text>
       <text x="84" y="79" {...hint}>{ohms(r1)}</text>
       <line x1="60" y1="95" x2="60" y2="140" stroke="#d4d4d4" strokeWidth="2" />
-      <circle cx="60" cy="117" r="4" fill="rgb(var(--accent, 255 255 255))" />
-      <line x1="60" y1="117" x2="120" y2="117" stroke="rgb(var(--accent, 255 255 255))" strokeWidth="2" strokeDasharray="4 3" />
-      <text x="124" y="114" fill="rgb(var(--accent, 255 255 255))" fontSize="12" fontFamily="inherit">V salida</text>
-      <text x="124" y="129" fill="rgb(var(--accent, 255 255 255))" fontSize="13" fontWeight="bold" fontFamily="inherit">{volts(vout)}</text>
+      <circle cx="60" cy="117" r="4" fill="rgb(var(--tone, 255 255 255))" />
+      <line x1="60" y1="117" x2="120" y2="117" stroke="rgb(var(--tone, 255 255 255))" strokeWidth="2" strokeDasharray="4 3" />
+      <text x="124" y="114" fill="rgb(var(--tone, 255 255 255))" fontSize="12" fontFamily="inherit">V salida</text>
+      <text x="124" y="129" fill="rgb(var(--tone, 255 255 255))" fontSize="13" fontWeight="bold" fontFamily="inherit">{volts(vout)}</text>
       <rect x="45" y="140" width="30" height="55" rx="4" fill="none" stroke="white" strokeWidth="2" />
       <text x="84" y="164" {...text}>R2</text>
       <text x="84" y="179" {...hint}>{ohms(r2)}</text>
@@ -91,7 +91,7 @@ export function VoltageDivider() {
             <span className="text-white/70">
               {vin} × {r2} / ({r1} + {r2})
             </span>
-            <span className="text-lg font-semibold text-[rgb(var(--accent,255_255_255))]">{volts(vout)}</span>
+            <span className="text-lg font-semibold text-[rgb(var(--tone,255_255_255))]">{volts(vout)}</span>
           </p>
           <div className="mt-3">
             <OutputBar value={vout} max={vin} />
@@ -121,7 +121,7 @@ export function Potentiometer() {
           <path
             d="M 36.4 123.6 A 62 62 0 1 1 123.6 123.6"
             fill="none"
-            stroke="rgb(var(--accent, 255 255 255))"
+            stroke="rgb(var(--tone, 255 255 255))"
             strokeWidth="10"
             strokeLinecap="round"
             pathLength={100}
@@ -146,12 +146,12 @@ export function Potentiometer() {
               max={100}
               value={percent}
               onChange={(e) => setPercent(Number(e.target.value))}
-              className="w-full accent-[rgb(var(--accent,255_255_255))]"
+              className="w-full accent-[rgb(var(--tone,255_255_255))]"
             />
           </div>
           <div className="rounded-xl bg-white/[0.04] px-4 py-3">
             <p className="text-xs text-white/50">Voltaje en la pata del centro</p>
-            <p className="mt-1 text-2xl font-semibold text-[rgb(var(--accent,255_255_255))]">{volts(vout)}</p>
+            <p className="mt-1 text-2xl font-semibold text-[rgb(var(--tone,255_255_255))]">{volts(vout)}</p>
             <p className="mt-1 text-xs text-white/50">
               3.3 V × {percent}% · en P5 el ESP32 leerá este voltaje
             </p>

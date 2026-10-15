@@ -101,7 +101,7 @@ export function PanelSimulator() {
             max={4095}
             value={pot}
             onChange={(e) => turnPot(Number(e.target.value))}
-            className="w-full accent-[rgb(var(--accent,255_255_255))]"
+            className="w-full accent-[rgb(var(--tone,255_255_255))]"
           />
         </div>
       </div>
@@ -125,7 +125,7 @@ export function PanelSimulator() {
           <button
             type="submit"
             disabled={mode !== "COMANDOS"}
-            className="inline-flex items-center gap-1 rounded-md bg-[rgb(var(--accent,255_255_255))] px-3 py-1 font-sans font-semibold text-black disabled:opacity-30"
+            className="inline-flex items-center gap-1 rounded-md bg-[rgb(var(--tone,255_255_255))] px-3 py-1 font-sans font-semibold text-black disabled:opacity-30"
           >
             <SendHorizontal className="h-3.5 w-3.5" /> Enviar
           </button>

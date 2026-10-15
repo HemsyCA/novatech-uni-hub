@@ -6,6 +6,7 @@ import novatechLogo from "@/assets/novatech-logo.png";
 import { Button } from "@/components/ui/button";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { initialsOf, useSession } from "@/hooks/use-session";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,6 +19,26 @@ const MotionLink = motion.create(Link);
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { t } = useLanguage();
+  const { user } = useSession();
+
+  // Con la sesión abierta, el botón lleva al panel en vez de pedir que ingrese de nuevo.
+  const accountButton = (fullWidth: boolean) =>
+    user ? (
+      <Link to="/dashboard" onClick={() => setIsOpen(false)} className={fullWidth ? "block" : undefined}>
+        <Button className={`${fullWidth ? "w-full " : ""}gap-2 bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300`}>
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
+            {initialsOf(user)}
+          </span>
+          Mi panel
+        </Button>
+      </Link>
+    ) : (
+      <Link to="/auth" onClick={() => setIsOpen(false)} className={fullWidth ? "block" : undefined}>
+        <Button className={`${fullWidth ? "w-full " : ""}bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300`}>
+          {t.nav.login}
+        </Button>
+      </Link>
+    );
 
   const navItems = [
     { label: t.nav.inicio, href: "/" },
@@ -93,11 +114,7 @@ export function Navbar() {
           {/* CTA Button */}
           <div className="hidden md:flex items-center gap-4">
             <LanguageToggle />
-            <Link to="/auth">
-              <Button className="bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300">
-                {t.nav.login}
-              </Button>
-            </Link>
+            {accountButton(false)}
           </div>
 
           {/* Mobile Menu Button */}
@@ -149,13 +166,7 @@ export function Navbar() {
                 <LanguageToggle />
               </div>
 
-              <div className="flex flex-col gap-2">
-                <Link to="/auth" onClick={() => setIsOpen(false)}>
-                  <Button className="w-full bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300">
-                    {t.nav.login}
-                  </Button>
-                </Link>
-              </div>
+              <div className="flex flex-col gap-2">{accountButton(true)}</div>
             </div>
           </motion.div>
         )}

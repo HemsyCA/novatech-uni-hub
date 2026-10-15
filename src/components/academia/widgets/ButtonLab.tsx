@@ -16,7 +16,7 @@ function SignalChart({ samples }: { samples: number[] }) {
       <text x="244" y="55" fill="rgba(255,255,255,0.5)" fontSize="9" fontFamily="inherit">LOW</text>
       <line x1="0" y1="8" x2="240" y2="8" stroke="rgba(255,255,255,0.08)" />
       <line x1="0" y1="52" x2="240" y2="52" stroke="rgba(255,255,255,0.08)" />
-      <polyline points={points} fill="none" stroke="rgb(var(--accent, 255 255 255))" strokeWidth="2" strokeLinejoin="round" />
+      <polyline points={points} fill="none" stroke="rgb(var(--tone, 255 255 255))" strokeWidth="2" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -100,7 +100,7 @@ export function ButtonLab() {
             className="flex h-24 w-24 touch-none select-none items-center justify-center rounded-2xl border-2 border-white/30 bg-white/[0.05]"
           >
             <span
-              className={`h-14 w-14 rounded-full transition-transform ${pressed ? "scale-90 bg-[rgb(var(--accent,255_255_255))]" : "bg-white/70"}`}
+              className={`h-14 w-14 rounded-full transition-transform ${pressed ? "scale-90 bg-[rgb(var(--tone,255_255_255))]" : "bg-white/70"}`}
             />
             <span className="sr-only">Botón: mantén presionado</span>
           </button>

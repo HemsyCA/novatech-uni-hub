@@ -136,7 +136,7 @@ export function SmdOrder() {
                   key={step}
                   type="button"
                   onClick={() => setPlaced((current) => [...current, step])}
-                  className="rounded-lg border border-white/20 px-3 py-2 text-left text-sm hover:border-[rgb(var(--accent,255_255_255))]"
+                  className="rounded-lg border border-white/20 px-3 py-2 text-left text-sm hover:border-[rgb(var(--tone,255_255_255))]"
                 >
                   {STEPS[step]}
                 </button>
@@ -144,7 +144,7 @@ export function SmdOrder() {
             </div>
           )}
           {complete && !checked && (
-            <button type="button" onClick={() => setChecked(true)} className="rounded-xl bg-[rgb(var(--accent,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
+            <button type="button" onClick={() => setChecked(true)} className="rounded-xl bg-[rgb(var(--tone,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
               Comprobar
             </button>
           )}

@@ -173,7 +173,7 @@ export function ThtSolderGame() {
           onKeyUp={(e) => (e.key === " " || e.key === "Enter") && tinUp()}
           aria-pressed={holding}
           className={`touch-none select-none rounded-xl border-2 px-3 py-3 text-sm font-semibold transition-colors ${
-            holding ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.2)]" : "border-white/25 hover:border-white/50"
+            holding ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.2)]" : "border-white/25 hover:border-white/50"
           }`}
         >
           {holding ? "Agregando estaño…" : "Mantén: estaño"}

@@ -62,8 +62,8 @@ export function LedDiagram() {
   const [reversed, setReversed] = useState(false);
 
   return (
-    <figure className="not-prose my-8 rounded-2xl border border-[rgb(var(--accent,255_255_255)/0.4)] p-5">
-      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--accent,255_255_255))]">
+    <figure className="not-prose my-8 rounded-2xl border border-[rgb(var(--tone,255_255_255)/0.4)] p-5">
+      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--tone,255_255_255))]">
         <Eye className="h-4 w-4" /> Míralo de cerca
       </p>
       <div className="mt-4 grid items-center gap-6 sm:grid-cols-2">
@@ -82,7 +82,7 @@ export function LedDiagram() {
                 aria-pressed={reversed === value}
                 onClick={() => setReversed(value)}
                 className={`rounded-md px-3 py-1.5 transition-colors ${
-                  reversed === value ? "bg-[rgb(var(--accent,255_255_255))] font-semibold text-black" : "text-white/70 hover:text-white"
+                  reversed === value ? "bg-[rgb(var(--tone,255_255_255))] font-semibold text-black" : "text-white/70 hover:text-white"
                 }`}
               >
                 {value ? "Al revés" : "Bien conectado"}

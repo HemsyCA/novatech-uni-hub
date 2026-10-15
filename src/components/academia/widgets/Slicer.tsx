@@ -24,7 +24,7 @@ function LayerPreview({ walls, infill }: { walls: number; infill: number }) {
           width={size - (2 * i + 1) * gap}
           height={size - (2 * i + 1) * gap}
           fill="none"
-          stroke="rgb(var(--accent, 255 255 255))"
+          stroke="rgb(var(--tone, 255 255 255))"
           strokeWidth="3"
           rx="2"
         />
@@ -32,7 +32,7 @@ function LayerPreview({ walls, infill }: { walls: number; infill: number }) {
       <clipPath id="infill-clip">
         <rect x={start} y={start} width={inner} height={inner} />
       </clipPath>
-      <g clipPath="url(#infill-clip)" stroke="rgb(var(--accent, 255 255 255) / 0.55)" strokeWidth="1.5" fill="none">
+      <g clipPath="url(#infill-clip)" stroke="rgb(var(--tone, 255 255 255) / 0.55)" strokeWidth="1.5" fill="none">
         {Array.from({ length: lines }, (_, i) => {
           const y = start + spacing * (i + 1);
           const amp = Math.min(spacing / 2, 6);
@@ -50,7 +50,7 @@ function Meter({ label, value, low, high }: { label: string; value: number; low:
     <div>
       <p className="mb-1 text-xs text-white/50">{label}</p>
       <div className="h-2.5 overflow-hidden rounded-full bg-white/10">
-        <div className="h-full rounded-full bg-[rgb(var(--accent,255_255_255))] transition-[width] duration-300" style={{ width: `${Math.round(value * 100)}%` }} />
+        <div className="h-full rounded-full bg-[rgb(var(--tone,255_255_255))] transition-[width] duration-300" style={{ width: `${Math.round(value * 100)}%` }} />
       </div>
       <div className="mt-0.5 flex justify-between text-[10px] text-white/35">
         <span>{low}</span>
@@ -107,7 +107,7 @@ export function Slicer() {
             step={5}
             value={infill}
             onChange={(e) => setInfill(Number(e.target.value))}
-            className="w-full accent-[rgb(var(--accent,255_255_255))]"
+            className="w-full accent-[rgb(var(--tone,255_255_255))]"
           />
         </div>
       </div>

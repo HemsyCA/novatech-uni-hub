@@ -80,11 +80,11 @@ export default function AcademiaLesson() {
 
   return (
     <div
-      style={{ "--accent": moduleAccent(module.id) } as CSSProperties}
+      style={{ "--tone": moduleAccent(module.id) } as CSSProperties}
       className="grid gap-10 lg:grid-cols-[280px_minmax(0,1fr)]"
     >
       <aside className="hidden lg:block">
-        <div className="sticky top-24">
+        <div className="sticky top-28">
           <Link to={`/academia/${module.id}`} className="block px-3 mb-1 font-display font-bold hover:underline underline-offset-4">
             {module.name}
           </Link>

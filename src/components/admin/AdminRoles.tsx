@@ -10,6 +10,8 @@ import { findProfileByEmail, grantRole, listAllUserRoles, revokeRole } from "@/s
 import type { AppRole, UserRoleWithProfile } from "@/types/domain";
 import { useUserRole } from "@/hooks/use-user-role";
 
+const ROLE_LABEL: Record<string, string> = { superadmin: "Superadmin", directiva: "Directiva", academica: "Área académica" };
+
 export function AdminRoles() {
   const [roles, setRoles] = useState<UserRoleWithProfile[]>([]);
   const [loading, setLoading] = useState(true);
@@ -102,6 +104,7 @@ export function AdminRoles() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="directiva">Directiva</SelectItem>
+                <SelectItem value="academica">Área académica</SelectItem>
                 <SelectItem value="superadmin">Superadmin</SelectItem>
               </SelectContent>
             </Select>
@@ -113,6 +116,11 @@ export function AdminRoles() {
           {newRole === "directiva" && (
             <p className="text-xs text-muted-foreground">
               El rol de directiva solo se puede otorgar a correos que terminen en @uni.pe.
+            </p>
+          )}
+          {newRole === "academica" && (
+            <p className="text-xs text-muted-foreground">
+              El Área académica revisa los aportes de la Comunidad y decide cuáles se publican en Conocimientos Nova.
             </p>
           )}
         </CardContent>
@@ -133,7 +141,7 @@ export function AdminRoles() {
                     <code className="text-xs text-muted-foreground">{r.user_id}</code>
                   )}
                 </div>
-                <Badge className="shrink-0">{r.role}</Badge>
+                <Badge className="shrink-0">{ROLE_LABEL[r.role] ?? r.role}</Badge>
               </div>
               <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => handleRevoke(r.id)}>
                 <Trash2 className="h-3.5 w-3.5 text-destructive" />

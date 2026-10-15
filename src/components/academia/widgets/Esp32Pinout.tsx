@@ -144,7 +144,7 @@ export function Esp32Pinout() {
   return (
     <WidgetCard icon={Cpu} label="Explora la placa" title="ESP32 DevKit V1 (30 pines)">
       {inChallenge ? (
-        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-[rgb(var(--accent,255_255_255)/0.12)] px-4 py-3">
+        <div className="mb-4 flex items-center justify-between gap-3 rounded-xl bg-[rgb(var(--tone,255_255_255)/0.12)] px-4 py-3">
           <p className="text-sm font-semibold">
             <span className="mr-2 text-xs font-normal text-white/50">
               {challenge + 1}/{CHALLENGE.length}
@@ -209,7 +209,7 @@ export function Esp32Pinout() {
           <button
             type="button"
             onClick={startChallenge}
-            className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--accent,255_255_255))] px-4 py-2.5 text-sm font-semibold text-black"
+            className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--tone,255_255_255))] px-4 py-2.5 text-sm font-semibold text-black"
           >
             {challenge === CHALLENGE.length ? <RotateCcw className="h-4 w-4" /> : <Trophy className="h-4 w-4" />}
             {challenge === CHALLENGE.length ? "Repetir el reto" : "Reto: encuentra los pines"}

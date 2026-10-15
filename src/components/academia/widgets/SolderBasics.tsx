@@ -59,7 +59,7 @@ export function TipTemperature() {
         step={10}
         value={temp}
         onChange={(e) => setTemp(Number(e.target.value))}
-        className="w-full accent-[rgb(var(--accent,255_255_255))]"
+        className="w-full accent-[rgb(var(--tone,255_255_255))]"
       />
 
       <div className="mt-4">
@@ -163,7 +163,7 @@ export function SafetyCheck() {
                 {answer === situation.ok ? "¡Bien! " : "No. "}
                 {situation.why}
               </Feedback>
-              <button type="button" onClick={next} className="rounded-xl bg-[rgb(var(--accent,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
+              <button type="button" onClick={next} className="rounded-xl bg-[rgb(var(--tone,255_255_255))] px-5 py-2.5 text-sm font-semibold text-black">
                 {index + 1 === SITUATIONS.length ? "Ver resultado" : "Siguiente situación"}
               </button>
             </>

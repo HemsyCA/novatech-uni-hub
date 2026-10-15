@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
+import { useSession } from "@/hooks/use-session";
 import { motion } from "framer-motion";
 import { Mail, Instagram, Linkedin, Facebook } from "lucide-react";
 import { TiktokIcon } from "@/components/icons/SocialIcons";
@@ -10,8 +12,18 @@ const socialLinks = [
   { icon: TiktokIcon, href: "https://www.tiktok.com/@novatechteam", label: "TikTok", color: "hover:bg-white/40" },
 ];
 
+// Dentro de la cuenta estorbarían a la barra inferior y a la navegación de las lecciones.
+const ACCOUNT_PATHS = ["/dashboard", "/academia", "/miembros", "/admin", "/conocimientos", "/comunidad"];
+// Tienda e Impresión 3D se abren dentro de la cuenta cuando hay sesión.
+const SERVICE_PATHS = ["/store", "/print3d"];
+
 export function FloatingContactButtons() {
   const [isOpen, setIsOpen] = useState(false);
+  const { pathname } = useLocation();
+  const { user } = useSession();
+
+  if (ACCOUNT_PATHS.some((path) => pathname.startsWith(path))) return null;
+  if (user && SERVICE_PATHS.some((path) => pathname.startsWith(path))) return null;
 
   return (
     <>

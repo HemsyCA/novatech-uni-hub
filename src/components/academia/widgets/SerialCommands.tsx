@@ -96,7 +96,7 @@ export function SerialCommands() {
             aria-label="Mensaje para el ESP32"
             className="min-w-0 flex-1 bg-transparent text-white outline-none placeholder:text-white/30"
           />
-          <button type="submit" className="inline-flex items-center gap-1 rounded-md bg-[rgb(var(--accent,255_255_255))] px-3 py-1 font-sans font-semibold text-black">
+          <button type="submit" className="inline-flex items-center gap-1 rounded-md bg-[rgb(var(--tone,255_255_255))] px-3 py-1 font-sans font-semibold text-black">
             <SendHorizontal className="h-3.5 w-3.5" /> Enviar
           </button>
         </form>
@@ -106,7 +106,7 @@ export function SerialCommands() {
         {CASES.map((c) => (
           <div
             key={c.key}
-            className={`rounded-md px-3 py-1.5 transition-colors ${executed.includes(c.key) ? "bg-[rgb(var(--accent,255_255_255)/0.15)] text-white" : "text-white/40"}`}
+            className={`rounded-md px-3 py-1.5 transition-colors ${executed.includes(c.key) ? "bg-[rgb(var(--tone,255_255_255)/0.15)] text-white" : "text-white/40"}`}
           >
             {c.label}
             {c.key !== "default" && (missingBreak && c.key === "v" ? <span className="ml-1 text-rose-300">// sin break</span> : " break;")}

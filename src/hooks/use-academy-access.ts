@@ -10,7 +10,7 @@ interface AcademyAccessState {
 }
 
 export const useAcademyAccess = () => {
-  const { userId, loading: rolesLoading, isStaff } = useUserRole();
+  const { userId, loading: rolesLoading, isStaff, isSuperadmin, isAcademic } = useUserRole();
   const [state, setState] = useState<AcademyAccessState>({ loading: true, hasAccess: false, memberships: [] });
 
   useEffect(() => {
@@ -38,6 +38,10 @@ export const useAcademyAccess = () => {
     ...state,
     userId,
     isStaff,
+    isSuperadmin,
+    isAcademic,
     activeMembership: state.memberships.find((m) => m.activo) ?? null,
   };
 };
+
+export type AcademyAccess = ReturnType<typeof useAcademyAccess>;

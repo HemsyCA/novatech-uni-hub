@@ -18,6 +18,7 @@ export default {
         display: ['Orbitron', 'sans-serif'],
       },
       colors: {
+        nova: "hsl(var(--nova) / <alpha-value>)",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

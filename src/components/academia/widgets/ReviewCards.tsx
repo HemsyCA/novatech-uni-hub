@@ -47,7 +47,7 @@ export function ReviewCards() {
                 <span className="absolute inset-0 flex items-center rounded-xl border border-white/15 bg-white/[0.04] px-4 text-left text-sm [backface-visibility:hidden]">
                   {card.q}
                 </span>
-                <span className="absolute inset-0 flex items-center rounded-xl border border-[rgb(var(--accent,255_255_255)/0.5)] bg-[rgb(var(--accent,255_255_255)/0.12)] px-4 text-left text-sm text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
+                <span className="absolute inset-0 flex items-center rounded-xl border border-[rgb(var(--tone,255_255_255)/0.5)] bg-[rgb(var(--tone,255_255_255)/0.12)] px-4 text-left text-sm text-white [backface-visibility:hidden] [transform:rotateY(180deg)]">
                   {card.a}
                 </span>
               </span>

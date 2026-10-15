@@ -22,7 +22,7 @@ function DelayInput({ value, onChange, label }: { value: number; onChange: (v: n
       aria-label={label}
       onChange={(e) => onChange(Number(e.target.value))}
       onBlur={(e) => onChange(clampDelay(Number(e.target.value)))}
-      className="w-16 rounded border border-[rgb(var(--accent,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--accent,255_255_255))]"
+      className="w-16 rounded border border-[rgb(var(--tone,255_255_255)/0.6)] bg-black px-1 text-center text-[rgb(var(--tone,255_255_255))]"
     />
   );
 }
@@ -86,7 +86,7 @@ export function BlinkSimulator() {
             <div
               key={index}
               className={`flex whitespace-pre px-3 transition-colors ${
-                currentLine === index ? "bg-[rgb(var(--accent,255_255_255)/0.2)]" : ""
+                currentLine === index ? "bg-[rgb(var(--tone,255_255_255)/0.2)]" : ""
               }`}
             >
               <span className="mr-3 w-4 shrink-0 select-none text-right text-white/25">{index + 1}</span>
@@ -124,7 +124,7 @@ export function BlinkSimulator() {
         <button
           type="button"
           onClick={() => setRunning((r) => !r)}
-          className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--accent,255_255_255))] px-4 py-2.5 text-sm font-semibold text-black"
+          className="inline-flex items-center gap-2 rounded-xl bg-[rgb(var(--tone,255_255_255))] px-4 py-2.5 text-sm font-semibold text-black"
         >
           {running ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
           {running ? "Pausar" : step < 0 ? "Ejecutar" : "Continuar"}

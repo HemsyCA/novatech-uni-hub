@@ -143,7 +143,7 @@ export function DefectHunt() {
               found.has(index)
                 ? "border-emerald-400/60 bg-emerald-400/10"
                 : selected === index
-                  ? "border-[rgb(var(--accent,255_255_255))] bg-[rgb(var(--accent,255_255_255)/0.1)]"
+                  ? "border-[rgb(var(--tone,255_255_255))] bg-[rgb(var(--tone,255_255_255)/0.1)]"
                   : "border-white/15 hover:border-white/35"
             }`}
           >
@@ -163,7 +163,7 @@ export function DefectHunt() {
                 type="button"
                 onClick={() => answer(defect)}
                 className={`rounded-lg border px-3 py-2 text-left text-sm ${
-                  wrong === defect ? "border-rose-400 bg-rose-400/10" : "border-white/20 hover:border-[rgb(var(--accent,255_255_255))]"
+                  wrong === defect ? "border-rose-400 bg-rose-400/10" : "border-white/20 hover:border-[rgb(var(--tone,255_255_255))]"
                 }`}
               >
                 {NAMES[defect]}

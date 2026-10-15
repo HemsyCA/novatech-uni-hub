@@ -41,13 +41,13 @@ function PulseChart({ angle }: { angle: number }) {
       <path
         d={`M0 50 V10 H${pulse} V50 H${width}`}
         fill="none"
-        stroke="rgb(var(--accent, 255 255 255))"
+        stroke="rgb(var(--tone, 255 255 255))"
         strokeWidth="2"
       />
       <line x1="0" y1="58" x2={width} y2="58" stroke="rgba(255,255,255,0.2)" />
       <text x="0" y="64" fill="rgba(255,255,255,0.45)" fontSize="8" fontFamily="inherit">0 ms</text>
       <text x={width - 24} y="64" fill="rgba(255,255,255,0.45)" fontSize="8" fontFamily="inherit">20 ms</text>
-      <text x={pulse + 4} y="22" fill="rgb(var(--accent, 255 255 255))" fontSize="10" fontFamily="inherit">
+      <text x={pulse + 4} y="22" fill="rgb(var(--tone, 255 255 255))" fontSize="10" fontFamily="inherit">
         {pulseMs(angle).toFixed(2)} ms
       </text>
     </svg>
@@ -72,7 +72,7 @@ export function ServoDemo() {
         max={180}
         value={angle}
         onChange={(e) => setAngle(Number(e.target.value))}
-        className="w-full accent-[rgb(var(--accent,255_255_255))]"
+        className="w-full accent-[rgb(var(--tone,255_255_255))]"
       />
       <div className="mt-3 flex flex-wrap gap-2">
         {[0, 45, 90, 135, 180].map((a) => (

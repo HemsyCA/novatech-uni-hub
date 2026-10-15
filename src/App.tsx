@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StaffRoute } from "@/components/StaffRoute";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -30,7 +30,11 @@ const AcademiaBitacora = lazy(() => import("./pages/academia/AcademiaBitacora"))
 const AcademiaFinalTask = lazy(() => import("./pages/academia/AcademiaFinalTask"));
 const AcademiaModule = lazy(() => import("./pages/academia/AcademiaModule"));
 const AcademiaLesson = lazy(() => import("./pages/academia/AcademiaLesson"));
-const Miembros = lazy(() => import("./pages/Miembros"));
+const Conocimientos = lazy(() => import("./pages/Conocimientos"));
+const ConocimientoDetalle = lazy(() => import("./pages/ConocimientoDetalle"));
+const Comunidad = lazy(() => import("./pages/Comunidad"));
+const AccountLayout = lazy(() => import("./components/account/AccountLayout"));
+const SessionShell = lazy(() => import("./components/account/SessionShell"));
 
 const queryClient = new QueryClient();
 
@@ -56,24 +60,33 @@ const App = () => (
             <Route path="/competencias" element={<Competitions />} />
             <Route path="/equipo" element={<Team />} />
             <Route path="/unete" element={<Join />} />
-            <Route path="/store" element={<Store />} />
-            <Route path="/print3d" element={<Print3D />} />
+            {/* Públicas, pero con sesión iniciada se abren dentro de la cuenta. */}
+            <Route element={<SessionShell />}>
+              <Route path="/store" element={<Store />} />
+              <Route path="/print3d" element={<Print3D />} />
+            </Route>
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/auth/reset-password" element={<ResetPassword />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/academia" element={<Academia />}>
-                <Route index element={<AcademiaHome />} />
-                <Route path="guia" element={<AcademiaGuide />} />
-                <Route path="bitacora" element={<AcademiaBitacora />} />
-                <Route path="tarea-final" element={<AcademiaFinalTask />} />
-                <Route path=":moduleId" element={<AcademiaModule />} />
-                <Route path=":moduleId/:lessonId" element={<AcademiaLesson />} />
-              </Route>
-              <Route path="/miembros" element={<Miembros />} />
-              <Route element={<StaffRoute />}>
-                <Route path="/admin" element={<Admin />} />
+              <Route element={<AccountLayout />}>
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/academia" element={<Academia />}>
+                  <Route index element={<AcademiaHome />} />
+                  <Route path="guia" element={<AcademiaGuide />} />
+                  <Route path="bitacora" element={<AcademiaBitacora />} />
+                  <Route path="tarea-final" element={<AcademiaFinalTask />} />
+                  <Route path=":moduleId" element={<AcademiaModule />} />
+                  <Route path=":moduleId/:lessonId" element={<AcademiaLesson />} />
+                </Route>
+                <Route path="/conocimientos" element={<Conocimientos />} />
+                <Route path="/conocimientos/:id" element={<ConocimientoDetalle />} />
+                <Route path="/comunidad" element={<Comunidad />} />
+                {/* La antigua zona de miembros ahora es Conocimientos Nova. */}
+                <Route path="/miembros" element={<Navigate to="/conocimientos" replace />} />
+                <Route element={<StaffRoute />}>
+                  <Route path="/admin" element={<Admin />} />
+                </Route>
               </Route>
             </Route>
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
