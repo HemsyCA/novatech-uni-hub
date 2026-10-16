@@ -1,8 +1,9 @@
 import { motion } from "framer-motion";
 import { Code2, Cog, CircuitBoard } from "lucide-react";
-import { SectionHeading } from "@/components/landing/SectionHeading";
+import { Label, PageHero, Section } from "@/components/landing/PageSection";
 import { areas } from "@/data/team";
 import { countPlacements, pastTournaments } from "@/data/tournaments";
+import { fadeIn } from "@/lib/page-motion";
 
 const pillars = [
   {
@@ -41,67 +42,72 @@ const milestones = [
 export function AboutSection() {
   return (
     <>
-      <section id="nosotros" className="py-20">
-        <div className="container mx-auto px-4">
-          <SectionHeading
-            as="h1"
-            eyebrow="Nosotros"
-            title="Somos Nova Tech UNI"
-            subtitle="Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento."
-          />
-
-          <div className="grid md:grid-cols-3 gap-4">
-            {pillars.map((pillar, index) => (
-              <motion.div
-                key={pillar.title}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="rounded-2xl border border-white/10 p-6"
-              >
-                <pillar.icon className="w-8 h-8 text-white mb-4" />
-                <h2 className="font-display text-lg font-bold text-white mb-2">{pillar.title}</h2>
-                <p className="text-sm text-white/60 leading-relaxed">{pillar.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-20 border-t border-white/10">
-        <div className="container mx-auto px-4">
-          <SectionHeading eyebrow="Trayectoria" title="Nuestra historia" />
-          <ol className="relative max-w-3xl mx-auto border-l border-white/20 pl-8 space-y-10">
-            {milestones.map((m) => (
-              <li key={m.title} className="relative">
-                <span className="absolute -left-[37px] top-1 w-4 h-4 rounded-full bg-white" />
-                <div className="text-xs uppercase tracking-widest text-white/50">{m.date}</div>
-                <h3 className="font-display text-xl font-bold text-white mt-1">{m.title}</h3>
-                <p className="text-sm text-white/60 mt-1">{m.description}</p>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section className="py-20 border-t border-white/10">
-        <div className="container mx-auto px-4">
-          <SectionHeading
-            eyebrow="Organización"
-            title="Nuestras áreas"
-            subtitle="Nova funciona como una organización: cada área sostiene una parte del equipo."
-          />
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {areas.map((area) => (
-              <div key={area.name} className="rounded-2xl border border-white/10 p-5">
-                <h3 className="font-display text-sm font-bold text-white mb-2">{area.name}</h3>
-                <p className="text-xs text-white/60 leading-relaxed">{area.description}</p>
+      <PageHero
+        id="nosotros"
+        label="Nosotros"
+        title={
+          <>
+            Somos <span className="text-nova">Nova Tech</span> UNI
+          </>
+        }
+        subtitle="Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento."
+      >
+        <ol className="mt-20 grid gap-x-10 gap-y-12 md:grid-cols-3">
+          {pillars.map((pillar, index) => (
+            <motion.li
+              key={pillar.title}
+              {...fadeIn}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className="border-t border-white/15 pt-6"
+            >
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-3xl font-light text-nova">0{index + 1}</span>
+                <pillar.icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <h2 className="mt-5 font-sans text-lg font-medium text-white">{pillar.title}</h2>
+              <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{pillar.description}</p>
+            </motion.li>
+          ))}
+        </ol>
+      </PageHero>
+
+      <Section index="01" label="Trayectoria" title="Nuestra historia">
+        <ol className="relative border-l border-white/15">
+          {milestones.map((m, index) => (
+            <motion.li
+              key={m.title}
+              {...fadeIn}
+              transition={{ duration: 0.5, delay: index * 0.08 }}
+              className="relative pl-10 pb-14 last:pb-0"
+            >
+              <span
+                className={`absolute -left-[8px] top-0.5 h-4 w-4 rounded-full ${
+                  index === milestones.length - 1 ? "bg-nova" : "border-2 border-white/40 bg-black"
+                }`}
+              />
+              <Label>{m.date}</Label>
+              <h3 className="mt-3 font-sans text-2xl font-medium text-white">{m.title}</h3>
+              <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-white/60">{m.description}</p>
+            </motion.li>
+          ))}
+        </ol>
+      </Section>
+
+      <Section
+        index="02"
+        label="Organización"
+        title="Nuestras áreas"
+        subtitle="Nova funciona como una organización: cada área sostiene una parte del equipo."
+      >
+        <ul className="grid gap-x-10 sm:grid-cols-2">
+          {areas.map((area) => (
+            <motion.li key={area.name} {...fadeIn} className="border-t border-white/15 py-6">
+              <h3 className="font-sans text-lg font-medium text-white">{area.name}</h3>
+              <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{area.description}</p>
+            </motion.li>
+          ))}
+        </ul>
+      </Section>
     </>
   );
 }

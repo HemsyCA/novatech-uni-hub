@@ -9,7 +9,7 @@ const About = () => {
   return (
     <PageLayout>
       <AboutSection />
-      <TeamSection />
+      <TeamSection index="03" />
     </PageLayout>
   );
 };
