@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -16,6 +15,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { PageLayout } from "@/components/landing/PageLayout";
+import { Label, PageHero, Section } from "@/components/landing/PageSection";
+import { fadeIn } from "@/lib/page-motion";
 import { ApplicationForm } from "@/components/landing/ApplicationForm";
 import { moduleInfo, type ModuleId } from "@/lib/academia/modules";
 
@@ -96,100 +97,53 @@ const steps = [
   },
 ];
 
-const fadeIn = {
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.5 },
-};
-
-function Label({ index, children }: { index?: string; children: ReactNode }) {
-  return (
-    <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-white/40">
-      {index && <span className="text-nova">{index} · </span>}
-      {children}
-    </p>
-  );
-}
-
-interface SectionProps {
-  id?: string;
-  index: string;
-  label: string;
-  title: string;
-  subtitle?: string;
-  aside?: ReactNode;
-  children: ReactNode;
-}
-
-// Título fijo a la izquierda y contenido a la derecha en pantallas grandes.
-function Section({ id, index, label, title, subtitle, aside, children }: SectionProps) {
-  return (
-    <section id={id} className="border-t border-white/10 py-20 md:py-28">
-      <div className="container mx-auto px-4 max-w-6xl grid gap-10 lg:grid-cols-12 lg:gap-16">
-        <motion.header {...fadeIn} className="lg:col-span-4 lg:sticky lg:top-28 self-start">
-          <Label index={index}>{label}</Label>
-          <h2 className="mt-4 font-sans text-3xl md:text-4xl font-semibold tracking-tight text-white">{title}</h2>
-          {subtitle && <p className="mt-4 text-base font-light leading-relaxed text-white/60">{subtitle}</p>}
-          {aside}
-        </motion.header>
-        <div className="lg:col-span-8">{children}</div>
-      </div>
-    </section>
-  );
-}
-
 const Join = () => (
   <PageLayout>
-    <div className="font-sans">
-      <section className="py-24 md:py-32">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <motion.div {...fadeIn} className="max-w-3xl">
-            <Label>Únete · Convocatoria</Label>
-            <h1 className="mt-6 font-display text-4xl md:text-6xl font-bold uppercase leading-[1.05] text-white">
-              Forma parte de <span className="text-nova">Nova</span>
-            </h1>
-            <p className="mt-8 text-lg md:text-xl font-light leading-relaxed text-white/70">
-              En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que
-              intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria.
-            </p>
-            <a
-              href="#inscripcion"
-              className="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
-            >
-              Ir a la inscripción
-              <ArrowDown className="h-3.5 w-3.5" />
-            </a>
-          </motion.div>
-
-          <ol className="mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {learningCycle.map((item, index) => (
-              <motion.li
-                key={item.title}
-                {...fadeIn}
-                transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="border-t border-white/15 pt-6"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="font-mono text-xs text-nova">0{index + 1}</span>
-                  <item.icon className="h-4 w-4 text-white/50" strokeWidth={1.5} />
-                </div>
-                <h3 className="mt-5 font-sans text-lg font-medium text-white">{item.title}</h3>
-                <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{item.description}</p>
-              </motion.li>
-            ))}
-          </ol>
-
-          <motion.p
+    <PageHero
+      label="Únete · Convocatoria"
+      title={
+        <>
+          Forma parte de <span className="text-nova">Nova</span>
+        </>
+      }
+      subtitle="En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria."
+      action={
+        <a
+          href="#inscripcion"
+          className="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
+        >
+          Ir a la inscripción
+          <ArrowDown className="h-3.5 w-3.5" />
+        </a>
+      }
+    >
+      <ol className="mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+        {learningCycle.map((item, index) => (
+          <motion.li
+            key={item.title}
             {...fadeIn}
-            className="mt-20 max-w-3xl border-l border-nova/60 pl-6 text-lg font-light leading-relaxed text-white/80"
+            transition={{ duration: 0.5, delay: index * 0.08 }}
+            className="border-t border-white/15 pt-6"
           >
-            Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
-            estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones
-            de refuerzo o algún compartir con el equipo.
-          </motion.p>
-        </div>
-      </section>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-3xl font-light text-nova">0{index + 1}</span>
+              <item.icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
+            </div>
+            <h3 className="mt-5 font-sans text-lg font-medium text-white">{item.title}</h3>
+            <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{item.description}</p>
+          </motion.li>
+        ))}
+      </ol>
+
+      <motion.p
+        {...fadeIn}
+        className="mt-20 max-w-3xl border-l border-nova/60 pl-6 text-lg font-light leading-relaxed text-white/80"
+      >
+        Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
+        estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones de
+        refuerzo o algún compartir con el equipo.
+      </motion.p>
+    </PageHero>
 
       <Section
         index="01"
@@ -203,17 +157,17 @@ const Join = () => (
               key={level.step}
               {...fadeIn}
               transition={{ duration: 0.5, delay: index * 0.08 }}
-              className="relative pl-8 pb-12 last:pb-0"
+              className="relative pl-10 pb-14 last:pb-0"
             >
               <span
-                className={`absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full ${
-                  index === 0 ? "bg-nova" : "border border-white/40 bg-black"
+                className={`absolute -left-[8px] top-0.5 h-4 w-4 rounded-full ${
+                  index === 0 ? "bg-nova" : "border-2 border-white/40 bg-black"
                 }`}
               />
               <Label>{level.step}</Label>
-              <h3 className="mt-3 font-sans text-xl font-medium text-white">{level.title}</h3>
-              <p className="mt-2 max-w-xl text-[15px] font-light leading-relaxed text-white/60">{level.description}</p>
-              <p className="mt-4 font-mono text-xs text-white/50">{level.detail}</p>
+              <h3 className="mt-3 font-sans text-2xl font-medium text-white">{level.title}</h3>
+              <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-white/60">{level.description}</p>
+              <p className="mt-5 font-mono text-sm text-white/60">{level.detail}</p>
             </motion.li>
           ))}
         </ol>
@@ -292,7 +246,6 @@ const Join = () => (
       >
         <ApplicationForm />
       </Section>
-    </div>
   </PageLayout>
 );
 
