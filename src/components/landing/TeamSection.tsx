@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { Section } from "@/components/landing/PageSection";
 import { directiva, founders, honoraryMembers, teamStats, type TeamMember } from "@/data/team";
 import { fadeIn } from "@/lib/page-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { pageText } from "@/lib/i18n-pages";
 
 function MemberGroup({ title, members }: { title: string; members: TeamMember[] }) {
   if (members.length === 0) return null;
@@ -24,19 +26,21 @@ function MemberGroup({ title, members }: { title: string; members: TeamMember[] 
 }
 
 export function TeamSection({ index }: { index?: string }) {
+  const { lang } = useLanguage();
+  const p = pageText[lang].team;
   const stats = [
-    { label: "Miembros activos", value: teamStats.activeMembers },
-    { label: "Carreras de ingeniería", value: teamStats.careers },
-    { label: "Áreas de trabajo", value: teamStats.areas },
+    { label: p.stats[0], value: teamStats.activeMembers },
+    { label: p.stats[1], value: teamStats.careers },
+    { label: p.stats[2], value: teamStats.areas },
   ];
 
   return (
     <Section
       id="equipo"
       index={index}
-      label="Equipo"
-      title="Las personas detrás de Nova"
-      subtitle="Estudiantes de distintas carreras de la UNI que comparten la pasión por construir robots."
+      label={p.label}
+      title={p.title}
+      subtitle={p.subtitle}
       aside={
         <div className="mt-10">
           {stats.map((stat) => (
@@ -48,20 +52,20 @@ export function TeamSection({ index }: { index?: string }) {
         </div>
       }
     >
-      <MemberGroup title="Directiva" members={directiva} />
-      <MemberGroup title="Fundadores" members={founders} />
-      <MemberGroup title="Miembros honorables" members={honoraryMembers} />
+      <MemberGroup title={p.directiva} members={directiva} />
+      <MemberGroup title={p.founders} members={founders} />
+      <MemberGroup title={p.honorary} members={honoraryMembers} />
 
       <div className="mt-6 border-t border-white/15 pt-10">
-        <h3 className="font-sans text-2xl font-medium text-white">¿Quieres ser parte del equipo?</h3>
+        <h3 className="font-sans text-2xl font-medium text-white">{p.ctaTitle}</h3>
         <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-white/60">
-          No necesitas experiencia previa en robótica. Buscamos gente que intente, se equivoque e investigue.
+          {p.ctaText}
         </p>
         <Link
           to="/unete"
           className="mt-6 inline-block rounded-lg bg-white px-6 py-3 font-semibold text-black transition-colors hover:bg-nova hover:text-white"
         >
-          Conoce cómo unirte
+          {p.ctaButton}
         </Link>
       </div>
     </Section>

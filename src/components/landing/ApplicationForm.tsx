@@ -7,12 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { domainHasMailServers } from "@/lib/email-validation";
 import { DuplicateApplicationError, submitAcademyApplication } from "@/services/supabase/academia";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { fillTemplate, pageText } from "@/lib/i18n-pages";
 
 const CICLOS = Array.from({ length: 10 }, (_, i) => String(i + 1));
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const WHATSAPP_RE = /^\+?[0-9]{9,15}$/;
 
 export function ApplicationForm() {
+  const { lang } = useLanguage();
+  const f = pageText[lang].form;
   const [nombre, setNombre] = useState("");
   const [email, setEmail] = useState("");
   const [whatsapp, setWhatsapp] = useState("");
@@ -29,18 +33,18 @@ export function ApplicationForm() {
     const cleanWhatsapp = whatsapp.replace(/[\s()-]/g, "");
 
     const nextErrors: Record<string, string> = {};
-    if (!nombre.trim()) nextErrors.nombre = "Escribe tu nombre completo";
-    if (!EMAIL_RE.test(cleanEmail)) nextErrors.email = "Escribe un correo válido";
-    if (!WHATSAPP_RE.test(cleanWhatsapp)) nextErrors.whatsapp = "Escribe un número válido, por ejemplo 987654321";
-    if (!carrera.trim()) nextErrors.carrera = "Escribe tu carrera";
-    if (!ciclo) nextErrors.ciclo = "Elige tu ciclo";
+    if (!nombre.trim()) nextErrors.nombre = f.errName;
+    if (!EMAIL_RE.test(cleanEmail)) nextErrors.email = f.errEmail;
+    if (!WHATSAPP_RE.test(cleanWhatsapp)) nextErrors.whatsapp = f.errWhatsapp;
+    if (!carrera.trim()) nextErrors.carrera = f.errCareer;
+    if (!ciclo) nextErrors.ciclo = f.errCycle;
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length > 0) return;
 
     setSubmitting(true);
     try {
       if ((await domainHasMailServers(cleanEmail)) === false) {
-        setErrors({ email: "Ese dominio de correo no existe, revisa que esté bien escrito" });
+        setErrors({ email: f.errDomain });
         return;
       }
       await submitAcademyApplication({
@@ -53,9 +57,9 @@ export function ApplicationForm() {
       setSent(true);
     } catch (error) {
       if (error instanceof DuplicateApplicationError) {
-        setErrors({ email: "Ya tienes una inscripción pendiente con este correo" });
+        setErrors({ email: f.errDuplicate });
       } else {
-        toast({ title: "No se pudo enviar", description: "Inténtalo de nuevo en unos minutos", variant: "destructive" });
+        toast({ title: f.toastTitle, description: f.toastDescription, variant: "destructive" });
       }
     } finally {
       setSubmitting(false);
@@ -66,10 +70,11 @@ export function ApplicationForm() {
     return (
       <div className="glass-card rounded-2xl p-8 text-center space-y-3">
         <CheckCircle2 className="h-10 w-10 mx-auto text-white" />
-        <h3 className="font-display text-xl font-bold text-white">¡Inscripción recibida!</h3>
+        <h3 className="font-display text-xl font-bold text-white">{f.successTitle}</h3>
         <p className="text-sm text-white/60">
-          La directiva revisará tu solicitud. Cuando te asignen a un grupo, podrás entrar a Academia Nova
-          iniciando sesión con <span className="text-white">{email.trim().toLowerCase()}</span>.
+          {f.successBefore}
+          <span className="text-white">{email.trim().toLowerCase()}</span>
+          {f.successAfter}
         </p>
       </div>
     );
@@ -81,25 +86,25 @@ export function ApplicationForm() {
   return (
     <form onSubmit={handleSubmit} noValidate className="glass-card rounded-2xl p-6 md:p-8 space-y-4 text-left">
       <div className="space-y-2">
-        <Label htmlFor="app-nombre">Nombre completo</Label>
+        <Label htmlFor="app-nombre">{f.name}</Label>
         <Input id="app-nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} maxLength={120} />
         {fieldError("nombre")}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="app-email">Gmail</Label>
+        <Label htmlFor="app-email">{f.email}</Label>
         <Input
           id="app-email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="tu.nombre@gmail.com"
+          placeholder={f.emailPlaceholder}
           maxLength={254}
         />
-        <p className="text-xs text-white/50">Usa el mismo correo con el que iniciarás sesión: tu acceso quedará ligado a él.</p>
+        <p className="text-xs text-white/50">{f.emailHint}</p>
         {fieldError("email")}
       </div>
       <div className="space-y-2">
-        <Label htmlFor="app-whatsapp">WhatsApp</Label>
+        <Label htmlFor="app-whatsapp">{f.whatsapp}</Label>
         <Input
           id="app-whatsapp"
           type="tel"
@@ -113,26 +118,26 @@ export function ApplicationForm() {
       </div>
       <div className="grid sm:grid-cols-[1fr_9rem] gap-4">
         <div className="space-y-2">
-          <Label htmlFor="app-carrera">Carrera</Label>
+          <Label htmlFor="app-carrera">{f.career}</Label>
           <Input
             id="app-carrera"
             value={carrera}
             onChange={(e) => setCarrera(e.target.value)}
-            placeholder="Ingeniería Mecatrónica"
+            placeholder={f.careerPlaceholder}
             maxLength={120}
           />
           {fieldError("carrera")}
         </div>
         <div className="space-y-2">
-          <Label htmlFor="app-ciclo">Ciclo</Label>
+          <Label htmlFor="app-ciclo">{f.cycle}</Label>
           <Select value={ciclo} onValueChange={setCiclo}>
             <SelectTrigger id="app-ciclo">
-              <SelectValue placeholder="Elige" />
+              <SelectValue placeholder={f.cyclePlaceholder} />
             </SelectTrigger>
             <SelectContent>
               {CICLOS.map((c) => (
                 <SelectItem key={c} value={c}>
-                  {c}.º ciclo
+                  {fillTemplate(f.cycleOption, { n: c })}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -146,7 +151,7 @@ export function ApplicationForm() {
         disabled={submitting}
       >
         {submitting ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Send className="h-4 w-4 mr-2" />}
-        {submitting ? "Enviando..." : "Enviar inscripción"}
+        {submitting ? f.sending : f.submit}
       </Button>
     </form>
   );

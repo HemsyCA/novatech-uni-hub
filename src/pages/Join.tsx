@@ -19,57 +19,10 @@ import { Label, PageHero, Section } from "@/components/landing/PageSection";
 import { fadeIn } from "@/lib/page-motion";
 import { ApplicationForm } from "@/components/landing/ApplicationForm";
 import { moduleInfo, type ModuleId } from "@/lib/academia/modules";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { moduleInfoEn, pageText } from "@/lib/i18n-pages";
 
-const learningCycle = [
-  {
-    icon: BookOpen,
-    title: "Lee",
-    description:
-      "Todo lo que sabe el equipo se publica en esta web: las lecciones de Academia Nova, nuestros robots y su documentación. Es tu punto de partida.",
-  },
-  {
-    icon: Search,
-    title: "Investiga",
-    description:
-      "Cuando algo no está explicado, búscalo: hojas de datos, documentación oficial, foros. Usar inteligencia artificial para que te expliquen está permitido; copiar sin entender, no. Si sigues trabado, pregúntale al encargado de la convocatoria.",
-  },
-  {
-    icon: FlaskConical,
-    title: "Prueba",
-    description:
-      "Lleva lo que aprendiste a los simuladores y, más adelante, al hardware real. Equivocarte es parte del proceso.",
-  },
-  {
-    icon: NotebookPen,
-    title: "Documenta",
-    description:
-      "Cuando logras algo, llenas una ficha corta de bitácora: qué querías, qué hiciste, qué pasó y qué aprendiste. Así compartimos lo que sabemos.",
-  },
-];
-
-const levels = [
-  {
-    step: "Parte 1",
-    title: "Bienvenida",
-    description:
-      "Lees las lecciones de Academia Nova a tu ritmo, practicas en simuladores online y terminas con una tarea final. Nadie te dicta clases.",
-    detail: "16 a 20 horas · 3 semanas",
-  },
-  {
-    step: "Parte 2",
-    title: "Soldadura y práctica",
-    description:
-      "Aprendes soldadura THT y SMD con texto y videos. Luego vienes a una práctica presencial: recibes un kit de placa y la sueldas con guía del equipo.",
-    detail: "Al aprobar la tarea final de la Parte 1",
-  },
-  {
-    step: "Final",
-    title: "Miembro de Nova",
-    description:
-      "Accedes al material interno, al foro y a la bitácora del equipo, y te integras a una categoría de competencia o a un proyecto de investigación.",
-    detail: "La directiva decide tu ingreso",
-  },
-];
+const cycleIcons: LucideIcon[] = [BookOpen, Search, FlaskConical, NotebookPen];
 
 const moduleIcons: Record<ModuleId, LucideIcon> = {
   electronica: CircuitBoard,
@@ -77,82 +30,65 @@ const moduleIcons: Record<ModuleId, LucideIcon> = {
   programacion: Code2,
 };
 
-const requirements = [
-  { icon: Laptop, text: "Una computadora con internet (Windows, Mac o Linux)." },
-  { icon: Mouse, text: "Un mouse con rueda, casi obligatorio para el diseño 3D." },
-  { icon: UserPlus, text: "Cuentas gratuitas en Wokwi, EasyEDA y Onshape." },
-  { icon: NotebookPen, text: "Un cuaderno para cálculos, dibujos y tu bitácora." },
-];
+const requirementIcons: LucideIcon[] = [Laptop, Mouse, UserPlus, NotebookPen];
 
-const steps = [
-  { title: "Te inscribes", description: "Llenas el formulario de abajo con el Gmail con el que iniciarás sesión." },
-  { title: "Te asignamos a un grupo", description: "La directiva revisa tu inscripción y te avisa la fecha en que empieza tu grupo." },
-  {
-    title: "Investigas durante 3 semanas",
-    description: "Desde esa fecha entras a Academia Nova con tu cuenta y avanzas a tu ritmo.",
-  },
-  {
-    title: "Entregas la tarea final",
-    description: "El Panel de control Nova, con un video y tu bitácora. Si la directiva la aprueba, sigues con la Parte 2.",
-  },
-];
+const Join = () => {
+  const { lang } = useLanguage();
+  const p = pageText[lang].join;
 
-const Join = () => (
-  <PageLayout>
-    <PageHero
-      label="Únete · Convocatoria"
-      title={
-        <>
-          Forma parte de <span className="text-nova">Nova</span>
-        </>
-      }
-      subtitle="En Nova se aprende investigando. No necesitas saber de robótica antes de empezar: buscamos gente que intente, se equivoque, investigue y busque soluciones, con el apoyo del encargado de la convocatoria."
-      action={
-        <a
-          href="#inscripcion"
-          className="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
-        >
-          Ir a la inscripción
-          <ArrowDown className="h-3.5 w-3.5" />
-        </a>
-      }
-    >
-      <ol className="mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-        {learningCycle.map((item, index) => (
-          <motion.li
-            key={item.title}
-            {...fadeIn}
-            transition={{ duration: 0.5, delay: index * 0.08 }}
-            className="border-t border-white/15 pt-6"
+  return (
+    <PageLayout>
+      <PageHero
+        label={p.label}
+        title={
+          <>
+            {p.titlePrefix}
+            <span className="text-nova">{p.titleAccent}</span>
+          </>
+        }
+        subtitle={p.subtitle}
+        action={
+          <a
+            href="#inscripcion"
+            className="mt-10 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.2em] text-white/70 hover:text-white transition-colors"
           >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-3xl font-light text-nova">0{index + 1}</span>
-              <item.icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
-            </div>
-            <h3 className="mt-5 font-sans text-lg font-medium text-white">{item.title}</h3>
-            <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{item.description}</p>
-          </motion.li>
-        ))}
-      </ol>
-
-      <motion.p
-        {...fadeIn}
-        className="mt-20 max-w-3xl border-l border-nova/60 pl-6 text-lg font-light leading-relaxed text-white/80"
+            {p.goToForm}
+            <ArrowDown className="h-3.5 w-3.5" />
+          </a>
+        }
       >
-        Por eso Academia Nova no tiene clases dictadas: es una guía escrita para que investigues a tu ritmo. Pero no
-        estás solo: un encargado de la convocatoria resuelve tus dudas y, según su disponibilidad, organiza reuniones de
-        refuerzo o algún compartir con el equipo.
-      </motion.p>
-    </PageHero>
+        <ol className="mt-20 grid gap-x-10 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          {p.cycle.map((item, index) => {
+            const Icon = cycleIcons[index];
+            return (
+              <motion.li
+                key={item.title}
+                {...fadeIn}
+                transition={{ duration: 0.5, delay: index * 0.08 }}
+                className="border-t border-white/15 pt-6"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-3xl font-light text-nova">0{index + 1}</span>
+                  <Icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
+                </div>
+                <h3 className="mt-5 font-sans text-lg font-medium text-white">{item.title}</h3>
+                <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{item.description}</p>
+              </motion.li>
+            );
+          })}
+        </ol>
 
-      <Section
-        index="01"
-        label="Ruta"
-        title="Cómo avanzas en Nova"
-        subtitle="Cada nivel se gana demostrando lo que aprendiste en el anterior."
-      >
+        <motion.p
+          {...fadeIn}
+          className="mt-20 max-w-3xl border-l border-nova/60 pl-6 text-lg font-light leading-relaxed text-white/80"
+        >
+          {p.quote}
+        </motion.p>
+      </PageHero>
+
+      <Section index="01" label={p.routeLabel} title={p.routeTitle} subtitle={p.routeSubtitle}>
         <ol className="relative border-l border-white/15">
-          {levels.map((level, index) => (
+          {p.levels.map((level, index) => (
             <motion.li
               key={level.step}
               {...fadeIn}
@@ -173,14 +109,10 @@ const Join = () => (
         </ol>
       </Section>
 
-      <Section
-        index="02"
-        label="Academia Nova · Parte 1"
-        title="Qué vas a investigar"
-        subtitle="Todos los robots del equipo, del minisumo al OTTO, están hechos de las mismas piezas básicas. Al final las unes en tu propio Panel de control Nova con un ESP32."
-      >
+      <Section index="02" label={p.learnLabel} title={p.learnTitle} subtitle={p.learnSubtitle}>
         <ul className="divide-y divide-white/10 border-y border-white/10">
-          {moduleInfo.map((module) => {
+          {moduleInfo.map((moduleData) => {
+            const module = lang === "en" ? { ...moduleData, ...moduleInfoEn[moduleData.id] } : moduleData;
             const Icon = moduleIcons[module.id];
             return (
               <motion.li key={module.id} {...fadeIn} className="grid gap-4 py-8 sm:grid-cols-[auto_1fr_auto] sm:items-start">
@@ -201,23 +133,24 @@ const Join = () => (
         </ul>
       </Section>
 
-      <Section index="03" label="Requisitos" title="Lo que necesitas">
+      <Section index="03" label={p.reqLabel} title={p.reqTitle}>
         <ul className="divide-y divide-white/10 border-y border-white/10">
-          {requirements.map((item) => (
-            <li key={item.text} className="flex items-start gap-4 py-5 text-[15px] font-light text-white/80">
-              <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-white/50" strokeWidth={1.5} />
-              {item.text}
-            </li>
-          ))}
+          {p.requirements.map((text, index) => {
+            const Icon = requirementIcons[index];
+            return (
+              <li key={text} className="flex items-start gap-4 py-5 text-[15px] font-light text-white/80">
+                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-white/50" strokeWidth={1.5} />
+                {text}
+              </li>
+            );
+          })}
         </ul>
-        <p className="mt-6 text-[15px] text-white">
-          No necesitas comprar componentes: el kit de práctica te lo da el equipo en la Parte 2.
-        </p>
+        <p className="mt-6 text-[15px] text-white">{p.reqNote}</p>
       </Section>
 
-      <Section index="04" label="Convocatoria" title="Cómo funciona">
+      <Section index="04" label={p.howLabel} title={p.howTitle}>
         <ol className="divide-y divide-white/10 border-y border-white/10">
-          {steps.map((step, index) => (
+          {p.steps.map((step, index) => (
             <motion.li key={step.title} {...fadeIn} className="flex gap-6 py-6">
               <span className="font-mono text-sm text-nova pt-0.5">0{index + 1}</span>
               <div>
@@ -232,21 +165,22 @@ const Join = () => (
       <Section
         id="inscripcion"
         index="05"
-        label="Inscripción"
-        title="¿Listo para empezar?"
-        subtitle="Déjanos tus datos y la directiva te asignará a un grupo de la convocatoria."
+        label={p.formLabel}
+        title={p.formTitle}
+        subtitle={p.formSubtitle}
         aside={
           <p className="mt-8 text-sm font-light text-white/50">
-            ¿Tienes dudas?{" "}
+            {p.doubts}{" "}
             <Link to="/#contacto" className="text-white underline-offset-4 hover:underline">
-              Escríbenos
+              {p.writeUs}
             </Link>
           </p>
         }
       >
         <ApplicationForm />
       </Section>
-  </PageLayout>
-);
+    </PageLayout>
+  );
+};
 
 export default Join;

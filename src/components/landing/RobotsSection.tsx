@@ -5,6 +5,9 @@ import { PageHero, Section } from "@/components/landing/PageSection";
 import { RobotCard } from "@/components/landing/RobotCard";
 import { pcbs, robotCategories, robots, type RobotCategoryId, type RobotLevel } from "@/data/robots";
 import { fadeIn } from "@/lib/page-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { pageText, pcbsEn, robotCategoryDescriptionsEn } from "@/lib/i18n-pages";
+import { robotCategoryNamesEn, robotLevelNamesEn } from "@/lib/i18n";
 
 const ALL = "all";
 
@@ -30,6 +33,10 @@ function FilterChip({ active, onClick, children }: { active: boolean; onClick: (
 }
 
 export function RobotsSection() {
+  const { lang } = useLanguage();
+  const p = pageText[lang].robots;
+  const categoryLabel = (id: RobotCategoryId, name: string) => (lang === "en" ? robotCategoryNamesEn[id] ?? name : name);
+  const levelLabel = (level: RobotLevel) => (lang === "en" ? robotLevelNamesEn[level] ?? level : level);
   const [category, setCategory] = useState<RobotCategoryId | typeof ALL>(ALL);
   const [level, setLevel] = useState<RobotLevel | typeof ALL>(ALL);
 
@@ -41,43 +48,44 @@ export function RobotsSection() {
     <>
       <PageHero
         id="robots"
-        label="Prototipos"
+        label={p.label}
         title={
           <>
-            Nuestros <span className="text-nova">robots</span>
+            {p.titlePrefix}
+            <span className="text-nova">{p.titleAccent}</span>
           </>
         }
-        subtitle="Cada robot se diseña, fabrica y programa dentro del equipo. Estos son los que compitieron con Nova en la temporada 2026."
+        subtitle={p.subtitle}
       >
         <div className="mt-16 space-y-3">
           <div className="flex flex-wrap gap-2">
             <FilterChip active={category === ALL} onClick={() => setCategory(ALL)}>
-              Todas las categorías
+              {p.allCategories}
             </FilterChip>
             {robotCategories.map((c) => (
               <FilterChip key={c.id} active={category === c.id} onClick={() => setCategory(c.id)}>
-                {c.name}
+                {categoryLabel(c.id, c.name)}
               </FilterChip>
             ))}
           </div>
           <div className="flex flex-wrap gap-2">
             <FilterChip active={level === ALL} onClick={() => setLevel(ALL)}>
-              Todos los niveles
+              {p.allLevels}
             </FilterChip>
             {levels.map((l) => (
               <FilterChip key={l} active={level === l} onClick={() => setLevel(l)}>
-                {l}
+                {levelLabel(l)}
               </FilterChip>
             ))}
           </div>
         </div>
 
         <p className="mt-8 mb-10 font-mono text-xs uppercase tracking-[0.2em] text-white/50">
-          {filtered.length} {filtered.length === 1 ? "resultado" : "resultados"}
+          {filtered.length} {filtered.length === 1 ? p.result : p.results}
         </p>
 
         {filtered.length === 0 ? (
-          <p className="py-12 text-white/60">No hay robots con esa combinación de categoría y nivel.</p>
+          <p className="py-12 text-white/60">{p.empty}</p>
         ) : (
           <div className="grid grid-cols-1 gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
             {filtered.map((robot, index) => (
@@ -87,7 +95,7 @@ export function RobotsSection() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: Math.min(index * 0.03, 0.3) }}
               >
-                <RobotCard robot={robot} />
+                <RobotCard robot={robot} lang={lang} />
               </motion.div>
             ))}
           </div>
@@ -96,15 +104,17 @@ export function RobotsSection() {
 
       <Section
         index="01"
-        label="Categorías"
-        title="Dónde competimos"
-        subtitle="Los niveles Amateur, Senior y Máster ordenan la dificultad dentro de cada categoría."
+        label={p.categoriesLabel}
+        title={p.categoriesTitle}
+        subtitle={p.categoriesSubtitle}
       >
         <ul className="grid gap-x-10 sm:grid-cols-2">
           {robotCategories.map((c) => (
             <motion.li key={c.id} {...fadeIn} className="border-t border-white/15 py-6">
-              <h3 className="font-sans text-lg font-medium text-white">{c.name}</h3>
-              <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{c.description}</p>
+              <h3 className="font-sans text-lg font-medium text-white">{categoryLabel(c.id, c.name)}</h3>
+              <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">
+                {lang === "en" ? robotCategoryDescriptionsEn[c.id] ?? c.description : c.description}
+              </p>
             </motion.li>
           ))}
         </ul>
@@ -112,14 +122,16 @@ export function RobotsSection() {
 
       <Section
         index="02"
-        label="Hardware propio"
-        title="PCBs universales"
-        subtitle="Placas diseñadas por Nova en EasyEDA y reutilizadas entre varias categorías."
+        label={p.pcbLabel}
+        title={p.pcbTitle}
+        subtitle={p.pcbSubtitle}
       >
         <ul className="divide-y divide-white/10 border-y border-white/10">
-          {pcbs.map((pcb) => (
+          {pcbs.map((pcbData) => {
+            const pcb = lang === "en" ? pcbsEn[pcbData.name] ?? pcbData : pcbData;
+            return (
             <motion.li
-              key={pcb.name}
+              key={pcbData.name}
               {...fadeIn}
               className="flex flex-col gap-2 py-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6"
             >
@@ -129,7 +141,8 @@ export function RobotsSection() {
               </div>
               <p className="pl-9 font-mono text-xs text-white/60 sm:pl-0 sm:text-right">{pcb.usedIn}</p>
             </motion.li>
-          ))}
+            );
+          })}
         </ul>
       </Section>
     </>
