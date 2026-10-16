@@ -47,7 +47,7 @@ export function AboutSection() {
         label="Nosotros"
         title={
           <>
-            Somos <span className="text-nova">Nova Tech</span> UNI
+            Somos Nova<span className="text-nova">Tech</span>
           </>
         }
         subtitle="Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento."
