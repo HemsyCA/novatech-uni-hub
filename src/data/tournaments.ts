@@ -65,14 +65,19 @@ export const countPlacements = (list: Tournament[]) => ({
   played: list.length,
 });
 
-const monthFormatter = new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short" });
-const fullFormatter = new Intl.DateTimeFormat("es-PE", { day: "numeric", month: "short", year: "numeric" });
+const LOCALES = { es: "es-PE", en: "en-US" } as const;
 
-export const formatTournamentDate = (t: Tournament) => {
+const formatters = (lang: keyof typeof LOCALES) => ({
+  month: new Intl.DateTimeFormat(LOCALES[lang], { day: "numeric", month: "short" }),
+  full: new Intl.DateTimeFormat(LOCALES[lang], { day: "numeric", month: "short", year: "numeric" }),
+});
+
+export const formatTournamentDate = (t: Tournament, lang: keyof typeof LOCALES = "es") => {
+  const { month, full } = formatters(lang);
   const start = new Date(`${t.start}T12:00:00`);
-  if (!t.end) return fullFormatter.format(start);
+  if (!t.end) return full.format(start);
   const end = new Date(`${t.end}T12:00:00`);
-  return `${monthFormatter.format(start)} – ${fullFormatter.format(end)}`;
+  return `${month.format(start)} – ${full.format(end)}`;
 };
 
 export const placementLabel = (result?: Placement) =>

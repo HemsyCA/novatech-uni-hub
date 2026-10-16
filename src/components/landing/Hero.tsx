@@ -43,7 +43,7 @@ const TypewriterText = ({ text, startDelay = 0, speed = 60 }) => {
 };
 
 export function Hero() {
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
 
   return (
     <section
@@ -74,7 +74,7 @@ export function Hero() {
             </motion.h1>
 
             <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 font-mono tracking-wide">
-              <TypewriterText text={t.hero.subtitle} startDelay={800} speed={20} />
+              <TypewriterText key={lang} text={t.hero.subtitle} startDelay={800} speed={20} />
             </p>
 
             {/* Action Buttons */}
@@ -88,13 +88,13 @@ export function Hero() {
                 }}
                 className="px-6 py-3 bg-white text-black font-mono font-semibold rounded-lg hover:bg-white/90 transition-colors duration-300"
               >
-                Conócenos
+                {t.hero.about}
               </button>
               <Link
                 to="/robots"
                 className="px-6 py-3 border-2 border-white text-white font-mono font-semibold rounded-lg hover:bg-white/10 transition-colors duration-300"
               >
-                Prototipos
+                {t.hero.prototypes}
               </Link>
             </div>
           </motion.div>

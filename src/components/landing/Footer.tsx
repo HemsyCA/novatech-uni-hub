@@ -108,7 +108,7 @@ export function Footer() {
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 mt-0.5 text-white" />
-                <span>Universidad Nacional de Ingeniería, Lima, Perú</span>
+                <span>{t.footer.address}</span>
               </li>
             </ul>
           </div>

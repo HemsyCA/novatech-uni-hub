@@ -29,7 +29,7 @@ export function Navbar() {
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
             {initialsOf(user)}
           </span>
-          Mi panel
+          {t.nav.myPanel}
         </Button>
       </Link>
     ) : (
