@@ -5,24 +5,27 @@ import { SectionHeading } from "@/components/landing/SectionHeading";
 import { RobotCard } from "@/components/landing/RobotCard";
 import { featuredRobotNames, robots } from "@/data/robots";
 import { countPlacements, formatTournamentDate, pastTournaments, tournaments, upcomingTournaments } from "@/data/tournaments";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export function HomeHighlights() {
+  const { lang, t } = useLanguage();
+  const h = t.highlights;
   const totals = countPlacements(pastTournaments());
   const nextTournament = upcomingTournaments()[0];
   const featured = robots.filter((r) => featuredRobotNames.includes(r.name));
 
   const stats = [
-    { label: "Primeros puestos", value: totals.first },
-    { label: "Podios", value: totals.first + totals.second + totals.third },
-    { label: "Torneos disputados", value: totals.played },
-    { label: "Torneo internacional", value: tournaments.filter((t) => t.international).length },
+    { label: h.firstPlaces, value: totals.first },
+    { label: h.podiums, value: totals.first + totals.second + totals.third },
+    { label: h.played, value: totals.played },
+    { label: h.international, value: tournaments.filter((t) => t.international).length },
   ];
 
   return (
     <>
       <section className="py-20 bg-black">
         <div className="container mx-auto px-4">
-          <SectionHeading eyebrow="Logros" title="Resultados que hablan" subtitle="Temporadas 2025 y 2026." />
+          <SectionHeading eyebrow={h.badge} title={h.title} subtitle={h.subtitle} />
 
           <div className="grid lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2 grid grid-cols-2 gap-4">
@@ -45,13 +48,13 @@ export function HomeHighlights() {
               to="/competencias"
               className="group rounded-2xl border border-white/30 p-6 flex flex-col hover:border-white transition-colors"
             >
-              <span className="text-xs uppercase tracking-widest text-white/50">Próximo torneo</span>
+              <span className="text-xs uppercase tracking-widest text-white/50">{h.nextTournament}</span>
               {nextTournament ? (
                 <>
                   <h3 className="font-display text-xl font-bold text-white mt-3">{nextTournament.name}</h3>
                   <p className="mt-4 text-sm text-white/60 flex items-center gap-2">
                     <CalendarDays className="w-4 h-4" />
-                    {formatTournamentDate(nextTournament)}
+                    {formatTournamentDate(nextTournament, lang)}
                   </p>
                   <p className="mt-1 text-sm text-white/60 flex items-center gap-2">
                     <MapPin className="w-4 h-4" />
@@ -59,10 +62,10 @@ export function HomeHighlights() {
                   </p>
                 </>
               ) : (
-                <p className="mt-3 text-white/60">Pronto anunciaremos la siguiente temporada.</p>
+                <p className="mt-3 text-white/60">{h.announceSoon}</p>
               )}
               <span className="mt-auto pt-6 text-sm text-white flex items-center gap-2">
-                Ver calendario
+                {h.viewCalendar}
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
               </span>
             </Link>
@@ -72,10 +75,10 @@ export function HomeHighlights() {
 
       <section className="py-20 bg-black border-t border-white/10">
         <div className="container mx-auto px-4">
-          <SectionHeading eyebrow="Prototipos" title="Robots destacados" />
+          <SectionHeading eyebrow={h.prototypesBadge} title={h.featuredTitle} />
           <div className="grid md:grid-cols-3 gap-4">
             {featured.map((robot) => (
-              <RobotCard key={robot.name} robot={robot} />
+              <RobotCard key={robot.name} robot={robot} lang={lang} />
             ))}
           </div>
           <div className="text-center mt-10">
@@ -83,7 +86,7 @@ export function HomeHighlights() {
               to="/robots"
               className="inline-flex items-center gap-2 px-6 py-3 border-2 border-white text-white font-semibold rounded-lg hover:bg-white/10 transition-colors"
             >
-              Ver todos los robots
+              {h.viewAllRobots}
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

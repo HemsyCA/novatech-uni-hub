@@ -13,11 +13,29 @@ export const translations = {
       tienda: "Tienda Nova",
       impresion3d: "Impresión 3D",
       login: "Ingresar",
+      myPanel: "Mi panel",
       join: "Unirse al Equipo",
     },
     hero: {
       subtitle:
         "Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento.",
+      about: "Conócenos",
+      prototypes: "Prototipos",
+    },
+    highlights: {
+      badge: "Logros",
+      title: "Resultados que hablan",
+      subtitle: "Temporadas 2025 y 2026.",
+      firstPlaces: "Primeros puestos",
+      podiums: "Podios",
+      played: "Torneos disputados",
+      international: "Torneo internacional",
+      nextTournament: "Próximo torneo",
+      announceSoon: "Pronto anunciaremos la siguiente temporada.",
+      viewCalendar: "Ver calendario",
+      prototypesBadge: "Prototipos",
+      featuredTitle: "Robots destacados",
+      viewAllRobots: "Ver todos los robots",
     },
     tools: {
       badge: "NOVAHERRAMIENTAS",
@@ -56,6 +74,7 @@ export const translations = {
       terms: "Términos de Uso",
       privacy: "Privacidad",
       contactLink: "Contacto",
+      address: "Universidad Nacional de Ingeniería, Lima, Perú",
     },
   },
   en: {
@@ -70,11 +89,29 @@ export const translations = {
       tienda: "Nova Store",
       impresion3d: "3D Printing",
       login: "Enter",
+      myPanel: "My dashboard",
       join: "Join the Team",
     },
     hero: {
       subtitle:
-        "Innovation, engineering and competition. We're building the future of university robotics with passion and technical excellence.",
+        "Research, development and innovation group in robotics at the National University of Engineering (UNI). We design, build and program high-performance hardware.",
+      about: "About us",
+      prototypes: "Prototypes",
+    },
+    highlights: {
+      badge: "Achievements",
+      title: "Results that speak",
+      subtitle: "2025 and 2026 seasons.",
+      firstPlaces: "First places",
+      podiums: "Podiums",
+      played: "Tournaments played",
+      international: "International tournament",
+      nextTournament: "Next tournament",
+      announceSoon: "We'll announce the next season soon.",
+      viewCalendar: "View calendar",
+      prototypesBadge: "Prototypes",
+      featuredTitle: "Featured robots",
+      viewAllRobots: "View all robots",
     },
     tools: {
       badge: "NOVATOOLS",
@@ -113,8 +150,29 @@ export const translations = {
       terms: "Terms of Use",
       privacy: "Privacy",
       contactLink: "Contact",
+      address: "National University of Engineering, Lima, Peru",
     },
   },
 } as const;
+
+// Los datos de robots y torneos viven en src/data; aquí solo se traducen para el Home.
+export const robotCategoryNamesEn: Record<string, string> = {
+  "minisumo-autonomo": "Autonomous Minisumo",
+  "minisumo-bt": "Bluetooth Minisumo",
+  microsumo: "Autonomous Microsumo",
+  seguidor: "Speed Line Follower",
+  soccer: "Robot Soccer",
+  walking: "Walking Race (OTTO)",
+  bug: "Bug Race",
+  combate: "1 lb Combat",
+};
+
+export const robotLevelNamesEn: Record<string, string> = {
+  Amateur: "Amateur",
+  Senior: "Senior",
+  "Máster": "Master",
+};
+
+export const robotTeamNote = { es: "Equipo de Robot Soccer", en: "Robot Soccer team" } as const;
 
 export type Translations = typeof translations.es;
