@@ -4,56 +4,41 @@ import { Label, PageHero, Section } from "@/components/landing/PageSection";
 import { areas } from "@/data/team";
 import { countPlacements, pastTournaments } from "@/data/tournaments";
 import { fadeIn } from "@/lib/page-motion";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { areasEn, fillTemplate, pageText } from "@/lib/i18n-pages";
 
-const pillars = [
-  {
-    icon: Cog,
-    title: "Diseño mecánico",
-    description: "Modelamos chasis y piezas en Onshape y las fabricamos con impresión 3D.",
-  },
-  {
-    icon: CircuitBoard,
-    title: "Electrónica",
-    description: "Diseñamos nuestras propias PCBs en EasyEDA, con el ESP32 como cerebro de los robots.",
-  },
-  {
-    icon: Code2,
-    title: "Programación",
-    description: "Escribimos el firmware y el control que hace que cada robot perciba, decida y actúe.",
-  },
-];
+const pillarIcons = [Cog, CircuitBoard, Code2];
 
-const seasonSummary = (year: string) => {
-  const totals = countPlacements(pastTournaments().filter((t) => t.start.startsWith(year)));
-  return `${totals.played} torneos y ${totals.first} primeros puestos`;
-};
-
-const milestones = [
-  { date: "2025", title: "Temporada 2025", description: seasonSummary("2025") },
-  { date: "Jun 2025", title: "Nova Legacy I", description: "Organizamos nuestro propio torneo en la UNI." },
-  {
-    date: "Oct 2025",
-    title: "RoboChallenge Rumanía",
-    description: "Primera competencia internacional, en la Universidad Politécnica de Bucarest.",
-  },
-  { date: "2026", title: "Temporada 2026", description: seasonSummary("2026") },
-];
+// Los hitos de temporada no tienen texto fijo: se calculan con los torneos.
+const seasonYears = ["2025", undefined, undefined, "2026"];
 
 export function AboutSection() {
+  const { lang } = useLanguage();
+  const p = pageText[lang].about;
+  const areaList = lang === "en" ? areasEn : areas;
+
+  const seasonSummary = (year: string) => {
+    const totals = countPlacements(pastTournaments().filter((t) => t.start.startsWith(year)));
+    return fillTemplate(p.seasonSummary, { played: totals.played, first: totals.first });
+  };
+
   return (
     <>
       <PageHero
         id="nosotros"
-        label="Nosotros"
+        label={p.label}
         title={
           <>
-            Somos <span className="text-nova">Nova Tech</span> UNI
+            {p.titlePrefix}
+            <span className="text-nova">{p.titleAccent}</span>
           </>
         }
-        subtitle="Grupo de investigación, desarrollo e innovación en robótica de la Universidad Nacional de Ingeniería (UNI). Diseñamos, construimos y programamos hardware de alto rendimiento."
+        subtitle={p.subtitle}
       >
         <ol className="mt-20 grid gap-x-10 gap-y-12 md:grid-cols-3">
-          {pillars.map((pillar, index) => (
+          {p.pillars.map((pillar, index) => {
+            const Icon = pillarIcons[index];
+            return (
             <motion.li
               key={pillar.title}
               {...fadeIn}
@@ -62,18 +47,19 @@ export function AboutSection() {
             >
               <div className="flex items-center justify-between">
                 <span className="font-mono text-3xl font-light text-nova">0{index + 1}</span>
-                <pillar.icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
+                <Icon className="h-8 w-8 text-white/70" strokeWidth={1.25} />
               </div>
               <h2 className="mt-5 font-sans text-lg font-medium text-white">{pillar.title}</h2>
               <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{pillar.description}</p>
             </motion.li>
-          ))}
+            );
+          })}
         </ol>
       </PageHero>
 
-      <Section index="01" label="Trayectoria" title="Nuestra historia">
+      <Section index="01" label={p.historyLabel} title={p.historyTitle}>
         <ol className="relative border-l border-white/15">
-          {milestones.map((m, index) => (
+          {p.milestones.map((m, index) => (
             <motion.li
               key={m.title}
               {...fadeIn}
@@ -82,12 +68,14 @@ export function AboutSection() {
             >
               <span
                 className={`absolute -left-[8px] top-0.5 h-4 w-4 rounded-full ${
-                  index === milestones.length - 1 ? "bg-nova" : "border-2 border-white/40 bg-black"
+                  index === p.milestones.length - 1 ? "bg-nova" : "border-2 border-white/40 bg-black"
                 }`}
               />
               <Label>{m.date}</Label>
               <h3 className="mt-3 font-sans text-2xl font-medium text-white">{m.title}</h3>
-              <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-white/60">{m.description}</p>
+              <p className="mt-3 max-w-xl text-base font-light leading-relaxed text-white/60">
+                {seasonYears[index] ? seasonSummary(seasonYears[index]!) : m.description}
+              </p>
             </motion.li>
           ))}
         </ol>
@@ -95,12 +83,12 @@ export function AboutSection() {
 
       <Section
         index="02"
-        label="Organización"
-        title="Nuestras áreas"
-        subtitle="Nova funciona como una organización: cada área sostiene una parte del equipo."
+        label={p.orgLabel}
+        title={p.orgTitle}
+        subtitle={p.orgSubtitle}
       >
         <ul className="grid gap-x-10 sm:grid-cols-2">
-          {areas.map((area) => (
+          {areaList.map((area) => (
             <motion.li key={area.name} {...fadeIn} className="border-t border-white/15 py-6">
               <h3 className="font-sans text-lg font-medium text-white">{area.name}</h3>
               <p className="mt-2 text-[15px] font-light leading-relaxed text-white/60">{area.description}</p>
