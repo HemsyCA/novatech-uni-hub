@@ -24,11 +24,16 @@ const clearLegacyProgress = (userId: string) => {
   }
 };
 
-export function useAcademyProgress(userId: string | null) {
+// userId: null si la cuenta no usa la Academia; undefined mientras se averigua.
+export function useAcademyProgress(userId: string | null | undefined) {
   const [completed, setCompleted] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (userId === undefined) {
+      setLoading(true);
+      return;
+    }
     if (!userId) {
       setCompleted(new Set());
       setLoading(false);

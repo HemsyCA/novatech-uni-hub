@@ -25,9 +25,12 @@ export default function AccountLayout() {
   const navigate = useNavigate();
   const { user, loading: sessionLoading } = useSession();
   const academy = useAcademyAccess();
-  const progress = useAcademyProgress(academy.userId);
-  const entrega = useAcademyEntrega(academy.userId);
-  const practica = useAcademyPractica(academy.userId);
+  // Los datos de la Academia solo se cargan para quien tiene acceso: un cliente no tiene progreso,
+  // y consultarlo solo producía avisos de error.
+  const academyUser = academy.loading ? undefined : academy.hasAccess || academy.isStaff ? academy.userId : null;
+  const progress = useAcademyProgress(academyUser);
+  const entrega = useAcademyEntrega(academyUser);
+  const practica = useAcademyPractica(academyUser);
   const member = useMemberAccess();
   const [orders, setOrders] = useState<Order[]>([]);
   const [reservations, setReservations] = useState<Reservation[]>([]);

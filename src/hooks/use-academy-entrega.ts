@@ -7,11 +7,16 @@ import {
 } from "@/services/supabase/academia";
 import { toast } from "@/hooks/use-toast";
 
-export function useAcademyEntrega(userId: string | null) {
+// userId: null si la cuenta no usa la Academia; undefined mientras se averigua.
+export function useAcademyEntrega(userId: string | null | undefined) {
   const [entrega, setEntrega] = useState<AcademyEntrega | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (userId === undefined) {
+      setLoading(true);
+      return;
+    }
     if (!userId) {
       setEntrega(null);
       setLoading(false);
