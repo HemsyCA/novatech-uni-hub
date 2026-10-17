@@ -1,4 +1,5 @@
 import { lessonPath, part2Module, type Lesson } from "@/lib/academia/course";
+import { GUIDE_STOP_COUNT } from "@/lib/academia/guide-progress";
 import { formatDate, formatLimaDateTime, limaToday } from "@/lib/academy-dates";
 import type { AcademyEntrega, AcademyPractica } from "@/services/supabase/academia";
 import type { AcademyMembership } from "@/types/domain";
@@ -34,6 +35,8 @@ export interface JourneyInput {
   nextLesson: Lesson | null;
   entrega: AcademyEntrega | null;
   practica: AcademyPractica | null;
+  // Paradas vistas de la Ruta de bienvenida (se guarda en el navegador).
+  guideVisited?: number;
   staffPending?: { entregas: number; inscripciones: number } | null;
 }
 
@@ -209,12 +212,20 @@ export const nextStepFor = (input: JourneyInput): NextStep => {
           cta: { label: "Continuar", to: lessonPath(nextLesson) },
           lesson: nextLesson,
         }
-      : {
-          eyebrow: "Bienvenido a Academia Nova",
-          title: "Empieza por la guía de inicio",
-          description: "Te explica cómo funciona esta etapa y qué necesitas.",
-          cta: { label: "Empezar", to: "/academia/guia" },
-        };
+      : (input.guideVisited ?? 0) >= GUIDE_STOP_COUNT
+        ? {
+            eyebrow: "Tu primera lección",
+            title: `${nextLesson.code} · ${nextLesson.title}`,
+            description: "Ya recorriste la Ruta de bienvenida. Empieza cuando quieras.",
+            cta: { label: "Empezar", to: lessonPath(nextLesson) },
+            lesson: nextLesson,
+          }
+        : {
+            eyebrow: "Bienvenido a Academia Nova",
+            title: input.guideVisited ? "Sigue tu Ruta de bienvenida" : "Empieza por la Ruta de bienvenida",
+            description: `${GUIDE_STOP_COUNT} paradas cortas para saber cómo funciona esta etapa, a quién preguntar y qué necesitas.`,
+            cta: { label: input.guideVisited ? "Continuar la ruta" : "Empezar la ruta", to: "/academia/guia" },
+          };
 
   return {
     eyebrow: "Tarea final",

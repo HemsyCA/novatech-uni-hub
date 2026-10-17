@@ -10,6 +10,7 @@ import { ProgressBar } from "@/components/academia/ui";
 import { StatusTracker } from "@/components/StatusTracker";
 import { displayNameOf } from "@/hooks/use-session";
 import { daysLeft, formatDate } from "@/lib/academy-dates";
+import { guideVisitedCount } from "@/lib/academia/guide-progress";
 import { nextStepFor } from "@/lib/account/journey";
 import { urgentFor } from "@/lib/account/urgent";
 import { secondaryButton } from "@/lib/account/styles";
@@ -134,6 +135,7 @@ export default function Dashboard() {
           nextLesson: progress.nextLesson,
           entrega: entrega.entrega,
           practica: practica.practica,
+          guideVisited: guideVisitedCount(),
         })
       : null;
 
