@@ -1,14 +1,17 @@
 import type { CSSProperties } from "react";
 import { Link } from "react-router-dom";
-import { ArrowRight, BookOpen, CircuitBoard, Code2, Cog, Flag, Flame, Lock, NotebookPen, type LucideIcon } from "lucide-react";
+import { ArrowRight, CircuitBoard, Code2, Cog, Flame, Lock, type LucideIcon } from "lucide-react";
 import { useAcademy, useCanAccessPart2 } from "@/components/academia/academy-context";
 import { Part2Status } from "@/components/academia/Part2Locked";
 import { PracticaCard } from "@/components/academia/PracticaCard";
 import { ProgressBar } from "@/components/academia/ui";
 import { CoursePath } from "@/components/academia/CoursePath";
+import { ResourceOrder } from "@/components/academia/ResourceOrder";
 import { JourneyStepper, NextStepCard } from "@/components/account/Journey";
 import { courseModules, part2Module, type CourseModuleId } from "@/lib/academia/course";
 import { moduleAccent } from "@/lib/academia/modules";
+import { guideVisitedCount } from "@/lib/academia/guide-progress";
+import { resourceSteps } from "@/lib/academia/resources";
 import { daysLeft, formatDate } from "@/lib/academy-dates";
 import { buildJourney, nextStepFor, type JourneyInput } from "@/lib/account/journey";
 
@@ -19,27 +22,12 @@ const moduleIcons: Record<CourseModuleId, LucideIcon> = {
   soldadura: Flame,
 };
 
-const ENTREGA_LABEL = { enviada: "en revisión", observada: "con observaciones", aprobada: "aprobada" } as const;
-
-function ResourceLink({ to, icon: Icon, title, detail }: { to: string; icon: LucideIcon; title: string; detail: string }) {
-  return (
-    <Link to={to} className="group flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 transition-colors hover:border-white/40">
-      <Icon className="h-5 w-5 shrink-0 text-white/70" />
-      <span className="min-w-0 flex-1">
-        <span className="block text-sm font-semibold">{title}</span>
-        <span className="block truncate text-xs text-white/50">{detail}</span>
-      </span>
-      <ArrowRight className="h-4 w-4 shrink-0 text-white/40 transition-transform group-hover:translate-x-1 group-hover:text-white" />
-    </Link>
-  );
-}
-
 export default function AcademiaHome() {
   const { progress, fichas, entrega, practica, activeMembership, isStaff } = useAcademy();
   const moduleFichas = courseModules.filter((m) => fichas.moduleFicha(m.id)).length;
   const canAccessPart2 = useCanAccessPart2();
   const part2Done = part2Module.lessons.filter((l) => progress.completed.has(l.key)).length;
-  const estado = entrega.entrega?.estado;
+  const guideVisited = guideVisitedCount();
 
   const journeyInput: JourneyInput = {
     hasAccess: true,
@@ -52,6 +40,7 @@ export default function AcademiaHome() {
     nextLesson: progress.nextLesson,
     entrega: entrega.entrega,
     practica: practica.practica,
+    guideVisited,
   };
   const step = nextStepFor(journeyInput);
 
@@ -77,6 +66,16 @@ export default function AcademiaHome() {
 
       {/* El recorrido de la convocatoria vive aquí: es el contexto de quien está en la Academia. */}
       {!isStaff && <JourneyStepper stages={buildJourney(journeyInput)} />}
+
+      <ResourceOrder
+        steps={resourceSteps({
+          guideVisited,
+          moduleFichas,
+          modules: courseModules.length,
+          part1Done: progress.nextLesson === null && progress.done >= progress.total,
+          entrega: entrega.entrega,
+        })}
+      />
 
       <section>
         <div className="mb-5">
@@ -146,25 +145,6 @@ export default function AcademiaHome() {
             </div>
           </div>
         )}
-      </section>
-
-      <section>
-        <h2 className="mb-3 text-xs font-semibold uppercase tracking-widest text-white/50">Recursos</h2>
-        <div className="grid gap-2 sm:grid-cols-3">
-          <ResourceLink to="/academia/guia" icon={BookOpen} title="Guía de inicio" detail="Cómo funciona y el Mapa de pines Nova" />
-          <ResourceLink
-            to="/academia/bitacora"
-            icon={NotebookPen}
-            title="Bitácora Nova"
-            detail={`Fichas de módulo: ${moduleFichas} de ${courseModules.length}`}
-          />
-          <ResourceLink
-            to="/academia/tarea-final"
-            icon={Flag}
-            title="Tarea final"
-            detail={estado ? `Tu entrega está ${ENTREGA_LABEL[estado]}` : "El Panel de control Nova"}
-          />
-        </div>
       </section>
     </div>
   );
