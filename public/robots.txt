@@ -12,3 +12,5 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+Sitemap: https://novatech-uni-hub.vercel.app/sitemap.xml
