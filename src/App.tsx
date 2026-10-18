@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StaffRoute } from "@/components/StaffRoute";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { FloatingContactButtons } from "@/components/FloatingContactButtons";
+import { RouteSeo } from "@/components/RouteSeo";
 
 const Index = lazy(() => import("./pages/Index"));
 const About = lazy(() => import("./pages/About"));
@@ -45,6 +46,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <RouteSeo />
         <FloatingContactButtons />
         <Suspense
           fallback={
