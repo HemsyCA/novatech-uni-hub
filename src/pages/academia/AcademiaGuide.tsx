@@ -52,7 +52,7 @@ function Intro({ visited, next, goalOpen }: { visited: number; next: number; goa
         <ul className="mt-5 flex flex-wrap gap-2 text-xs text-white/60">
           <li className="rounded-full border border-white/15 px-3 py-1">{TOTAL} paradas</li>
           <li className="rounded-full border border-white/15 px-3 py-1">Unos {guideMinutes} minutos</li>
-          <li className="rounded-full border border-white/15 px-3 py-1">Para tocar y explorar</li>
+          <li className="rounded-full border border-white/15 px-3 py-1">+30 simulaciones en las lecciones</li>
         </ul>
         <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
           <Link to={cta.to} className={primaryButton}>

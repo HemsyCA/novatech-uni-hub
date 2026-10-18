@@ -15,12 +15,14 @@ import {
   FlaskConical,
   Footprints,
   Laptop,
+  MousePointerClick,
   type LucideIcon,
   MessageCircle,
   Mouse,
   Notebook,
   NotebookPen,
   PackageX,
+  Play,
   RefreshCw,
   Search,
   TriangleAlert,
@@ -28,6 +30,7 @@ import {
   Users,
   Zap,
 } from "lucide-react";
+import { PwmDemo } from "@/components/academia/widgets/Pwm";
 import { moduleAccent } from "@/lib/academia/modules";
 
 // Las paradas de la Ruta de bienvenida. Cada una cuenta lo mismo que la guía de inicio,
@@ -129,7 +132,7 @@ export function WelcomeScene() {
       <div className="grid gap-3 sm:grid-cols-2">
         <Tile icon={Clock} title="Aquí no hay clases dictadas…">
           Avanzas a tu ritmo, en el horario que puedas, siguiendo las lecciones de la Academia. Cada lección tiene una explicación escrita
-          paso a paso.
+          paso a paso y simulaciones interactivas para probar lo que aprendes.
         </Tile>
         <Tile icon={Users} title="…pero no estás solo" delay={0.1} strong>
           Durante toda la convocatoria tienes a un <strong className="text-white">encargado de convocatoria</strong> del equipo, a quien
@@ -681,15 +684,23 @@ export function PinsScene() {
                       on ? "border-white bg-white/[0.08]" : "border-white/15 hover:border-white/35"
                     }`}
                   >
-                    <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: row.dot, boxShadow: on ? `0 0 12px ${row.dot}` : undefined }} />
+                    <span
+                      className="h-3 w-3 shrink-0 rounded-full"
+                      style={{ background: row.dot, boxShadow: on ? `0 0 12px ${row.dot}` : undefined }}
+                    />
                     <span className="min-w-0">
                       <span className="block text-sm font-semibold leading-tight">{row.part}</span>
                       {on && <span className="block text-xs text-white/60">{row.note}</span>}
                     </span>
                   </button>
-                  <span aria-hidden className={`w-4 shrink-0 sm:w-10 ${on ? "h-0.5 bg-white" : "border-t-2 border-dashed border-white/20"}`} />
+                  <span
+                    aria-hidden
+                    className={`w-4 shrink-0 sm:w-10 ${on ? "h-0.5 bg-white" : "border-t-2 border-dashed border-white/20"}`}
+                  />
                   <span className="flex w-24 shrink-0 items-center gap-2 sm:w-28">
-                    <span className={`-ml-[5px] h-2.5 w-2.5 shrink-0 rounded-sm border ${on ? "border-white bg-white" : "border-white/40 bg-black"}`} />
+                    <span
+                      className={`-ml-[5px] h-2.5 w-2.5 shrink-0 rounded-sm border ${on ? "border-white bg-white" : "border-white/40 bg-black"}`}
+                    />
                     <span className={`text-xs font-semibold tabular-nums ${on ? "text-white" : "text-white/55"}`}>{row.pin}</span>
                   </span>
                 </li>
@@ -714,6 +725,30 @@ const ANATOMY = [
   { name: "Errores comunes", text: "Los problemas típicos y cómo resolverlos." },
   { name: "Mini práctica", text: "Un ejercicio para hacer por tu cuenta." },
   { name: "Puedo continuar si…", text: "Una autoevaluación rápida." },
+];
+
+// Algunas de las simulaciones que hay dentro de las lecciones, por módulo.
+const SIMULATIONS: { module: string; name: string; items: string[] }[] = [
+  {
+    module: "electronica",
+    name: "Electrónica",
+    items: ["Calcula la resistencia de un LED", "Mueve un divisor de voltaje", "Circuitos de PhET", "Las capas de una PCB"],
+  },
+  {
+    module: "programacion",
+    name: "Programación",
+    items: ["Haz parpadear un LED", "Laboratorio del botón", "Gira un servo", "Envía comandos al ESP32"],
+  },
+  {
+    module: "mecanica",
+    name: "Mecánica",
+    items: ["El cubo de vistas 3D", "Bocetos bien definidos", "Voladizos y holguras", "Prepara tu pieza para imprimir"],
+  },
+  {
+    module: "soldadura",
+    name: "Soldadura",
+    items: ["Suelda una pieza THT", "Encuentra el defecto", "Tamaños SMD", "La temperatura del cautín"],
+  },
 ];
 
 export function AnatomyScene() {
@@ -743,6 +778,45 @@ export function AnatomyScene() {
           ))}
         </ol>
       </div>
+
+      {/* Lo que más engancha: en las lecciones no solo se lee, se prueba. */}
+      <section className="space-y-5">
+        <div>
+          <p className="inline-flex items-center gap-2 rounded-full bg-nova px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+            <MousePointerClick className="h-3.5 w-3.5" /> Aprendes tocando
+          </p>
+          <h3 className="mt-3 font-display text-2xl font-black leading-tight">Más de 30 simulaciones interactivas</h3>
+          <p className="mt-2 text-white/70">
+            Dentro de las lecciones no solo lees: mueves perillas, conectas cables, programas un LED y hasta sueldas en pantalla. Cada
+            simulación te deja equivocarte sin romper nada, y al final de cada lección unas preguntas rápidas te dicen si ya puedes seguir.
+          </p>
+        </div>
+
+        <div style={tone(moduleAccent("programacion"))}>
+          <p className="mb-2 text-xs text-white/45">Pruébala aquí: es una de las que encontrarás en Programación.</p>
+          <PwmDemo />
+        </div>
+
+        <div className="grid gap-3 sm:grid-cols-2">
+          {SIMULATIONS.map((group, index) => (
+            <motion.div
+              key={group.module}
+              {...appear(index * 0.06)}
+              style={tone(moduleAccent(group.module))}
+              className="rounded-2xl border border-[rgb(var(--tone)/0.35)] p-4"
+            >
+              <p className="text-xs font-semibold uppercase tracking-widest text-[rgb(var(--tone))]">{group.name}</p>
+              <ul className="mt-2 space-y-1.5">
+                {group.items.map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-white/80">
+                    <Play className="h-3 w-3 shrink-0 fill-[rgb(var(--tone))] text-[rgb(var(--tone))]" /> {item}
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

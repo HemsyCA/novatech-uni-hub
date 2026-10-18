@@ -87,8 +87,8 @@ const stops: Omit<GuideStop, "index">[] = [
     title: "Cómo está organizada cada lección",
     label: "Cada lección",
     icon: LayoutList,
-    takeaway: "Todas las lecciones tienen la misma estructura: siempre sabrás dónde estás.",
-    minutes: 1,
+    takeaway: "Todas tienen la misma estructura y simulaciones para aprender tocando.",
+    minutes: 2,
     Scene: AnatomyScene,
   },
   {
