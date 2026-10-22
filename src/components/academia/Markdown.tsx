@@ -31,7 +31,8 @@ import { ThtSolderGame } from "@/components/academia/widgets/ThtSolderGame";
 import { DefectHunt } from "@/components/academia/widgets/DefectHunt";
 import { SmdOrder, SmdSizes } from "@/components/academia/widgets/SmdWidgets";
 import { ReviewCards } from "@/components/academia/widgets/ReviewCards";
-import { Check, ChevronRight, Copy, Info, Lightbulb, TriangleAlert, Wrench, type LucideIcon } from "lucide-react";
+import { Check, ChevronRight, Copy, Info, Lightbulb, Maximize2, TriangleAlert, Wrench, type LucideIcon } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 const ANSWERS_LANGUAGE = "language-respuestas";
 const VIDEO_LANGUAGE = "language-video";
@@ -39,6 +40,9 @@ const YOUTUBE_ID = /^[\w-]{11}$/;
 const PHET_LANGUAGE = "language-phet";
 const PHET_SLUG = /^[a-z0-9-]+$/;
 const WIDGET_LANGUAGE = "language-widget";
+// ```imagen: ruta (en public/), texto alternativo y, opcional, el pie de la imagen.
+const IMAGE_LANGUAGE = "language-imagen";
+const IMAGE_SRC = /^\/[\w/.-]+\.(webp|png|jpe?g|svg)$/;
 
 // Apoyos interactivos que se insertan en una lección con un bloque ```widget.
 const widgets: Record<string, () => JSX.Element> = {
@@ -134,6 +138,33 @@ function YouTubeVideo({ id, title }: { id: string; title: string }) {
           Ver en YouTube
         </a>
       </figcaption>
+    </figure>
+  );
+}
+
+// Una captura de pantalla de la lección. Se puede ampliar, porque suele tener texto pequeño.
+function LessonImage({ src, alt, caption }: { src: string; alt: string; caption?: string }) {
+  return (
+    <figure className="not-prose my-6">
+      <Dialog>
+        <DialogTrigger asChild>
+          <button
+            type="button"
+            className="group relative block w-full overflow-hidden rounded-xl border border-white/15 bg-white/[0.04] transition-colors hover:border-white/40"
+            aria-label={`Ampliar imagen: ${alt}`}
+          >
+            <img src={src} alt={alt} loading="lazy" className="block h-auto w-full" />
+            <span className="absolute bottom-2 right-2 inline-flex items-center gap-1.5 rounded-md bg-black/80 px-2.5 py-1 text-xs text-white backdrop-blur transition-opacity md:opacity-0 md:group-hover:opacity-100">
+              <Maximize2 className="h-3.5 w-3.5" /> Ampliar
+            </span>
+          </button>
+        </DialogTrigger>
+        <DialogContent className="max-h-[92vh] w-[96vw] max-w-6xl overflow-auto border-white/15 bg-black p-2 sm:p-3">
+          <DialogTitle className="sr-only">{alt}</DialogTitle>
+          <img src={src} alt={alt} className="h-auto w-full min-w-[720px] rounded-lg sm:min-w-0" />
+        </DialogContent>
+      </Dialog>
+      {caption && <figcaption className="mt-2 text-xs leading-relaxed text-white/50">{caption}</figcaption>}
     </figure>
   );
 }
@@ -246,6 +277,7 @@ const components: Components = {
     const isVideo = Array.isArray(classNames) && classNames.includes(VIDEO_LANGUAGE);
     const isPhet = Array.isArray(classNames) && classNames.includes(PHET_LANGUAGE);
     const isWidget = Array.isArray(classNames) && classNames.includes(WIDGET_LANGUAGE);
+    const isImage = Array.isArray(classNames) && classNames.includes(IMAGE_LANGUAGE);
 
     const text = code && "children" in code ? code.children.map((c) => ("value" in c ? c.value : "")).join("") : "";
 
@@ -257,6 +289,11 @@ const components: Components = {
     if (isPhet) {
       const [slug = "", title = "Simulación", instructions] = text.trim().split(/\r?\n/).map((line) => line.trim());
       if (PHET_SLUG.test(slug)) return <PhetSim slug={slug} title={title} instructions={instructions} />;
+    }
+
+    if (isImage) {
+      const [src = "", alt = "Imagen de la lección", caption] = text.trim().split(/\r?\n/).map((line) => line.trim());
+      if (IMAGE_SRC.test(src)) return <LessonImage src={src} alt={alt} caption={caption} />;
     }
 
     if (isWidget) {
