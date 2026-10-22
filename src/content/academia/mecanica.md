@@ -26,14 +26,29 @@ Onshape es un **CAD paramétrico**: cada pieza se construye con una secuencia de
 - Tus diseños se guardan **en la nube**: puedes trabajar desde cualquier computadora.
 - Es **gratuito** para uso personal y educativo.
 
-#### Los planes gratuitos
+#### Primeros pasos: crea tu cuenta
+
+Antes de conocer la interfaz, entra a Onshape. Primero elige uno de sus planes gratuitos:
 
 - **Plan Free:** gratuito para cualquiera. Tus documentos son **públicos** (cualquiera con el link puede verlos). Para esta etapa eso es una ventaja: así entregas tu tarea con un simple link.
 - **Plan Education:** gratuito para estudiantes (con correo de tu institución). Tus documentos pueden ser privados; para entregar la tarea tendrás que compartir el link.
 
+Luego:
+
+1. Entra a [onshape.com](https://onshape.com) y crea tu cuenta con el plan que elegiste.
+2. Confirma tu correo e inicia sesión.
+3. Llegas a la **página de documentos**: es lo primero que verás cada vez que entres. La conoces en el siguiente concepto.
+
 #### La interfaz
 
 - **Página de documentos:** donde ves todos tus proyectos. Cada proyecto es un **documento**.
+
+```imagen
+/academia/mecanica/onshape-pagina-documentos.webp
+La página de documentos de Onshape después de iniciar sesión
+La página de documentos: con Create creas documentos o folders para tus proyectos. Abajo, la lista muestra solo los documentos del folder que tienes abierto.
+```
+
 - **Pestañas inferiores:** dentro de un documento hay pestañas.
   - **Part Studio:** donde se diseñan las piezas. Aquí trabajaremos en toda la Parte 1.
   - **Assembly:** donde se juntan varias piezas (lo usarás ya en el equipo).
@@ -59,7 +74,7 @@ cubo-vistas
 
 ### Paso a paso
 
-1. Entra a [onshape.com](https://onshape.com) y crea tu cuenta (plan Free, o Education si eres estudiante).
+1. Inicia sesión en [onshape.com](https://onshape.com) con la cuenta que creaste.
 2. En la página de documentos, crea un **nuevo documento** llamado `Nova - Prácticas`.
 3. Se abre un **Part Studio** vacío. Ubica los tres planos y el origen.
 4. Practica girar, desplazar y acercar. Haz clic en las caras del cubo de vistas.
