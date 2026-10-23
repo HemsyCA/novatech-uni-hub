@@ -8,6 +8,7 @@ import {
   LogOut,
   MessagesSquare,
   MonitorSmartphone,
+  Users,
   Printer,
   ShieldCheck,
   ShoppingCart,
@@ -24,7 +25,7 @@ import { buildNotifications, useSeenNotifications } from "@/lib/account/notifica
 const menuContent = "bg-black border-white/20 text-white font-mono";
 const menuItem = "focus:bg-white/10 focus:text-white cursor-pointer";
 
-// En el celular caben 5 pestañas; lo que sobra va al menú de la cuenta.
+// En el celular caben 5 pestañas. Si hay más, la zona de miembros se junta en una sola: "Equipo".
 const MAX_TABS = 5;
 
 type Group = "servicios" | "academia" | "equipo";
@@ -86,11 +87,11 @@ function useSections(): Section[] {
   return sections;
 }
 
-// Si no caben todas abajo, la Academia (la menos frecuente para quien también es miembro) pasa al menú.
+// Si no caben todas abajo, Conocimientos y Comunidad comparten la pestaña "Equipo", que abre un menú.
+// Así la Academia y los servicios siempre quedan a un toque.
 const splitTabs = (sections: Section[]) => {
-  if (sections.length <= MAX_TABS) return { tabs: sections, overflow: [] as Section[] };
-  const overflow = sections.filter((s) => s.id === "academia");
-  return { tabs: sections.filter((s) => s.id !== "academia"), overflow };
+  if (sections.length <= MAX_TABS) return { tabs: sections, team: [] as Section[] };
+  return { tabs: sections.filter((s) => s.group !== "equipo"), team: sections.filter((s) => s.group === "equipo") };
 };
 
 const roleLabel = (account: ReturnType<typeof useAccount>) => {
@@ -163,7 +164,7 @@ function NotificationsMenu() {
   );
 }
 
-function AccountMenu({ overflow }: { overflow: Section[] }) {
+function AccountMenu() {
   const account = useAccount();
   const name = displayNameOf(account.user);
   return (
@@ -188,15 +189,6 @@ function AccountMenu({ overflow }: { overflow: Section[] }) {
             <Home className="h-4 w-4" /> Mi panel
           </Link>
         </DropdownMenuItem>
-        {/* Secciones que no caben en la barra inferior del celular. */}
-        {overflow.map((section) => (
-          <DropdownMenuItem key={section.id} asChild className={`${menuItem} md:hidden`}>
-            <Link to={section.to} className="flex items-center gap-2">
-              <section.icon className="h-4 w-4" /> {section.label}
-              {section.badge && <span className="ml-auto text-[10px] text-white/50">{section.badge}</span>}
-            </Link>
-          </DropdownMenuItem>
-        ))}
         <div className="flex items-center justify-between px-2 py-2 text-sm">
           <span className="text-white/60">Idioma</span>
           <LanguageToggle />
@@ -223,7 +215,6 @@ export function AccountHeader() {
   const { pathname } = useLocation();
   const { academy } = useAccount();
   const sections = useSections();
-  const { overflow } = splitTabs(sections);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-card border-b border-border/30">
@@ -270,7 +261,7 @@ export function AccountHeader() {
             </Link>
           )}
           <NotificationsMenu />
-          <AccountMenu overflow={overflow} />
+          <AccountMenu />
         </div>
       </div>
     </header>
@@ -278,9 +269,61 @@ export function AccountHeader() {
 }
 
 // En el celular, las secciones van abajo, al alcance del pulgar.
+function TabLabel({ icon: Icon, label, active, badge, alert }: { icon: LucideIcon; label: string; active: boolean; badge?: string; alert?: number }) {
+  return (
+    <span className={`relative flex min-w-0 flex-col items-center gap-0.5 text-[10px] ${active ? "text-white" : "text-white/50"}`}>
+      <Icon className="h-5 w-5" />
+      <span className="max-w-full truncate">{label}</span>
+      {badge && <span className="absolute -right-3 -top-1 rounded-full bg-white px-1 text-[9px] font-bold text-black">{badge}</span>}
+      {alert && (
+        <span className="absolute -right-2 -top-1">
+          <AlertCount value={alert} />
+        </span>
+      )}
+    </span>
+  );
+}
+
+// La zona de miembros en una sola pestaña: al tocarla se elige Conocimientos o Comunidad.
+function TeamTab({ sections }: { sections: Section[] }) {
+  const { pathname } = useLocation();
+  const [open, setOpen] = useState(false);
+  const active = sections.some((s) => s.active(pathname));
+  const alert = sections.reduce((total, s) => total + (s.alert ?? 0), 0) || undefined;
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger aria-label="Zona de miembros" className="flex min-w-0 flex-1 items-center justify-center py-2">
+        <TabLabel icon={Users} label="Equipo" active={active || open} alert={alert} />
+      </PopoverTrigger>
+      <PopoverContent side="top" align="end" sideOffset={10} className="w-56 border-white/20 bg-black p-1.5 font-mono text-white">
+        <p className="px-2.5 pb-1.5 pt-1 text-[10px] uppercase tracking-widest text-white/45">Zona de miembros</p>
+        {sections.map((section) => (
+          <Link
+            key={section.id}
+            to={section.to}
+            onClick={() => setOpen(false)}
+            aria-current={section.active(pathname) ? "page" : undefined}
+            className={`flex items-center gap-3 rounded-lg px-2.5 py-2.5 text-sm transition-colors hover:bg-white/10 ${
+              section.active(pathname) ? "bg-white/10 text-white" : "text-white/80"
+            }`}
+          >
+            <section.icon className="h-4 w-4 text-nova" /> {section.label}
+            {section.alert && (
+              <span className="ml-auto">
+                <AlertCount value={section.alert} />
+              </span>
+            )}
+          </Link>
+        ))}
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 export function AccountTabBar() {
   const { pathname } = useLocation();
-  const { tabs } = splitTabs(useSections());
+  const { tabs, team } = splitTabs(useSections());
 
   return (
     <nav
@@ -289,7 +332,6 @@ export function AccountTabBar() {
     >
       {tabs.map((section) => {
         const active = section.active(pathname);
-        const Icon = section.icon;
         return (
           <Link
             key={section.id}
@@ -297,21 +339,11 @@ export function AccountTabBar() {
             aria-current={active ? "page" : undefined}
             className="flex min-w-0 flex-1 items-center justify-center py-2"
           >
-            <span className={`relative flex min-w-0 flex-col items-center gap-0.5 text-[10px] ${active ? "text-white" : "text-white/50"}`}>
-              <Icon className="h-5 w-5" />
-              <span className="max-w-full truncate">{section.short}</span>
-              {section.badge && (
-                <span className="absolute -right-3 -top-1 rounded-full bg-white px-1 text-[9px] font-bold text-black">{section.badge}</span>
-              )}
-              {section.alert && (
-                <span className="absolute -right-2 -top-1">
-                  <AlertCount value={section.alert} />
-                </span>
-              )}
-            </span>
+            <TabLabel icon={section.icon} label={section.short} active={active} badge={section.badge} alert={section.alert} />
           </Link>
         );
       })}
+      {team.length > 0 && <TeamTab sections={team} />}
     </nav>
   );
 }
