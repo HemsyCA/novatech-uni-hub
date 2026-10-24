@@ -2,6 +2,15 @@ En esta parte vas a aprender a diseñar piezas en 3D en la computadora y a prepa
 
 Si tienes un calibrador (pie de rey) en casa, te servirá para medir objetos reales, pero no es obligatorio.
 
+### Curso completo de Onshape (apoyo)
+
+Tus compañeros encontraron este curso completo de Onshape en YouTube: 22 videos en español, desde lo más básico. Las lecciones de Mecánica siguen siendo tu camino; usa el curso **si algo no te queda claro** o si quieres verlo a la par para reforzar.
+
+```video
+q1tiLwEI6uY list=PLoPH28cIrLDbhIonaCsPcU2-dUCvCgHaS
+Onshape: Tutoriales de diseño 3D · SHARE HORIZONS (22 videos)
+```
+
 ## M1 · Primeros pasos en Onshape
 
 ### Objetivo
@@ -25,6 +34,8 @@ Onshape es un **CAD paramétrico**: cada pieza se construye con una secuencia de
 - Funciona **en el navegador**: no se instala nada y funciona en computadoras sencillas.
 - Tus diseños se guardan **en la nube**: puedes trabajar desde cualquier computadora.
 - Es **gratuito** para uso personal y educativo.
+
+> **Dato:** si algo de Mecánica no te queda claro, hay un [curso completo de Onshape en YouTube](https://www.youtube.com/playlist?list=PLoPH28cIrLDbhIonaCsPcU2-dUCvCgHaS) (22 videos en español) para reforzar. Lo tienes también en la página del módulo de Mecánica. Úsalo como apoyo: las lecciones siguen siendo tu camino.
 
 #### Primeros pasos: crea tu cuenta
 
