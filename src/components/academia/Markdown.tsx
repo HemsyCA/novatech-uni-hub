@@ -37,6 +37,8 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 const ANSWERS_LANGUAGE = "language-respuestas";
 const VIDEO_LANGUAGE = "language-video";
 const YOUTUBE_ID = /^[\w-]{11}$/;
+// Una lista de reproducción se escribe "id-del-primer-video list=id-de-la-lista".
+const YOUTUBE_LIST = /^list=([\w-]{10,64})$/;
 const PHET_LANGUAGE = "language-phet";
 const PHET_SLUG = /^[a-z0-9-]+$/;
 const WIDGET_LANGUAGE = "language-widget";
@@ -114,12 +116,12 @@ const calloutStyles: Record<CalloutKind, { icon: LucideIcon | null; box: string;
   plain: { icon: null, box: "border-white/20 bg-white/[0.04]", iconColor: "" },
 };
 
-function YouTubeVideo({ id, title }: { id: string; title: string }) {
+function YouTubeVideo({ id, title, list }: { id: string; title: string; list?: string }) {
   return (
     <figure className="not-prose my-6">
       <div className="relative aspect-video overflow-hidden rounded-xl border border-white/15 bg-white/[0.04]">
         <iframe
-          src={`https://www.youtube-nocookie.com/embed/${id}`}
+          src={`https://www.youtube-nocookie.com/embed/${id}${list ? `?list=${list}` : ""}`}
           title={title}
           loading="lazy"
           allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -130,12 +132,12 @@ function YouTubeVideo({ id, title }: { id: string; title: string }) {
       <figcaption className="mt-2 flex flex-wrap justify-between gap-2 text-xs text-white/50">
         <span>{title}</span>
         <a
-          href={`https://www.youtube.com/watch?v=${id}`}
+          href={list ? `https://www.youtube.com/playlist?list=${list}` : `https://www.youtube.com/watch?v=${id}`}
           target="_blank"
           rel="noopener noreferrer"
           className="text-white underline underline-offset-4"
         >
-          Ver en YouTube
+          {list ? "Ver la lista en YouTube" : "Ver en YouTube"}
         </a>
       </figcaption>
     </figure>
@@ -263,7 +265,7 @@ const components: Components = {
     const Icon = callout.icon;
     return (
       <aside
-        className={`not-prose my-6 flex gap-3 rounded-xl border px-5 py-4 text-sm leading-relaxed text-white/85 [&_strong]:text-white [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_p+p]:mt-2 ${callout.box}`}
+        className={`not-prose my-6 flex gap-3 rounded-xl border px-5 py-4 text-sm leading-relaxed text-white/85 [&_strong]:text-white [&_code]:rounded [&_code]:bg-white/10 [&_code]:px-1 [&_p+p]:mt-2 [&_a]:font-semibold [&_a]:text-white [&_a]:underline [&_a]:underline-offset-4 ${callout.box}`}
       >
         {Icon && <Icon className={`mt-0.5 h-5 w-5 shrink-0 ${callout.iconColor}`} aria-hidden />}
         <div className="min-w-0 flex-1">{children}</div>
@@ -283,7 +285,9 @@ const components: Components = {
 
     if (isVideo) {
       const [id = "", title = "Video de apoyo"] = text.trim().split(/\r?\n/).map((line) => line.trim());
-      if (YOUTUBE_ID.test(id)) return <YouTubeVideo id={id} title={title} />;
+      const [videoId = "", listParam = ""] = id.split(/\s+/);
+      const list = YOUTUBE_LIST.exec(listParam)?.[1];
+      if (YOUTUBE_ID.test(videoId)) return <YouTubeVideo id={videoId} title={title} list={list} />;
     }
 
     if (isPhet) {
