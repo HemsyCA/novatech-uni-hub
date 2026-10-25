@@ -8,6 +8,7 @@ import { PracticaCard } from "@/components/academia/PracticaCard";
 import { SteppedLesson } from "@/components/academia/SteppedLesson";
 import { getLesson, getModule, lessonPath, type CourseModule, type Lesson } from "@/lib/academia/course";
 import { moduleAccent } from "@/lib/academia/modules";
+import { nextPart2Lesson } from "@/lib/academia/path";
 
 // En esta lección el convocado ve la fecha de su práctica presencial.
 const PRACTICE_LESSON_KEY = "soldadura/s5";
@@ -73,7 +74,8 @@ export default function AcademiaLesson() {
 
   if (!module || !lesson) return <Navigate to={module ? `/academia/${module.id}` : "/academia"} replace />;
   if (module.id === "soldadura" && !canAccessPart2) return <Part2Locked />;
-  if (stateOf(lesson) === "locked") return <LessonLocked lesson={lesson} current={progress.nextLesson} />;
+  if (stateOf(lesson) === "locked")
+    return <LessonLocked lesson={lesson} current={module.id === "soldadura" ? nextPart2Lesson(progress.completed) : progress.nextLesson} />;
 
   const doneInModule = module.lessons.filter((l) => !l.optional && progress.completed.has(l.key)).length;
   const requiredInModule = module.lessons.filter((l) => !l.optional).length;
