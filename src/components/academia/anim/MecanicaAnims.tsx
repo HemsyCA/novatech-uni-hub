@@ -10,7 +10,17 @@ const iso = (x: number, y: number, z: number, ox = 150, oy = 70) => [ox + (x - y
 const pts = (list: (readonly [number, number])[]) => list.map(([a, b]) => `${a.toFixed(1)},${b.toFixed(1)}`).join(" ");
 
 // Una caja en isométrico: cara de arriba, cara derecha y cara izquierda.
-function IsoBox({ x = 0, y = 0, z = 0, w, d, h, color = "#94a3b8", ox, oy }: {
+function IsoBox({
+  x = 0,
+  y = 0,
+  z = 0,
+  w,
+  d,
+  h,
+  color = "#94a3b8",
+  ox,
+  oy,
+}: {
   x?: number;
   y?: number;
   z?: number;
@@ -111,16 +121,21 @@ export function SketchTools() {
 // ---------------------------------------------------------------- M3 · Extruir: New, Add y Remove
 
 export function Extrude() {
-  const { tick, still } = useTick(110);
+  const { tick, still, restart } = useTick(110);
   const cycle = still ? 60 : tick % 80;
   // 0-25: el rectángulo se estira (New) · 30-50: aparece un agujero (Remove) · 55-75: se agrega un bloque (Add)
   const h = Math.min(20, Math.max(0, cycle) * 0.8);
   const hole = cycle >= 30;
   const add = cycle >= 55 ? Math.min(16, (cycle - 55) * 0.8) : 0;
-  const label = cycle < 30 ? "New: el boceto se estira y crea una pieza" : cycle < 55 ? "Remove: un círculo quita material (un agujero)" : "Add: otro boceto agrega material encima";
+  const label =
+    cycle < 30
+      ? "New: el boceto se estira y crea una pieza"
+      : cycle < 55
+        ? "Remove: un círculo quita material (un agujero)"
+        : "Add: otro boceto agrega material encima";
   const [hx, hy] = iso(30, 25, h);
   return (
-    <AnimCard title="Extruir: estirar un boceto en 3D" caption={label}>
+    <AnimCard onRestart={restart} title="Extruir: estirar un boceto en 3D" caption={label}>
       <svg viewBox="92 22 140 118" className="mx-auto w-full max-w-xs" aria-label={label}>
         {h === 0 ? (
           <polygon points={pts([iso(0, 0, 0), iso(80, 0, 0), iso(80, 50, 0), iso(0, 50, 0)])} fill="none" stroke={TONE} strokeWidth="2" />
@@ -145,10 +160,15 @@ export function SketchOnFace() {
   const phase = usePhase(3, 1700, 2);
   const [a, b, c, d] = [iso(15, 12, 10), iso(45, 12, 10), iso(45, 38, 10), iso(15, 38, 10)];
   return (
-    <AnimCard title="Dibujar sobre la cara de una pieza" caption="1. La placa ya existe. 2. Dibujas un rectángulo sobre su cara de arriba. 3. Lo extruyes y la pieza crece por capas.">
+    <AnimCard
+      title="Dibujar sobre la cara de una pieza"
+      caption="1. La placa ya existe. 2. Dibujas un rectángulo sobre su cara de arriba. 3. Lo extruyes y la pieza crece por capas."
+    >
       <svg viewBox="92 22 140 118" className="mx-auto w-full max-w-xs" aria-label="Boceto sobre la cara superior y extrusión">
         <IsoBox w={80} d={50} h={10} color="#94a3b8" />
-        {phase === 1 && <polygon points={pts([a, b, c, d])} fill="rgba(255,255,255,0.12)" stroke={TONE} strokeWidth="2" strokeDasharray="5 3" />}
+        {phase === 1 && (
+          <polygon points={pts([a, b, c, d])} fill="rgba(255,255,255,0.12)" stroke={TONE} strokeWidth="2" strokeDasharray="5 3" />
+        )}
         {phase === 2 && <IsoBox x={15} y={12} z={10} w={30} d={26} h={24} color={TONE} />}
       </svg>
       <div className="flex flex-wrap justify-center gap-1.5">
@@ -170,7 +190,10 @@ export function FilletChamfer() {
     { name: "Chaflán (Chamfer)", d: "M40 120 V80 L80 40 H160" },
   ];
   return (
-    <AnimCard title="La misma esquina vista de lado" caption="El redondeo convierte la arista en una curva; el chaflán la corta en diagonal.">
+    <AnimCard
+      title="La misma esquina vista de lado"
+      caption="El redondeo convierte la arista en una curva; el chaflán la corta en diagonal."
+    >
       <svg viewBox="0 0 200 140" className="mx-auto w-full max-w-xs" aria-label={shapes[phase].name}>
         <path d={`${shapes[phase].d} V120 Z`} fill="#94a3b8" stroke="white" strokeWidth="2" style={{ transition: "d 0.6s" }} />
       </svg>
@@ -188,7 +211,7 @@ export function FilletChamfer() {
 // ---------------------------------------------------------------- M4 · Cómo imprime una impresora 3D (FDM)
 
 export function FdmLayers() {
-  const { tick, still } = useTick(60);
+  const { tick, still, restart } = useTick(60);
   const layers = 8;
   const steps = 40;
   const t = still ? layers * steps - 1 : tick % (layers * steps + 30);
@@ -198,13 +221,24 @@ export function FdmLayers() {
   const nozzleX = 60 + (forward ? progress : 1 - progress) * 180;
   const y = (i: number) => 116 - i * 9;
   return (
-    <AnimCard title="Capa por capa, de abajo hacia arriba" caption="La boquilla deposita un hilo de plástico derretido de 0.4 mm. Al terminar una capa sube 0.2 mm y dibuja la siguiente encima.">
+    <AnimCard
+      onRestart={restart}
+      title="Capa por capa, de abajo hacia arriba"
+      caption="La boquilla deposita un hilo de plástico derretido de 0.4 mm. Al terminar una capa sube 0.2 mm y dibuja la siguiente encima."
+    >
       <svg viewBox="30 20 270 115" className="mx-auto w-full max-w-md" aria-label={`Imprimiendo la capa ${layer + 1}`}>
         <rect x="40" y="122" width="220" height="8" rx="2" fill="#374151" />
         {Array.from({ length: layer }, (_, i) => (
           <rect key={i} x="60" y={y(i)} width="180" height="8" rx="4" fill={TONE} opacity={0.55 + (i % 2) * 0.15} />
         ))}
-        <rect x={forward ? 60 : nozzleX} y={y(layer)} width={Math.abs(nozzleX - 60) * (forward ? 1 : 0) + (forward ? 0 : 240 - nozzleX)} height="8" rx="4" fill={TONE} />
+        <rect
+          x={forward ? 60 : nozzleX}
+          y={y(layer)}
+          width={Math.abs(nozzleX - 60) * (forward ? 1 : 0) + (forward ? 0 : 240 - nozzleX)}
+          height="8"
+          rx="4"
+          fill={TONE}
+        />
         <g transform={`translate(${nozzleX} ${y(layer) - 2})`}>
           <rect x="-12" y="-30" width="24" height="18" rx="2" fill="#9ca3af" />
           <path d="M-6 -12 L6 -12 L2 -2 L-2 -2 Z" fill="#d1d5db" />
@@ -230,7 +264,16 @@ export function LayerOrientation() {
         {layersAlongPull
           ? Array.from({ length: 6 }, (_, i) => <rect key={i} x={ox} y={36 + i * 8} width="110" height="7" rx="3" fill="#94a3b8" />)
           : Array.from({ length: 10 }, (_, i) => (
-              <rect key={i} x={ox + i * 11 + (i >= 5 ? gap : 0)} y="36" width="10" height="47" rx="3" fill="#94a3b8" style={{ transition: "x 0.4s" }} />
+              <rect
+                key={i}
+                x={ox + i * 11 + (i >= 5 ? gap : 0)}
+                y="36"
+                width="10"
+                height="47"
+                rx="3"
+                fill="#94a3b8"
+                style={{ transition: "x 0.4s" }}
+              />
             ))}
         {pulling && (
           <>
@@ -273,7 +316,10 @@ export function ShellOperation() {
   const wall = 6;
   const inner = [iso(wall, wall, 30), iso(80 - wall, wall, 30), iso(80 - wall, 50 - wall, 30), iso(wall, 50 - wall, 30)];
   return (
-    <AnimCard title="Shell: de un bloque sólido a una caja" caption="Eliges la cara que se quita (la de arriba) y el espesor de las paredes. El resto queda hueco: así se hace una carcasa en un solo paso.">
+    <AnimCard
+      title="Shell: de un bloque sólido a una caja"
+      caption="Eliges la cara que se quita (la de arriba) y el espesor de las paredes. El resto queda hueco: así se hace una carcasa en un solo paso."
+    >
       <svg viewBox="92 22 140 118" className="mx-auto w-full max-w-xs" aria-label={hollow ? "Caja hueca con paredes" : "Bloque sólido"}>
         <IsoBox w={80} d={50} h={30} color="#94a3b8" />
         {hollow && <polygon points={pts(inner)} fill="#111827" stroke={TONE} strokeWidth="1.5" />}
@@ -296,7 +342,10 @@ export function StlVsStep() {
     return [50 + 38 * Math.cos(a), 50 + 38 * Math.sin(a)] as const;
   });
   return (
-    <AnimCard title="El mismo agujero en los dos formatos" caption="STL describe la superficie con triángulos: un círculo es en realidad un polígono de muchos lados. STEP guarda la curva exacta.">
+    <AnimCard
+      title="El mismo agujero en los dos formatos"
+      caption="STL describe la superficie con triángulos: un círculo es en realidad un polígono de muchos lados. STEP guarda la curva exacta."
+    >
       <div className="grid grid-cols-2 gap-3">
         <figure className="rounded-xl bg-white/[0.03] p-3 text-center">
           <svg viewBox="0 0 100 100" className="mx-auto h-28 w-28" aria-label={`Círculo hecho con ${sides} lados`}>

@@ -1,16 +1,38 @@
 import type { ReactNode } from "react";
-import { Sparkles } from "lucide-react";
+import { RotateCcw, Sparkles } from "lucide-react";
 import { TONE } from "@/components/academia/anim/use-anim";
 
 // Piezas comunes de las animaciones de las lecciones: no son para tocar, muestran la idea en movimiento.
 // Todas avanzan con un reloj y, si la persona pidió "reducir movimiento", se quedan quietas en un cuadro claro.
 
-export function AnimCard({ title, children, caption }: { title: string; children: ReactNode; caption?: ReactNode }) {
+// `onRestart`: las animaciones que cuentan una secuencia (con un inicio) tienen un botón para verla desde el principio.
+export function AnimCard({
+  title,
+  children,
+  caption,
+  onRestart,
+}: {
+  title: string;
+  children: ReactNode;
+  caption?: ReactNode;
+  onRestart?: () => void;
+}) {
   return (
     <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--tone,255_255_255)/0.35)] p-5">
-      <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--tone,255_255_255))]">
-        <Sparkles className="h-4 w-4" aria-hidden /> Así funciona
-      </p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-widest text-[rgb(var(--tone,255_255_255))]">
+          <Sparkles className="h-4 w-4" aria-hidden /> Así funciona
+        </p>
+        {onRestart && (
+          <button
+            type="button"
+            onClick={onRestart}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-white/20 px-2.5 py-1 text-xs text-white/75 transition-colors hover:bg-white/10 hover:text-white"
+          >
+            <RotateCcw className="h-3.5 w-3.5" /> Ver desde el inicio
+          </button>
+        )}
+      </div>
       <h4 className="mt-1 font-semibold text-white">{title}</h4>
       <div className="mt-4">{children}</div>
       {caption && <div className="mt-4 text-sm leading-relaxed text-white/65">{caption}</div>}
@@ -32,7 +54,19 @@ export function Pill({ on, children, className = "" }: { on: boolean; children: 
 }
 
 // Un LED de 5 mm dibujado dentro de un <svg>. `level` de 0 (apagado) a 1.
-export function LedShape({ x, y, level, color = "#f87171", scale = 1 }: { x: number; y: number; level: number; color?: string; scale?: number }) {
+export function LedShape({
+  x,
+  y,
+  level,
+  color = "#f87171",
+  scale = 1,
+}: {
+  x: number;
+  y: number;
+  level: number;
+  color?: string;
+  scale?: number;
+}) {
   return (
     <g transform={`translate(${x} ${y}) scale(${scale})`}>
       {level > 0 && <circle cx="0" cy="-6" r={10 + level * 6} fill={color} opacity={0.15 + level * 0.25} style={{ filter: "blur(4px)" }} />}
@@ -59,7 +93,14 @@ export function CodeRow({ on, children, indent = 0 }: { on: boolean; children: R
 }
 
 // Puntitos que avanzan por un camino: la corriente, los datos, el agua.
-export function FlowDots({ path, count = 6, duration = 2, color = TONE, radius = 2.5, still = false }: {
+export function FlowDots({
+  path,
+  count = 6,
+  duration = 2,
+  color = TONE,
+  radius = 2.5,
+  still = false,
+}: {
   path: string;
   count?: number;
   duration?: number;

@@ -6,31 +6,34 @@ import { TONE, usePhase, useTick } from "@/components/academia/anim/use-anim";
 // ---------------------------------------------------------------- P2 · setup() una vez, loop() para siempre
 
 export function SetupLoop() {
-  const { tick, still } = useTick(700);
-  // Pasos: 0-1 setup (una sola vez), luego el loop de 4 líneas se repite.
-  const t = still ? 2 : tick;
-  const inSetup = t < 2;
-  const loopLine = inSetup ? -1 : (t - 2) % 4;
-  const vuelta = inSetup ? 0 : Math.floor((t - 2) / 4) + 1;
+  const { tick, still, restart } = useTick(1000);
+  // 0: se enciende el ESP32 · 1-2: setup() (una sola vez) · desde 3: el loop de 4 líneas se repite.
+  const t = still ? 3 : tick;
+  const booting = t === 0;
+  const inSetup = t === 1 || t === 2;
+  const loopLine = t < 3 ? -1 : (t - 3) % 4;
+  const vuelta = t < 3 ? 0 : Math.floor((t - 3) / 4) + 1;
   const ledOn = loopLine === 0 || loopLine === 1;
   return (
     <AnimCard
       title="Así recorre el ESP32 tu programa"
+      onRestart={restart}
       caption={
         <>
-          <code className="text-white">setup()</code> se ejecuta <strong className="text-white">una sola vez</strong> al encender. Después,{" "}
-          <code className="text-white">loop()</code> se repite sin parar: fíjate en el contador de vueltas.
+          Al encender, <code className="text-white">setup()</code> se ejecuta <strong className="text-white">una sola vez</strong>. Después,{" "}
+          <code className="text-white">loop()</code> se repite sin parar: fíjate en el contador de vueltas. Usa{" "}
+          <strong className="text-white">Ver desde el inicio</strong> para volver a ver el encendido.
         </>
       }
     >
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto]">
         <div className="rounded-xl bg-white/[0.04] py-2">
           <CodeRow on={inSetup}>void setup() {"{"}</CodeRow>
-          <CodeRow on={t === 1} indent={1}>
+          <CodeRow on={t === 2} indent={1}>
             pinMode(18, OUTPUT);
           </CodeRow>
           <CodeRow on={false}>{"}"}</CodeRow>
-          <CodeRow on={!inSetup}>void loop() {"{"}</CodeRow>
+          <CodeRow on={t >= 3}>void loop() {"{"}</CodeRow>
           <CodeRow on={loopLine === 0} indent={1}>
             digitalWrite(18, HIGH);
           </CodeRow>
@@ -49,8 +52,9 @@ export function SetupLoop() {
           <svg viewBox="0 0 40 44" className="h-14 w-12" aria-hidden>
             <LedShape x={20} y={22} level={ledOn ? 1 : 0} color="#4ade80" />
           </svg>
+          <Pill on={booting}>se enciende</Pill>
           <Pill on={inSetup}>setup: 1 vez</Pill>
-          <Pill on={!inSetup}>loop: vuelta {vuelta}</Pill>
+          <Pill on={t >= 3}>loop: vuelta {vuelta}</Pill>
         </div>
       </div>
     </AnimCard>
@@ -89,12 +93,16 @@ export function FirstInstructions() {
         </div>
         <svg viewBox="0 0 120 70" className="h-20 w-32" aria-hidden>
           <rect x="4" y="20" width="40" height="30" rx="4" fill="#16191d" stroke="rgba(255,255,255,0.4)" />
-          <text x="24" y="39" textAnchor="middle" fontSize="9" fill="white">pin 18</text>
+          <text x="24" y="39" textAnchor="middle" fontSize="9" fill="white">
+            pin 18
+          </text>
           <text x="24" y="62" textAnchor="middle" fontSize="8" fill={output ? TONE : "rgba(255,255,255,0.4)"}>
             {output ? "SALIDA" : "sin configurar"}
           </text>
           <line x1="44" y1="35" x2="82" y2="35" stroke={high ? TONE : "rgba(255,255,255,0.25)"} strokeWidth="2" />
-          <text x="63" y="28" textAnchor="middle" fontSize="8" fill="white">{high ? "3.3 V" : "0 V"}</text>
+          <text x="63" y="28" textAnchor="middle" fontSize="8" fill="white">
+            {high ? "3.3 V" : "0 V"}
+          </text>
           <LedShape x={98} y={34} level={high ? 1 : 0} color="#4ade80" />
           {waiting && (
             <g>
@@ -111,7 +119,7 @@ export function FirstInstructions() {
 // ---------------------------------------------------------------- P3 · El Monitor Serial
 
 export function SerialMonitor() {
-  const { tick, still } = useTick(900);
+  const { tick, still, restart } = useTick(900);
   const t = still ? 5 : tick % 7;
   const lines = [
     { kind: "print", text: "Contador: " },
@@ -131,11 +139,12 @@ export function SerialMonitor() {
   const current = lines[Math.min(t, lines.length) - 1];
   return (
     <AnimCard
+      onRestart={restart}
       title="El ESP32 escribe en tu computadora por el cable USB"
       caption={
         <>
-          <code className="text-white">print</code> escribe y se queda en la misma línea; <code className="text-white">println</code> escribe y salta a
-          la siguiente.
+          <code className="text-white">print</code> escribe y se queda en la misma línea; <code className="text-white">println</code>{" "}
+          escribe y salta a la siguiente.
         </>
       }
     >
@@ -169,10 +178,11 @@ export function SerialMonitor() {
 // ---------------------------------------------------------------- P3 · Las variables
 
 export function VariableBox() {
-  const { tick, still } = useTick(1000);
+  const { tick, still, restart } = useTick(1000);
   const value = still ? 3 : tick % 6;
   return (
     <AnimCard
+      onRestart={restart}
       title="Una variable es una caja con nombre"
       caption="Cada vez que se ejecuta la línea de abajo, el programa saca el valor de la caja, le suma 1 y lo vuelve a guardar."
     >
@@ -203,10 +213,11 @@ export function VariableBox() {
 // ---------------------------------------------------------------- P3 · Variable global vs local
 
 export function GlobalLocal() {
-  const { tick, still } = useTick(1100);
+  const { tick, still, restart } = useTick(1100);
   const vuelta = still ? 3 : (tick % 5) + 1;
   return (
     <AnimCard
+      onRestart={restart}
       title="Global vs. local: ¿qué pasa en cada vuelta del loop?"
       caption="La global se crea una vez y conserva su valor: sigue sumando. La local se crea de nuevo en cada vuelta, empieza siempre en 0 y nunca pasa de 1."
     >
@@ -267,7 +278,9 @@ export function ReadAndDecide() {
           <CodeRow on={pressed} indent={1}>
             digitalWrite(18, HIGH);
           </CodeRow>
-          <CodeRow on={!pressed}>{"}"} else {"{"}</CodeRow>
+          <CodeRow on={!pressed}>
+            {"}"} else {"{"}
+          </CodeRow>
           <CodeRow on={!pressed} indent={1}>
             digitalWrite(18, LOW);
           </CodeRow>
@@ -284,7 +297,7 @@ export function ReadAndDecide() {
 // ---------------------------------------------------------------- P4 · Estar presionado vs. acabar de presionar
 
 export function EdgeDetection() {
-  const { tick, still } = useTick(250);
+  const { tick, still, restart } = useTick(250);
   // Una señal de botón: dos pulsaciones de distinto largo dentro de un ciclo de 32 pasos.
   const signal = (i: number) => {
     const p = ((i % 32) + 32) % 32;
@@ -294,11 +307,16 @@ export function EdgeDetection() {
   const now = signal(t);
   // Cada ciclo de 32 pasos trae 2 pulsaciones; se cuentan las del ciclo actual hasta ahora.
   const cycleStart = Math.floor(t / 32) * 32;
-  const presses = Math.floor(t / 32) * 2 + Array.from({ length: t - cycleStart + 1 }, (_, k) => cycleStart + k).filter((i) => signal(i) && !signal(i - 1)).length;
+  const presses =
+    Math.floor(t / 32) * 2 +
+    Array.from({ length: t - cycleStart + 1 }, (_, k) => cycleStart + k).filter((i) => signal(i) && !signal(i - 1)).length;
   const toggled = presses % 2 === 1;
-  const path = Array.from({ length: 32 }, (_, i) => `${i === 0 ? "M" : "L"}${i * 8} ${signal(t - 31 + i) ? 8 : 30} H${i * 8 + 8}`).join(" ");
+  const path = Array.from({ length: 32 }, (_, i) => `${i === 0 ? "M" : "L"}${i * 8} ${signal(t - 31 + i) ? 8 : 30} H${i * 8 + 8}`).join(
+    " ",
+  );
   return (
     <AnimCard
+      onRestart={restart}
       title="Dos formas de usar el mismo botón"
       caption="El LED de la izquierda copia el botón: encendido mientras está presionado. El de la derecha cambia solo cuando el botón pasa de LOW a HIGH, sin importar cuánto rato lo mantengas."
     >
@@ -373,13 +391,22 @@ export function MapScales() {
       {Array.from({ length: 11 }, (_, i) => (
         <line key={i} x1={20 + i * 22} y1={y - 4} x2={20 + i * 22} y2={y + 4} stroke="rgba(255,255,255,0.4)" />
       ))}
-      <text x="20" y={y + 16} textAnchor="middle" fontSize="9" fill="white">{from}</text>
-      <text x="240" y={y + 16} textAnchor="middle" fontSize="9" fill="white">{to}</text>
-      <text x="130" y={y - 10} textAnchor="middle" fontSize="9" fill="rgba(255,255,255,0.5)">{label}</text>
+      <text x="20" y={y + 16} textAnchor="middle" fontSize="9" fill="white">
+        {from}
+      </text>
+      <text x="240" y={y + 16} textAnchor="middle" fontSize="9" fill="white">
+        {to}
+      </text>
+      <text x="130" y={y - 10} textAnchor="middle" fontSize="9" fill="rgba(255,255,255,0.5)">
+        {label}
+      </text>
     </>
   );
   return (
-    <AnimCard title="map convierte la escala de 0–4095 en la de 0–100" caption="Las dos reglas tienen el mismo largo: map solo cambia los números de los extremos, como una regla de tres.">
+    <AnimCard
+      title="map convierte la escala de 0–4095 en la de 0–100"
+      caption="Las dos reglas tienen el mismo largo: map solo cambia los números de los extremos, como una regla de tres."
+    >
       <svg viewBox="0 0 260 130" className="mx-auto w-full max-w-md" aria-label={`valor ${valor} equivale a ${porcentaje} %`}>
         {ruler(34, "0", "4095", "valor (lo que lee el ESP32)")}
         {ruler(104, "0", "100", "porcentaje")}
@@ -403,7 +430,10 @@ export function RangeDecisions() {
   const branch = p < 33 ? 0 : p < 66 ? 1 : 2;
   const colors = ["#4ade80", "#facc15", "#f87171"];
   return (
-    <AnimCard title="El programa revisa las condiciones en orden" caption="Se ejecuta solo la primera condición que se cumple; las demás se saltan.">
+    <AnimCard
+      title="El programa revisa las condiciones en orden"
+      caption="Se ejecuta solo la primera condición que se cumple; las demás se saltan."
+    >
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto]">
         <div>
           <div className="relative h-4 overflow-hidden rounded-full">
@@ -417,8 +447,12 @@ export function RangeDecisions() {
           </p>
           <div className="mt-2 rounded-xl bg-white/[0.04] py-2">
             <CodeRow on={branch === 0}>if (porcentaje &lt; 33) {"{"} // bajo</CodeRow>
-            <CodeRow on={branch === 1}>{"}"} else if (porcentaje &lt; 66) {"{"} // medio</CodeRow>
-            <CodeRow on={branch === 2}>{"}"} else {"{"} // alto</CodeRow>
+            <CodeRow on={branch === 1}>
+              {"}"} else if (porcentaje &lt; 66) {"{"} // medio
+            </CodeRow>
+            <CodeRow on={branch === 2}>
+              {"}"} else {"{"} // alto
+            </CodeRow>
           </div>
         </div>
         <svg viewBox="0 0 40 44" className="mx-auto h-14 w-12" aria-hidden>
@@ -450,9 +484,19 @@ export function ServoInside() {
         <svg viewBox="0 0 220 140" className="mx-auto w-full max-w-xs" aria-label={`Servo yendo a ${target} grados`}>
           <path d="M55 72 A55 55 0 0 1 165 72" fill="none" stroke="rgba(255,255,255,0.15)" strokeDasharray="3 4" />
           <rect x="40" y="72" width="140" height="60" rx="6" fill="#1e3a8a" stroke="#60a5fa" />
-          <line x1="110" y1="72" x2={110 + 55 * Math.cos(rad)} y2={72 - 55 * Math.sin(rad)} stroke="white" strokeWidth="8" strokeLinecap="round" />
+          <line
+            x1="110"
+            y1="72"
+            x2={110 + 55 * Math.cos(rad)}
+            y2={72 - 55 * Math.sin(rad)}
+            stroke="white"
+            strokeWidth="8"
+            strokeLinecap="round"
+          />
           <circle cx="110" cy="72" r="8" fill="white" />
-          <text x="110" y="98" textAnchor="middle" fontSize="8" fill="#bfdbfe">motor · engranajes · potenciómetro</text>
+          <text x="110" y="98" textAnchor="middle" fontSize="8" fill="#bfdbfe">
+            motor · engranajes · potenciómetro
+          </text>
           <text x="110" y="120" textAnchor="middle" fontSize="9" fill={moving ? "#facc15" : "#4ade80"}>
             {moving ? "moviendo…" : "llegó: se queda firme"}
           </text>
@@ -485,9 +529,13 @@ export function ServoWires() {
     <AnimCard title="Por el cable naranja viajan los pulsos; el rojo y el marrón dan la energía">
       <svg viewBox="0 0 300 100" className="mx-auto w-full max-w-lg" aria-label="Los tres cables del servo">
         <rect x="6" y="14" width="62" height="72" rx="6" fill="#16191d" stroke="rgba(255,255,255,0.4)" />
-        <text x="37" y="54" textAnchor="middle" fontSize="10" fill="white">ESP32</text>
+        <text x="37" y="54" textAnchor="middle" fontSize="10" fill="white">
+          ESP32
+        </text>
         <rect x="232" y="22" width="62" height="56" rx="6" fill="#1e3a8a" stroke="#60a5fa" />
-        <text x="263" y="54" textAnchor="middle" fontSize="10" fill="white">servo</text>
+        <text x="263" y="54" textAnchor="middle" fontSize="10" fill="white">
+          servo
+        </text>
         {wires.map((w) => (
           <g key={w.name}>
             <line x1="68" y1={w.y} x2="232" y2={w.y} stroke={w.color} strokeWidth="4" />
@@ -505,7 +553,7 @@ export function ServoWires() {
 // ---------------------------------------------------------------- P8 · Recibir por Serial: la fila de espera
 
 export function SerialQueue() {
-  const { tick, still } = useTick(900);
+  const { tick, still, restart } = useTick(900);
   // Llegan 'a', 'b', 'c' y el programa lee una por vuelta.
   const t = still ? 3 : tick % 8;
   const arrived = ["a", "b", "c"].slice(0, Math.min(t, 3));
@@ -514,11 +562,12 @@ export function SerialQueue() {
   const last = read > 0 ? arrived[read - 1] : null;
   return (
     <AnimCard
+      onRestart={restart}
       title="Lo que escribes llega a una fila de espera"
       caption={
         <>
-          <code className="text-white">Serial.available()</code> dice cuántas letras esperan en la fila. <code className="text-white">Serial.read()</code>{" "}
-          saca la primera, una por vez.
+          <code className="text-white">Serial.available()</code> dice cuántas letras esperan en la fila.{" "}
+          <code className="text-white">Serial.read()</code> saca la primera, una por vez.
         </>
       }
     >
@@ -530,7 +579,10 @@ export function SerialQueue() {
         <div className="flex min-h-[2.5rem] items-center gap-1.5 rounded-xl border border-dashed border-white/20 px-3">
           <span className="text-[10px] text-white/40">fila:</span>
           {queue.map((letter) => (
-            <span key={letter} className="flex h-7 w-7 items-center justify-center rounded-md bg-[rgb(var(--tone,255_255_255)/0.2)] font-mono text-sm text-white">
+            <span
+              key={letter}
+              className="flex h-7 w-7 items-center justify-center rounded-md bg-[rgb(var(--tone,255_255_255)/0.2)] font-mono text-sm text-white"
+            >
               {letter}
             </span>
           ))}
@@ -582,12 +634,13 @@ export function SwitchCase() {
 // ---------------------------------------------------------------- P8 · Funciones propias
 
 export function FunctionCall() {
-  const { tick, still } = useTick(650);
+  const { tick, still, restart } = useTick(650);
   // 0: llamada en loop · 1-3: dentro de la función · 4: vuelve a loop
   const step = still ? 0 : tick % 6;
   const inside = step >= 1 && step <= 3;
   return (
     <AnimCard
+      onRestart={restart}
       title="Al llamar una función, el programa salta a ella y vuelve"
       caption="loop() llama a apagarTodo(): el programa salta a la función, ejecuta sus 3 líneas y vuelve justo donde estaba."
     >
@@ -604,7 +657,9 @@ export function FunctionCall() {
           <CodeRow on={step === 3}>digitalWrite(LED_ROJO, LOW);</CodeRow>
         </div>
       </div>
-      <p className="mt-2 text-center text-xs text-white/50">{inside ? "→ dentro de la función" : step >= 4 ? "← volvió a loop()" : "loop() llama a la función"}</p>
+      <p className="mt-2 text-center text-xs text-white/50">
+        {inside ? "→ dentro de la función" : step >= 4 ? "← volvió a loop()" : "loop() llama a la función"}
+      </p>
     </AnimCard>
   );
 }
@@ -620,8 +675,8 @@ export function BluetoothJump() {
       title="Del cable USB al celular, con la misma lógica"
       caption={
         <>
-          Las letras ahora llegan por el aire desde el celular, pero el ESP32 hace lo mismo: <code className="text-white">SerialBT.read()</code> y el mismo{" "}
-          <code className="text-white">switch</code>.
+          Las letras ahora llegan por el aire desde el celular, pero el ESP32 hace lo mismo:{" "}
+          <code className="text-white">SerialBT.read()</code> y el mismo <code className="text-white">switch</code>.
         </>
       }
     >
@@ -642,7 +697,9 @@ export function BluetoothJump() {
           />
         ))}
         <rect x="200" y="28" width="84" height="46" rx="6" fill="#16191d" stroke="rgba(255,255,255,0.4)" />
-        <text x="242" y="48" textAnchor="middle" fontSize="10" fill="white">ESP32</text>
+        <text x="242" y="48" textAnchor="middle" fontSize="10" fill="white">
+          ESP32
+        </text>
         <text x="242" y="64" textAnchor="middle" fontSize="9" fill={TONE}>
           recibió '{letter}'
         </text>
