@@ -188,8 +188,13 @@ simulador-parpadeo
 **1. Crear el proyecto**
 
 1. Entra a [wokwi.com](https://wokwi.com) y crea una cuenta (puedes usar tu cuenta de Google).
-2. Crea un **nuevo proyecto** con **ESP32** y la plantilla de **Arduino**.
-3. Verás tres zonas: el **código** (`sketch.ino`) a la izquierda, la **simulación** a la derecha y, arriba, la pestaña `diagram.json` (que guarda tus conexiones; no necesitas tocarla).
+2. Crea un **nuevo proyecto**: elige **ESP32** y después la plantilla **ESP32 Starter Template**.
+   > **Cuidado:** Wokwi también ofrece otras variantes del ESP32 (como ESP32-S3 o ESP32-C3). No las uses: la correcta es solo **ESP32 Starter Template**, que es la placa que usamos en Nova.
+3. La pantalla tiene dos lados:
+   - **Izquierda:** el **código** (`sketch.ino`) y, cuando haga falta, las **librerías** (pestaña Library Manager). Aquí solo modificas el código y las librerías.
+   - **Derecha:** la **simulación**, con el ESP32. Aquí agregas los componentes con el botón **+** y los conectas.
+
+   Las demás pestañas (como `diagram.json`) se actualizan solas: no necesitas tocarlas.
 
 **2. Armar el circuito**
 
@@ -315,7 +320,7 @@ global-local
 
 ### Paso a paso
 
-1. Crea un nuevo proyecto ESP32 en Wokwi (no necesitas conectar nada).
+1. Crea un nuevo proyecto en Wokwi con la **ESP32 Starter Template**, como en P2 (no necesitas conectar nada).
 2. Escribe este código:
 
 ```cpp
@@ -447,7 +452,7 @@ laboratorio-boton
 
 **Parte 1: mientras está presionado**
 
-1. Nuevo proyecto en Wokwi. Agrega un **LED verde** con su resistencia de 220 Ω en el GPIO 18 (como en P2).
+1. Nuevo proyecto en Wokwi con la **ESP32 Starter Template**. Agrega un **LED verde** con su resistencia de 220 Ω en el GPIO 18 (como en P2).
 2. Agrega un **botón** y una **resistencia** de **10 kΩ** (escribe 10000 en su valor).
 3. Conecta:
    - Un lado del botón → **3V3**.
@@ -616,7 +621,7 @@ lector-analogico
 
 ### Paso a paso
 
-1. Nuevo proyecto en Wokwi. Agrega un **potenciómetro**.
+1. Nuevo proyecto en Wokwi con la **ESP32 Starter Template**. Agrega un **potenciómetro**.
 2. Conecta: **VCC** del potenciómetro → **3V3**; **GND** → **GND**; **SIG** (el del centro) → **GPIO 34 (D34)**.
 3. Escribe y prueba:
 
@@ -739,7 +744,7 @@ bucle-for
 
 ### Paso a paso
 
-1. Nuevo proyecto en Wokwi con el **LED rojo** y su resistencia de 220 Ω en el **GPIO 23**.
+1. Nuevo proyecto en Wokwi con la **ESP32 Starter Template** y el **LED rojo** y su resistencia de 220 Ω en el **GPIO 23**.
 2. Escribe el efecto "respiración":
 
 ```cpp
@@ -862,7 +867,7 @@ En `attach`, los números 500 y 2500 son la duración del pulso (en microsegundo
 
 ### Paso a paso
 
-1. Nuevo proyecto en Wokwi. Agrega un **servo**.
+1. Nuevo proyecto en Wokwi con la **ESP32 Starter Template**. Agrega un **servo**.
 2. Conecta: **GND** del servo → GND; **V+** → **VIN** (o 5V); **PWM** (señal) → **GPIO 25 (D25)**.
 3. Agrega la librería: abre la pestaña **Library Manager**, presiona **+** y busca **ESP32Servo**.
 4. Escribe un barrido:
@@ -1042,7 +1047,7 @@ bluetooth
 
 ### Paso a paso
 
-1. Nuevo proyecto en Wokwi con los **3 LEDs** y sus resistencias (GPIO 18, 19 y 23).
+1. Nuevo proyecto en Wokwi con la **ESP32 Starter Template** y los **3 LEDs** y sus resistencias (GPIO 18, 19 y 23).
 2. Escribe:
 
 ```cpp
