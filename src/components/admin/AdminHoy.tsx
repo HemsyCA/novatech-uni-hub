@@ -3,6 +3,8 @@ import { ArrowRight } from "lucide-react";
 
 export interface HoyCard {
   slug: string;
+  // Por defecto abre la sección del panel; algunas viven en otra pantalla.
+  to?: string;
   label: string;
   // null mientras se cuentan o si el recuento falló.
   count: number | null;
@@ -10,7 +12,7 @@ export interface HoyCard {
 
 export interface HoyGroup {
   title: string;
-  links: { slug: string; label: string }[];
+  links: { slug: string; label: string; to?: string }[];
 }
 
 interface Props {
@@ -25,13 +27,13 @@ export function AdminHoy({ cards, groups }: Props) {
     <div className="space-y-12">
       <div>
         {allClear && <p className="mb-4 text-sm text-white/60">No tienes nada por revisar. Todo está al día.</p>}
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        <div className={`grid grid-cols-2 gap-3 ${cards.length > 4 ? "lg:grid-cols-3" : "lg:grid-cols-4"}`}>
           {cards.map((card) => {
             const hot = (card.count ?? 0) > 0;
             return (
               <Link
                 key={card.slug}
-                to={`/admin/${card.slug}`}
+                to={card.to ?? `/admin/${card.slug}`}
                 className={`group flex flex-col rounded-xl border p-4 transition-colors ${
                   hot ? "border-nova bg-nova/10 hover:bg-nova/20" : "border-white/15 hover:border-white/40"
                 }`}
@@ -63,7 +65,7 @@ export function AdminHoy({ cards, groups }: Props) {
               <ul className="mt-3 space-y-1.5">
                 {group.links.map((link) => (
                   <li key={link.slug}>
-                    <Link to={`/admin/${link.slug}`} className="text-sm text-white/60 transition-colors hover:text-white">
+                    <Link to={link.to ?? `/admin/${link.slug}`} className="text-sm text-white/60 transition-colors hover:text-white">
                       {link.label}
                     </Link>
                   </li>
