@@ -1,10 +1,9 @@
 import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
-  ClipboardCheck,
   GraduationCap,
   LayoutGrid,
   MessagesSquare,
@@ -16,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAccount } from "@/components/account/account-context";
 import { NextStepCard } from "@/components/account/Journey";
+import { WorkTab } from "@/components/account/WorkTab";
 import { AuthorCredit } from "@/components/account/Conocimiento";
 import { StatusPill, type StatusTone } from "@/components/account/ui";
 import { ProgressBar } from "@/components/academia/ui";
@@ -43,9 +43,6 @@ const RESERVATION_STATUS: Record<string, { label: string; tone: StatusTone }> = 
 };
 
 const NOVA_TONE = "137 84 212";
-
-// En computadora, los pendientes ocupan una sola fila sin celdas vacías.
-const REVIEW_COLS: Record<number, string> = { 1: "grid-cols-1", 3: "sm:grid-cols-3", 4: "lg:grid-cols-4", 5: "sm:grid-cols-3 lg:grid-cols-5" };
 
 // Cada zona del panel empieza igual: ícono, título y para qué sirve. Así se distinguen de un vistazo.
 function Section({
@@ -190,15 +187,44 @@ function ServicePanel({
   );
 }
 
-function ReviewTile({ to, count, label }: { to: string; count: number; label: string }) {
+type View = "trabajo" | "cuenta";
+
+// Separa lo que haces como directiva (Mi trabajo) de lo tuyo como usuaria (Mi cuenta).
+function ViewSwitch({
+  view,
+  workCount,
+  accountCount,
+  onChange,
+}: {
+  view: View | null;
+  workCount: number;
+  accountCount: number;
+  onChange: (next: View) => void;
+}) {
+  const tab = (id: View, label: string, count: number) => (
+    <button
+      type="button"
+      role="tab"
+      aria-selected={view === id}
+      onClick={() => onChange(id)}
+      className={`flex items-center gap-2 rounded-lg px-4 py-2 text-sm font-semibold transition-colors ${
+        view === id ? "bg-black text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,0.22)]" : "text-white/55 hover:text-white"
+      }`}
+    >
+      {label}
+      {count > 0 && (
+        <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-nova px-1.5 text-[11px] font-bold text-white">
+          {count}
+        </span>
+      )}
+    </button>
+  );
+
   return (
-    <Link to={to} className="flex items-center justify-between gap-3 px-4 py-4 transition-colors hover:bg-white/[0.05]">
-      <span className="min-w-0">
-        <span className={`block font-display text-2xl font-black ${count > 0 ? "text-white" : "text-white/25"}`}>{count}</span>
-        <span className={`block text-xs ${count > 0 ? "text-white/70" : "text-white/35"}`}>{label}</span>
-      </span>
-      {count > 0 && <span className="h-2 w-2 shrink-0 rounded-full bg-nova" aria-label="Pendiente" />}
-    </Link>
+    <div role="tablist" aria-label="Qué quieres ver" className="inline-flex rounded-xl bg-white/[0.07] p-1">
+      {tab("trabajo", "Mi trabajo", workCount)}
+      {tab("cuenta", "Mi cuenta", accountCount)}
+    </div>
   );
 }
 
@@ -207,6 +233,14 @@ export default function Dashboard() {
   const { user, sessionLoading, academy, progress, entrega, practica, member, orders, reservations, staffPending, academicPending } = account;
   const isTeam = member.isMember || academy.isAcademic;
   const [recent, setRecent] = useState<Conocimiento[]>([]);
+  const [params, setParams] = useSearchParams();
+  // Si el recuento de pendientes tarda o falla, no se deja la pantalla esperando para siempre.
+  const [waited, setWaited] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setWaited(true), 2500);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     if (!isTeam) return;
@@ -255,13 +289,24 @@ export default function Dashboard() {
   const academyTone = academyStep?.lesson ? moduleAccent(academyStep.lesson.moduleId) : NOVA_TONE;
 
   const reviews = [
-    academicPending !== null && { to: "/comunidad?vista=revisar", count: academicPending, label: "Aportes de la Comunidad" },
     staffPending && { to: "/admin/entregas", count: staffPending.entregas, label: "Tareas finales" },
     staffPending && { to: "/admin/inscripciones", count: staffPending.inscripciones, label: "Inscripciones" },
     staffPending && { to: "/admin/pedidos", count: staffPending.pedidos, label: "Pedidos por confirmar" },
     staffPending && { to: "/admin/reservas", count: staffPending.reservas, label: "Reservas por aprobar" },
+    academicPending !== null && { to: "/comunidad?vista=revisar", count: academicPending, label: "Aportes de la Comunidad" },
   ].filter(Boolean) as { to: string; count: number; label: string }[];
   const pendingTotal = reviews.reduce((total, review) => total + review.count, 0);
+
+  // Quien revisa cosas tiene dos vistas. Se abre en "Mi trabajo" si hay pendientes y en "Mi cuenta" si no;
+  // el enlace puede forzar una con ?vista=trabajo o ?vista=cuenta.
+  const hasWork = academy.isStaff || academy.isAcademic;
+  const workLoading = (academy.isStaff && staffPending === null) || (academy.isAcademic && academicPending === null);
+  const requested = params.get("vista");
+  const explicitView: View | null = requested === "trabajo" || requested === "cuenta" ? requested : null;
+  const view: View | null = !hasWork
+    ? "cuenta"
+    : explicitView ?? (workLoading && !waited ? null : pendingTotal > 0 ? "trabajo" : "cuenta");
+  const chooseView = (next: View) => setParams({ vista: next }, { replace: true });
 
   return (
     <main className="container mx-auto max-w-5xl px-4 pb-20 pt-28">
@@ -275,27 +320,24 @@ export default function Dashboard() {
             </span>
           )}
         </p>
+        {hasWork && (
+          <div className="mt-6">
+            <ViewSwitch view={view} workCount={pendingTotal} accountCount={urgent ? 1 : 0} onChange={chooseView} />
+          </div>
+        )}
       </motion.header>
 
       <div className="mt-10 space-y-14">
+        {view === null && <p className="animate-pulse text-sm text-white/50">Cargando…</p>}
+
+        {view === "trabajo" && (
+          <WorkTab items={reviews} total={pendingTotal} adminTo={academy.isStaff ? "/admin" : undefined} />
+        )}
+
+        {view === "cuenta" && (
+          <>
         {/* Ahora: solo aparece si algo pide tu acción, y va antes que todo. */}
         {urgent && <NextStepCard step={urgent} />}
-
-        {/* Para la directiva y el Área académica, revisar es su tarea principal. */}
-        {reviews.length > 0 && (
-          <Section
-            icon={ClipboardCheck}
-            title="Por revisar"
-            description={pendingTotal > 0 ? `${pendingTotal} pendiente(s) esperan tu revisión.` : "Nada pendiente por ahora."}
-            action={staffPending && <SectionLink to="/admin">Panel de directiva</SectionLink>}
-          >
-            <div className={`grid grid-cols-2 overflow-hidden rounded-2xl border border-white/15 [&>*]:outline [&>*]:outline-1 [&>*]:outline-white/10 ${REVIEW_COLS[reviews.length] ?? ""}`}>
-              {reviews.map((review) => (
-                <ReviewTile key={review.label} {...review} />
-              ))}
-            </div>
-          </Section>
-        )}
 
         {/* Los servicios: la razón principal por la que la mayoría entra a su cuenta. */}
         <Section icon={LayoutGrid} title="Mis servicios" description="Pide una impresión o compra componentes, y sigue cómo va lo tuyo.">
@@ -448,6 +490,8 @@ export default function Dashboard() {
             ¿Te gusta la robótica? Conoce cómo ser parte de Nova Tech.
             <ArrowRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-1" />
           </Link>
+        )}
+          </>
         )}
       </div>
     </main>
