@@ -27,7 +27,9 @@ export function WaterAnalogy() {
           <svg viewBox="0 0 220 120" className="w-full" aria-label="Agua bajando de un tanque por una tubería">
             <rect x="10" y="10" width="44" height="60" rx="3" fill="#0b2540" stroke="#60a5fa" />
             <rect x="12" y="20" width="40" height="48" fill="#3b82f6" opacity="0.55" />
-            <text x="32" y="86" textAnchor="middle" fontSize="9" fill="#93c5fd">presión</text>
+            <text x="32" y="86" textAnchor="middle" fontSize="9" fill="#93c5fd">
+              presión
+            </text>
             <path d="M54 60 H120" stroke="#60a5fa" strokeWidth="16" opacity="0.35" />
             <path d="M120 60 H160" stroke="#60a5fa" strokeWidth={pipe} opacity="0.35" style={{ transition: "stroke-width 0.6s" }} />
             <path d="M160 60 H205" stroke="#60a5fa" strokeWidth="16" opacity="0.35" />
@@ -41,7 +43,9 @@ export function WaterAnalogy() {
         <figure className="rounded-xl bg-white/[0.03] p-3">
           <svg viewBox="0 0 220 120" className="w-full" aria-label="Corriente en un circuito con pila, resistencia y LED">
             <rect x="14" y="40" width="26" height="40" rx="3" fill="#1f2937" stroke="rgba(255,255,255,0.4)" />
-            <text x="27" y="64" textAnchor="middle" fontSize="10" fill="white">V</text>
+            <text x="27" y="64" textAnchor="middle" fontSize="10" fill="white">
+              V
+            </text>
             <path d="M27 40 V18 H190 V96 H27 V80" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
             {/* resistencia: más alta cuando es "estrecha" */}
             <rect x="80" y="12" width={narrow ? 44 : 22} height="12" rx="3" fill="#d8b98a" style={{ transition: "width 0.6s" }} />
@@ -77,12 +81,18 @@ export function SeriesResistors() {
     >
       <svg viewBox="0 0 300 120" className="mx-auto w-full max-w-md" aria-label="Circuito con dos resistencias en serie">
         <rect x="14" y="42" width="26" height="40" rx="3" fill="#1f2937" stroke="rgba(255,255,255,0.4)" />
-        <text x="27" y="66" textAnchor="middle" fontSize="10" fill="white">V</text>
+        <text x="27" y="66" textAnchor="middle" fontSize="10" fill="white">
+          V
+        </text>
         <path d="M27 42 V20 H280 V104 H27 V82" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
         <rect x="80" y="13" width="44" height="14" rx="3" fill="#d8b98a" />
         <rect x="180" y="13" width="44" height="14" rx="3" fill="#d8b98a" />
-        <text x="102" y="44" textAnchor="middle" fontSize="11" fill="white">R1 = {fmt(r1)}</text>
-        <text x="202" y="44" textAnchor="middle" fontSize="11" fill="white">R2 = {fmt(r2)}</text>
+        <text x="102" y="44" textAnchor="middle" fontSize="11" fill="white">
+          R1 = {fmt(r1)}
+        </text>
+        <text x="202" y="44" textAnchor="middle" fontSize="11" fill="white">
+          R2 = {fmt(r2)}
+        </text>
         <FlowDots path="M27 42 V20 H280 V104 H27 V82" count={10} duration={4} still={still} />
         <text x="150" y="76" textAnchor="middle" fontSize="13" fontWeight="700" fill={TONE}>
           R total = {fmt(r1)} + {fmt(r2)} = {fmt(r1 + r2)}
@@ -123,19 +133,29 @@ export function LightSensor() {
               opacity={light}
             />
           ))}
-          <text x="36" y="90" textAnchor="middle" fontSize="9" fill="white">luz {Math.round(light * 100)} %</text>
+          <text x="36" y="90" textAnchor="middle" fontSize="9" fill="white">
+            luz {Math.round(light * 100)} %
+          </text>
           {/* divisor */}
-          <text x="150" y="14" textAnchor="middle" fontSize="9" fill="white">3V3</text>
+          <text x="150" y="14" textAnchor="middle" fontSize="9" fill="white">
+            3V3
+          </text>
           <line x1="150" y1="18" x2="150" y2="30" stroke="white" />
           <rect x="138" y="30" width="24" height="34" rx="4" fill="#7f1d1d" stroke="#f87171" />
-          <text x="186" y="50" fontSize="9" fill="white">LDR {ldr >= 1000 ? `${(ldr / 1000).toFixed(1)} kΩ` : `${ldr} Ω`}</text>
+          <text x="186" y="50" fontSize="9" fill="white">
+            LDR {ldr >= 1000 ? `${(ldr / 1000).toFixed(1)} kΩ` : `${ldr} Ω`}
+          </text>
           <line x1="150" y1="64" x2="150" y2="84" stroke="white" />
           <circle cx="150" cy="78" r="3" fill={TONE} />
           <line x1="150" y1="78" x2="214" y2="78" stroke={TONE} strokeDasharray="3 3" />
           <rect x="138" y="84" width="24" height="34" rx="4" fill="#d8b98a" />
-          <text x="186" y="104" fontSize="9" fill="white">10 kΩ</text>
+          <text x="186" y="104" fontSize="9" fill="white">
+            10 kΩ
+          </text>
           <line x1="150" y1="118" x2="150" y2="132" stroke="white" />
-          <text x="150" y="144" textAnchor="middle" fontSize="9" fill="white">GND</text>
+          <text x="150" y="144" textAnchor="middle" fontSize="9" fill="white">
+            GND
+          </text>
         </svg>
         <div className="space-y-2 text-center">
           <div className="rounded-xl bg-white/[0.04] px-4 py-3">
@@ -228,8 +248,12 @@ export function GoldenRule() {
           </text>
           <line x1="64" y1="45" x2="150" y2="45" stroke={safe ? "#4ade80" : "#f87171"} strokeWidth="3" />
           <rect x="150" y="20" width="76" height="50" rx="6" fill="#16191d" stroke="rgba(255,255,255,0.4)" />
-          <text x="188" y="42" textAnchor="middle" fontSize="11" fill="white">ESP32</text>
-          <text x="188" y="58" textAnchor="middle" fontSize="9" fill="rgba(255,255,255,0.6)">GPIO</text>
+          <text x="188" y="42" textAnchor="middle" fontSize="11" fill="white">
+            ESP32
+          </text>
+          <text x="188" y="58" textAnchor="middle" fontSize="9" fill="rgba(255,255,255,0.6)">
+            GPIO
+          </text>
           {!safe && (
             <g className="animate-pulse">
               <path d="M150 34 l-8 -10 m8 22 l-10 2 m10 10 l-8 10" stroke="#facc15" strokeWidth="2" />
@@ -238,7 +262,9 @@ export function GoldenRule() {
             </g>
           )}
         </svg>
-        <p className={`rounded-xl px-4 py-3 text-sm font-semibold ${safe ? "bg-emerald-400/10 text-emerald-200" : "bg-rose-400/10 text-rose-200"}`}>
+        <p
+          className={`rounded-xl px-4 py-3 text-sm font-semibold ${safe ? "bg-emerald-400/10 text-emerald-200" : "bg-rose-400/10 text-rose-200"}`}
+        >
           {safe ? "3.3 V: el pin trabaja normal ✅" : "5 V: el pin se daña para siempre 💥"}
         </p>
       </div>
@@ -268,7 +294,9 @@ export function SignalVsPower() {
       </div>
       <svg viewBox="0 0 300 110" className="mx-auto mt-3 w-full max-w-md" aria-label={scene.title}>
         <rect x="8" y="35" width="56" height="40" rx="5" fill="#16191d" stroke="rgba(255,255,255,0.4)" />
-        <text x="36" y="59" textAnchor="middle" fontSize="10" fill="white">GPIO</text>
+        <text x="36" y="59" textAnchor="middle" fontSize="10" fill="white">
+          GPIO
+        </text>
         {phase === 0 && (
           <>
             <line x1="64" y1="55" x2="210" y2="55" stroke={TONE} strokeWidth="2" />
@@ -281,17 +309,25 @@ export function SignalVsPower() {
             <line x1="64" y1="55" x2="200" y2="55" stroke={TONE} strokeWidth="2" />
             <FlowDots path="M64 55 H200" count={2} duration={3} still={still} />
             <circle cx="230" cy="55" r="24" fill="#1f2937" stroke="rgba(255,255,255,0.5)" />
-            <text x="230" y="59" textAnchor="middle" fontSize="10" fill="white">motor</text>
-            <text x="230" y="98" textAnchor="middle" fontSize="10" fill="#f87171">no gira</text>
+            <text x="230" y="59" textAnchor="middle" fontSize="10" fill="white">
+              motor
+            </text>
+            <text x="230" y="98" textAnchor="middle" fontSize="10" fill="#f87171">
+              no gira
+            </text>
           </>
         )}
         {phase === 2 && (
           <>
             <line x1="64" y1="55" x2="122" y2="55" stroke={TONE} strokeWidth="2" strokeDasharray="4 3" />
             <rect x="122" y="35" width="52" height="40" rx="5" fill="#1f2937" stroke={TONE} />
-            <text x="148" y="59" textAnchor="middle" fontSize="10" fill="white">driver</text>
+            <text x="148" y="59" textAnchor="middle" fontSize="10" fill="white">
+              driver
+            </text>
             <rect x="126" y="88" width="44" height="18" rx="3" fill="#0b2540" stroke="#60a5fa" />
-            <text x="148" y="100" textAnchor="middle" fontSize="9" fill="#93c5fd">batería</text>
+            <text x="148" y="100" textAnchor="middle" fontSize="9" fill="#93c5fd">
+              batería
+            </text>
             <line x1="148" y1="88" x2="148" y2="75" stroke="#60a5fa" strokeWidth="3" />
             <line x1="174" y1="55" x2="206" y2="55" stroke="#60a5fa" strokeWidth="3" />
             <g style={{ transformOrigin: "236px 55px", animation: still ? undefined : "spin 0.8s linear infinite" }}>
@@ -316,7 +352,10 @@ export function ThtVsSmd() {
   const phase = usePhase(2, 2600, 1);
   const placed = phase === 1;
   return (
-    <AnimCard title="Cómo se sueldan: THT atraviesa la placa, SMD va encima" caption="Vista de costado de la placa. En este nivel usarás solo componentes THT.">
+    <AnimCard
+      title="Cómo se sueldan: THT atraviesa la placa, SMD va encima"
+      caption="Vista de costado de la placa. En este nivel usarás solo componentes THT."
+    >
       <div className="grid gap-4 sm:grid-cols-2">
         <figure className="rounded-xl bg-white/[0.03] p-3">
           <svg viewBox="0 0 160 110" className="w-full" aria-label="Componente THT con patas que atraviesan la placa">
@@ -333,7 +372,9 @@ export function ThtVsSmd() {
                 <path d="M103 74 q7 10 14 0" fill="#c0c0c0" />
               </>
             )}
-            <text x="80" y="104" textAnchor="middle" fontSize="9" fill="white">soldadura por debajo</text>
+            <text x="80" y="104" textAnchor="middle" fontSize="9" fill="white">
+              soldadura por debajo
+            </text>
           </svg>
           <figcaption className="text-center text-xs font-semibold">THT · patas que atraviesan</figcaption>
         </figure>
@@ -351,7 +392,9 @@ export function ThtVsSmd() {
                 <path d="M92 56 q4 -6 8 0" fill="#c0c0c0" />
               </>
             )}
-            <text x="80" y="104" textAnchor="middle" fontSize="9" fill="white">diminuto, sobre la superficie</text>
+            <text x="80" y="104" textAnchor="middle" fontSize="9" fill="white">
+              diminuto, sobre la superficie
+            </text>
           </svg>
           <figcaption className="text-center text-xs font-semibold">SMD · va encima (Parte 2)</figcaption>
         </figure>
@@ -365,7 +408,7 @@ export function ThtVsSmd() {
 export function FloatingPin() {
   const { tick, still } = useTick(160);
   // Lecturas "al azar": un patrón pseudoaleatorio que se ve como ruido.
-  const readings = Array.from({ length: 24 }, (_, i) => ((Math.sin((tick + i) * 12.9898) * 43758.5453) % 1 + 1) % 1 > 0.5);
+  const readings = Array.from({ length: 24 }, (_, i) => (((Math.sin((tick + i) * 12.9898) * 43758.5453) % 1) + 1) % 1 > 0.5);
   const current = still ? true : readings[readings.length - 1];
   const path = readings.map((high, i) => `${i === 0 ? "M" : "L"}${i * 10} ${high ? 8 : 34} H${i * 10 + 10}`).join(" ");
   return (
@@ -375,8 +418,12 @@ export function FloatingPin() {
     >
       <div className="grid items-center gap-4 sm:grid-cols-[1fr_auto]">
         <svg viewBox="0 0 240 44" className="w-full" aria-label="Lecturas al azar de un pin flotante">
-          <text x="0" y="6" fontSize="7" fill="rgba(255,255,255,0.4)">HIGH</text>
-          <text x="0" y="44" fontSize="7" fill="rgba(255,255,255,0.4)">LOW</text>
+          <text x="0" y="6" fontSize="7" fill="rgba(255,255,255,0.4)">
+            HIGH
+          </text>
+          <text x="0" y="44" fontSize="7" fill="rgba(255,255,255,0.4)">
+            LOW
+          </text>
           <path d={still ? "M0 34 H60 V8 H120 V34 H180 V8 H240" : path} fill="none" stroke="#f87171" strokeWidth="2" />
         </svg>
         <div className="rounded-xl bg-white/[0.04] px-4 py-3 text-center">
@@ -398,7 +445,11 @@ export function FourLegButton() {
       title="Por dentro, las 4 patas están unidas de dos en dos"
       caption="Las patas 1-2 siempre están unidas, y también las 3-4. Al presionar, el botón une los dos pares y la corriente pasa. Por eso en el esquemático se dibuja con 2 terminales."
     >
-      <svg viewBox="0 0 220 140" className="mx-auto w-full max-w-xs" aria-label={pressed ? "Botón presionado: conecta los dos pares" : "Botón suelto"}>
+      <svg
+        viewBox="0 0 220 140"
+        className="mx-auto w-full max-w-xs"
+        aria-label={pressed ? "Botón presionado: conecta los dos pares" : "Botón suelto"}
+      >
         <rect x="50" y="30" width="120" height="80" rx="8" fill="#1f2937" stroke="rgba(255,255,255,0.4)" />
         <circle cx="110" cy="70" r={pressed ? 18 : 22} fill="#2b2b2b" stroke="rgba(255,255,255,0.4)" style={{ transition: "r 0.2s" }} />
         {[
@@ -408,7 +459,14 @@ export function FourLegButton() {
           [170, 96, "4"],
         ].map(([x, y, n]) => (
           <g key={n as string}>
-            <line x1={x as number} y1={y as number} x2={(x as number) + ((x as number) < 100 ? -30 : 30)} y2={y as number} stroke="#a3a3a3" strokeWidth="4" />
+            <line
+              x1={x as number}
+              y1={y as number}
+              x2={(x as number) + ((x as number) < 100 ? -30 : 30)}
+              y2={y as number}
+              stroke="#a3a3a3"
+              strokeWidth="4"
+            />
             <text x={(x as number) + ((x as number) < 100 ? -36 : 36)} y={(y as number) + 4} textAnchor="middle" fontSize="11" fill="white">
               {n}
             </text>
@@ -418,7 +476,15 @@ export function FourLegButton() {
         <line x1="62" y1="44" x2="158" y2="44" stroke={TONE} strokeWidth="3" />
         <line x1="62" y1="96" x2="158" y2="96" stroke={TONE} strokeWidth="3" />
         {/* el puente que une los pares al presionar */}
-        <line x1="110" y1="44" x2="110" y2="96" stroke={pressed ? "#4ade80" : "rgba(255,255,255,0.12)"} strokeWidth="4" strokeDasharray={pressed ? "0" : "4 4"} />
+        <line
+          x1="110"
+          y1="44"
+          x2="110"
+          y2="96"
+          stroke={pressed ? "#4ade80" : "rgba(255,255,255,0.12)"}
+          strokeWidth="4"
+          strokeDasharray={pressed ? "0" : "4 4"}
+        />
         <text x="110" y="132" textAnchor="middle" fontSize="11" fill={pressed ? "#4ade80" : "rgba(255,255,255,0.5)"}>
           {pressed ? "presionado: 1-2 conectado con 3-4" : "suelto: los pares no se tocan"}
         </text>
@@ -432,7 +498,10 @@ export function FourLegButton() {
 export function RoutingRules() {
   const phase = usePhase(3, 3000, 0);
   const rules = [
-    { title: "Ancho según la corriente", text: "La pista de alimentación lleva más corriente: si es delgada, se calienta. Por eso va de 1 mm y las señales de 0.5 mm." },
+    {
+      title: "Ancho según la corriente",
+      text: "La pista de alimentación lleva más corriente: si es delgada, se calienta. Por eso va de 1 mm y las señales de 0.5 mm.",
+    },
     { title: "Ángulos de 45°", text: "Evita las esquinas de 90°: dobla la pista con ángulos de 45°." },
     { title: "Cruzar con una vía", text: "Dos pistas de la misma capa no se cruzan: una pasa a la otra capa por una vía." },
   ];
@@ -449,18 +518,26 @@ export function RoutingRules() {
         {phase === 0 && (
           <>
             <path d="M20 40 H280" stroke="#c8a45a" strokeWidth="3" />
-            <text x="24" y="30" fontSize="9" fill="white">señal · 0.5 mm</text>
+            <text x="24" y="30" fontSize="9" fill="white">
+              señal · 0.5 mm
+            </text>
             <path d="M20 85 H280" stroke="#c8a45a" strokeWidth="9" />
-            <text x="24" y="72" fontSize="9" fill="white">alimentación · 1 mm</text>
+            <text x="24" y="72" fontSize="9" fill="white">
+              alimentación · 1 mm
+            </text>
             <path d="M150 85 H280" stroke="#f97316" strokeWidth="2" opacity="0.6" className="animate-pulse" />
           </>
         )}
         {phase === 1 && (
           <>
             <path d="M30 30 H130 V95 H170" fill="none" stroke="#c8a45a" strokeWidth="5" opacity="0.4" />
-            <text x="40" y="22" fontSize="9" fill="#f87171">✗ 90°</text>
+            <text x="40" y="22" fontSize="9" fill="#f87171">
+              ✗ 90°
+            </text>
             <path d="M160 30 H230 L265 65 V95" fill="none" stroke="#c8a45a" strokeWidth="5" />
-            <text x="200" y="22" fontSize="9" fill="#4ade80">✓ 45°</text>
+            <text x="200" y="22" fontSize="9" fill="#4ade80">
+              ✓ 45°
+            </text>
           </>
         )}
         {phase === 2 && (
@@ -471,8 +548,12 @@ export function RoutingRules() {
             <path d="M150 48 V72" stroke="#60a5fa" strokeWidth="5" strokeDasharray="4 3" />
             <circle cx="150" cy="48" r="6" fill="#0f2a1a" stroke="#c0c0c0" strokeWidth="3" />
             <circle cx="150" cy="72" r="6" fill="#0f2a1a" stroke="#c0c0c0" strokeWidth="3" />
-            <text x="160" y="40" fontSize="9" fill="white">vía</text>
-            <text x="160" y="92" fontSize="9" fill="#93c5fd">capa de abajo</text>
+            <text x="160" y="40" fontSize="9" fill="white">
+              vía
+            </text>
+            <text x="160" y="92" fontSize="9" fill="#93c5fd">
+              capa de abajo
+            </text>
           </>
         )}
       </svg>
