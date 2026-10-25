@@ -799,12 +799,12 @@ export const lessonQuizzes: Record<string, QuizQuestion[]> = {
     {
       question: "¿Dónde verás la fecha de tu práctica presencial?",
       options: [
-        { text: "En tu panel y en la Academia" },
+        { text: "En Inicio y en la Academia" },
         { text: "Tienes que preguntar en el laboratorio", hint: "El encargado te la asigna aquí, en la web." },
         { text: "No hay fecha: vas cuando quieras", hint: "La práctica es en una fecha que asigna el encargado." },
       ],
       correct: 0,
-      explanation: "El encargado de la convocatoria te asigna la fecha y aparece en tu panel y aquí.",
+      explanation: "El encargado de la convocatoria te asigna la fecha y aparece en Inicio y aquí.",
     },
     {
       question: "Repaso: una resistencia SMD quedó parada, como una lápida. ¿Qué pasó?",

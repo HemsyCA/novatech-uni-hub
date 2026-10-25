@@ -36,7 +36,7 @@ export function PracticaCard({ practica }: { practica: AcademyPractica | null })
         <div>
           <p className="font-semibold">Práctica presencial: aún sin fecha</p>
           <p className="mt-1 text-sm text-white/60">
-            El encargado de la convocatoria te asignará una fecha en los próximos días. Aparecerá aquí y en tu panel.
+            El encargado de la convocatoria te asignará una fecha en los próximos días. Aparecerá aquí y en Inicio.
           </p>
         </div>
       </div>

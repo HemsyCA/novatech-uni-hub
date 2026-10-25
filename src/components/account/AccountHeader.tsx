@@ -48,7 +48,7 @@ interface Section {
 function useSections(): Section[] {
   const { academy, progress, entrega, member, academicPending } = useAccount();
   const sections: Section[] = [
-    { id: "panel", to: "/dashboard", label: "Mi panel", short: "Panel", icon: Home, group: "panel", active: (p) => p === "/dashboard" },
+    { id: "panel", to: "/dashboard", label: "Inicio", short: "Inicio", icon: Home, group: "panel", active: (p) => p === "/dashboard" },
     { id: "imprimir", to: "/print3d", label: "Impresión 3D", short: "Imprimir", icon: Printer, group: "servicios", active: (p) => p.startsWith("/print3d") },
     { id: "tienda", to: "/store", label: "Tienda", short: "Tienda", icon: ShoppingCart, group: "servicios", active: (p) => p.startsWith("/store") },
   ];
@@ -186,7 +186,7 @@ function AccountMenu() {
         <DropdownMenuSeparator className="bg-white/10" />
         <DropdownMenuItem asChild className={menuItem}>
           <Link to="/dashboard" className="flex items-center gap-2">
-            <Home className="h-4 w-4" /> Mi panel
+            <Home className="h-4 w-4" /> Inicio
           </Link>
         </DropdownMenuItem>
         <div className="flex items-center justify-between px-2 py-2 text-sm">

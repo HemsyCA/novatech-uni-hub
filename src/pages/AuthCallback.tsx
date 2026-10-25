@@ -60,7 +60,7 @@ export default function AuthCallback() {
             </CardTitle>
             <CardDescription>
               {status === "loading" && "Espera un momento mientras validamos tu email."}
-              {status === "success" && "Te estamos llevando a tu panel."}
+              {status === "success" && "Te estamos llevando a tu cuenta."}
               {status === "error" &&
                 "Vuelve a intentar el registro o inicia sesión si ya confirmaste tu cuenta antes."}
             </CardDescription>
