@@ -125,6 +125,22 @@ export const listMyAcademyProgress = async (userId: string): Promise<string[]> =
   return (data ?? []).map((row) => row.lesson_key);
 };
 
+// Para la directiva: las lecciones completadas de varios convocados, con su fecha.
+export const listAcademyProgressForUsers = async (userIds: string[]) => {
+  if (userIds.length === 0) return [];
+  const { data, error } = await supabase.from("academia_progreso").select("user_id, lesson_key, completed_at").in("user_id", userIds);
+  if (error) throw error;
+  return data ?? [];
+};
+
+// Para la directiva: nombre y correo de las cuentas de una lista de correos.
+export const listProfilesByEmail = async (emails: string[]) => {
+  if (emails.length === 0) return [];
+  const { data, error } = await supabase.from("profiles").select("user_id, full_name, email").in("email", emails);
+  if (error) throw error;
+  return data ?? [];
+};
+
 export const addAcademyProgress = async (userId: string, lessonKeys: string[]) => {
   const { error } = await supabase
     .from("academia_progreso")
