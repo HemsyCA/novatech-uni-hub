@@ -307,6 +307,12 @@ El **ESP32** es un microcontrolador muy popular porque es rápido, barato y trae
 - **Botón BOOT:** se usa en algunos casos para cargar programas.
 - **30 pines:** 15 de cada lado.
 
+Gira la placa en 3D y toca cada parte. Puedes ver la versión con el chip **CH340** (la que usamos en el equipo) o la del **CP2102**:
+
+```widget
+placa-3d-partes
+```
+
 #### Tipos de pines
 
 **Pines de alimentación:**
@@ -359,7 +365,13 @@ Por eso elegimos estos pines para todas las lecciones y la tarea final:
 
 ### Paso a paso
 
-Usa la placa interactiva de abajo. Está con el USB hacia abajo, igual que la tendrás en la mano:
+Primero explórala en 3D: gírala, acércate y toca cualquier pin. Los pines del Mapa Nova y los de alimentación ya están rotulados.
+
+```widget
+placa-3d-pines
+```
+
+Después usa la placa de abajo. Está con el USB hacia abajo, igual que la tendrás en la mano:
 
 1. Toca los filtros **Alimentación**, **Mapa Nova**, **Solo entrada** y **Evitar**, y fíjate dónde queda cada grupo.
 2. Toca algunos pines para leer qué hace cada uno.
