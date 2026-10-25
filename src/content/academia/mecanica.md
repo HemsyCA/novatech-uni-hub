@@ -29,6 +29,10 @@ Crear tu cuenta, conocer la interfaz de Onshape y moverte con soltura en el espa
 
 Onshape es un **CAD paramétrico**: cada pieza se construye con una secuencia de pasos (operaciones), y cada paso guarda sus medidas. Si mañana cambias una medida, todo lo que depende de ella se actualiza solo. Es como una receta: si cambias la cantidad de harina, el pastel entero cambia.
 
+```widget
+cad-parametrico
+```
+
 #### ¿Por qué Onshape?
 
 - Funciona **en el navegador**: no se instala nada y funciona en computadoras sencillas.
@@ -133,6 +137,10 @@ Un **boceto (sketch)** es un dibujo plano hecho sobre un plano o sobre una cara 
 | Cota (dimensión) | **D** | Fijar medidas: largos, diámetros, distancias |
 | Construcción | **Q** | Convertir una línea en "auxiliar" (sirve de guía, pero no forma parte de la pieza) |
 
+```widget
+herramientas-boceto
+```
+
 #### Cotas y restricciones
 
 Dibujar "a ojo" no sirve en ingeniería. Cada forma se fija con dos tipos de reglas:
@@ -217,14 +225,26 @@ Convertir bocetos en piezas 3D con extrusiones, cortes, redondeos y chaflanes, y
   - **Add:** agrega material a una pieza existente.
   - **Remove:** **quita** material. Así se hacen agujeros, ranuras y cortes.
 
+```widget
+extruir
+```
+
 #### Bocetos sobre caras
 
 No solo se puede dibujar sobre los planos de referencia: también sobre **cualquier cara plana** de una pieza. Así se construye una pieza por capas: haces una placa, dibujas sobre su cara superior y extruyes algo encima.
+
+```widget
+boceto-cara
+```
 
 #### Redondeo (Fillet) y chaflán (Chamfer)
 
 - **Redondeo:** suaviza una arista convirtiéndola en una curva. Evita esquinas filosas y hace la pieza más resistente.
 - **Chaflán:** corta una arista en ángulo (en diagonal). Muy útil en el borde que toca la cama de la impresora, porque evita que la pieza quede "con pie de elefante".
+
+```widget
+redondeo
+```
 
 #### El poder del diseño paramétrico
 
@@ -289,6 +309,10 @@ Las impresoras de Nova son de tipo **FDM**: derriten un hilo de plástico (filam
 - **Boquilla:** 0.4 mm (el grosor de cada "fideo").
 - **Altura de capa:** 0.2 mm.
 
+```widget
+capas-impresion
+```
+
 #### Regla 1: las holguras
 
 Una pieza impresa **nunca sale exactamente con la medida del diseño**: los agujeros salen un poco más pequeños y los bordes un poco más grandes. Si diseñas un agujero de 5 mm para un LED de 5 mm, el LED **no entrará**.
@@ -333,9 +357,17 @@ voladizos
 
 Las capas se pegan entre sí, pero esa unión es el punto más débil de la pieza. Una pieza impresa se rompe mucho más fácil **separando sus capas** que a lo largo de ellas. Si una pieza va a recibir fuerza (como el soporte de un servo), piensa en qué dirección quedarán sus capas.
 
+```widget
+orientacion-capas
+```
+
 #### La operación Vaciado (Shell)
 
 **Shell** convierte un sólido en una cáscara hueca con paredes de un espesor que tú eliges, quitando las caras que selecciones. Es la forma más rápida de hacer una caja.
+
+```widget
+vaciado
+```
 
 ### Paso a paso
 
@@ -383,6 +415,10 @@ Exportar una pieza en formato STL, entender qué hace un laminador y compartir t
 
 - **STL:** describe la superficie de la pieza con miles de triángulos pequeños. Es el formato que entienden los programas de impresión 3D.
 - **STEP:** guarda la pieza con su geometría exacta. Se usa para compartir diseños entre programas de CAD (por ejemplo, para importar el modelo 3D de un sensor o una placa a tu ensamble).
+
+```widget
+stl-step
+```
 
 #### ¿Qué es un laminador?
 

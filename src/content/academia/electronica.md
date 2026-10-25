@@ -41,6 +41,10 @@ La electricidad no se ve, así que para entenderla usamos una comparación con e
 - **Corriente:** es la cantidad de electricidad que circula por el circuito. En electrónica pequeña se usan mucho los **miliamperios (mA)**: 1 A = 1000 mA. Un LED usa unos 10 mA; un motor pequeño puede usar 500 mA o más.
 - **Resistencia:** es la oposición al paso de la corriente. Una resistencia "estrecha la tubería" para que pase menos corriente. Se usan mucho los **kiloohmios (kΩ)**: 1 kΩ = 1000 Ω.
 
+```widget
+analogia-agua
+```
+
 > **Dato:** si algo de Electrónica no te queda claro, hay un [curso completo de electrónica básica en YouTube](https://www.youtube.com/playlist?list=PL04XX6UHHXqi6_ZHVZro0gFqFKL1p6Suo) (30 videos en español) para reforzar. Lo tienes también en la página del módulo de Electrónica. Úsalo como apoyo: las lecciones siguen siendo tu camino.
 
 #### La Ley de Ohm
@@ -198,6 +202,10 @@ Cuando conectas dos resistencias una detrás de otra (en **serie**), pasan dos c
 1. La **misma corriente** atraviesa las dos.
 2. Su resistencia total es la **suma**: R total = R1 + R2.
 
+```widget
+resistencias-serie
+```
+
 #### El divisor de voltaje
 
 Si conectas dos resistencias en serie entre un voltaje y tierra (GND), en el punto del medio aparece un voltaje **menor** que el de entrada. Ese voltaje depende de la proporción entre las resistencias:
@@ -245,6 +253,10 @@ Muchos sensores son, en el fondo, una resistencia que cambia con algo del mundo 
 - Los **sensores de línea infrarrojos** reciben más o menos luz reflejada según el piso sea blanco o negro.
 
 Se conectan formando un divisor de voltaje, y el ESP32 lee el voltaje resultante. Por eso, cuando aprendas a leer un potenciómetro en Programación (P5), ya sabrás leer la mayoría de los sensores analógicos.
+
+```widget
+sensor-luz
+```
 
 ### Paso a paso
 
@@ -330,9 +342,17 @@ placa-3d-partes
 - **Entrada analógica (ADC):** mide un voltaje entre 0 y 3.3 V. Para potenciómetros y sensores analógicos.
 - **Salida PWM:** enciende y apaga muy rápido para simular "cantidades" (lo verás en P6). Para controlar brillo o velocidad.
 
+```widget
+modos-gpio
+```
+
 #### La regla de oro
 
 > **Importante:** **nunca conectes más de 3.3 V a un pin GPIO.** Si le llegan 5 V, puedes dañar el ESP32 de forma permanente. Si un sensor entrega 5 V, se usa un divisor de voltaje (E2) para bajarlo.
+
+```widget
+regla-oro
+```
 
 #### Los pines dan señal, no fuerza
 
@@ -341,6 +361,10 @@ Un GPIO puede entregar muy poca corriente: lo recomendable es no pasar de unos *
 - Los **motores** se conectan a través de un **driver** (lo verás ya en el equipo): el ESP32 le da la orden y el driver entrega la fuerza.
 - Un **servo** recibe del ESP32 solo la **señal** (por un GPIO), mientras que su **alimentación** viene de 5 V (VIN) y GND. En este nivel alimentamos un solo servo pequeño desde VIN, porque la placa está conectada por USB. En robots reales se usa una fuente separada.
 - **Regla importante:** todos los componentes deben compartir el mismo **GND** (tierra común). Sin tierra común, las señales no tienen referencia y nada funciona bien.
+
+```widget
+senal-fuerza
+```
 
 #### Pines que conviene evitar al empezar
 
@@ -451,6 +475,10 @@ simbolos-esquematico
 - **THT (through-hole):** componentes con patas que atraviesan la placa. Son grandes y fáciles de soldar a mano. **En este nivel usamos solo THT.**
 - **SMD:** componentes diminutos que se sueldan sobre la superficie. Aprenderás a soldarlos en la Parte 2.
 
+```widget
+tht-smd
+```
+
 ### Paso a paso
 
 **1. Crear la cuenta**
@@ -540,6 +568,10 @@ Un botón conectado entre **3V3** y un GPIO parece suficiente: al presionarlo, l
 
 Si el pin no está conectado a nada, queda **flotante**: funciona como una pequeña antena y capta ruido eléctrico. El ESP32 leerá HIGH y LOW al azar, como si alguien presionara el botón solo.
 
+```widget
+pin-flotante
+```
+
 #### La solución: resistencia pull-down
 
 Se conecta una resistencia de **10 kΩ** entre el GPIO y **GND**:
@@ -560,6 +592,10 @@ resistencia-pull
 #### El botón de 4 patas
 
 Los botones comunes tienen 4 patas, pero internamente están **unidas de dos en dos**. En el esquemático se dibujan con 2 terminales. Al diseñar la placa (E6), la huella tendrá 4 agujeros.
+
+```widget
+boton-4-patas
+```
 
 ### Paso a paso
 
@@ -636,6 +672,10 @@ Otras reglas:
 - Evita las esquinas de 90°: usa **ángulos de 45°**.
 - Dos pistas de la **misma capa no pueden cruzarse**. Si necesitas cruzar, pasa una a la otra capa con una **vía**.
 - Mantén los componentes relacionados **cerca** entre sí, y los conectores **en los bordes** de la placa.
+
+```widget
+reglas-ruteo
+```
 
 #### El plano de tierra (opcional)
 

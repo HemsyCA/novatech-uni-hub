@@ -33,6 +33,11 @@ import { DefectHunt } from "@/components/academia/widgets/DefectHunt";
 import { SmdOrder, SmdSizes } from "@/components/academia/widgets/SmdWidgets";
 import { ReviewCards } from "@/components/academia/widgets/ReviewCards";
 import { ResistorColors } from "@/components/academia/widgets/ResistorColors";
+import { RobotCycle } from "@/components/academia/widgets/RobotCycle";
+import { ThreeBlocks } from "@/components/academia/widgets/ThreeBlocks";
+import { WaterAnalogy, SeriesResistors, LightSensor, GpioModes, GoldenRule, SignalVsPower, ThtVsSmd, FloatingPin, FourLegButton, RoutingRules } from "@/components/academia/anim/ElectronicaAnims";
+import { SetupLoop, FirstInstructions, SerialMonitor, VariableBox, GlobalLocal, ReadAndDecide, EdgeDetection, Debounce, MapScales, RangeDecisions, ServoInside, ServoWires, SerialQueue, SwitchCase, FunctionCall, BluetoothJump } from "@/components/academia/anim/ProgramacionAnims";
+import { ParametricCad, SketchTools, Extrude, SketchOnFace, FilletChamfer, FdmLayers, LayerOrientation, ShellOperation, StlVsStep } from "@/components/academia/anim/MecanicaAnims";
 import { Check, ChevronRight, Copy, Info, Lightbulb, Maximize2, TriangleAlert, Wrench, type LucideIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -52,6 +57,43 @@ const IMAGE_SRC = /^\/[\w/.-]+\.(webp|png|jpe?g|svg)$/;
 const widgets: Record<string, () => JSX.Element> = {
   "calculadora-led": LedResistorCalculator,
   "codigo-colores": ResistorColors,
+  "ciclo-robot": RobotCycle,
+  "tres-bloques": ThreeBlocks,
+  "analogia-agua": WaterAnalogy,
+  "resistencias-serie": SeriesResistors,
+  "sensor-luz": LightSensor,
+  "modos-gpio": GpioModes,
+  "regla-oro": GoldenRule,
+  "senal-fuerza": SignalVsPower,
+  "tht-smd": ThtVsSmd,
+  "pin-flotante": FloatingPin,
+  "boton-4-patas": FourLegButton,
+  "reglas-ruteo": RoutingRules,
+  "setup-loop": SetupLoop,
+  "tres-instrucciones": FirstInstructions,
+  "monitor-serial": SerialMonitor,
+  "variable-caja": VariableBox,
+  "global-local": GlobalLocal,
+  "leer-decidir": ReadAndDecide,
+  "flanco": EdgeDetection,
+  "rebote": Debounce,
+  "map-escalas": MapScales,
+  "rangos": RangeDecisions,
+  "servo-interno": ServoInside,
+  "servo-cables": ServoWires,
+  "serial-fila": SerialQueue,
+  "switch-case": SwitchCase,
+  "funciones": FunctionCall,
+  "bluetooth": BluetoothJump,
+  "cad-parametrico": ParametricCad,
+  "herramientas-boceto": SketchTools,
+  "extruir": Extrude,
+  "boceto-cara": SketchOnFace,
+  "redondeo": FilletChamfer,
+  "capas-impresion": FdmLayers,
+  "orientacion-capas": LayerOrientation,
+  "vaciado": ShellOperation,
+  "stl-step": StlVsStep,
   "placa-3d-partes": Esp32Parts3D,
   "placa-3d-pines": Esp32Pins3D,
   "diagrama-led": LedDiagram,

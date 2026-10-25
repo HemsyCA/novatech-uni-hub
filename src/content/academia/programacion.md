@@ -39,19 +39,17 @@ La diferencia con una persona es que **una computadora no interpreta**: hace exa
 
 Todo programa de robot repite sin parar:
 
-1. **Percibir:** leer botones, sensores o comandos.
-2. **Decidir:** según lo que leyó, elegir qué hacer.
-3. **Actuar:** mover motores o servos, encender luces.
+```widget
+ciclo-robot
+```
 
 #### Los 3 bloques de todo programa
 
-Cualquier algoritmo, por complicado que sea, se arma combinando solo tres cosas:
+Cualquier algoritmo, por complicado que sea, se arma combinando solo tres cosas. Mira cómo funciona cada una con un LED:
 
-| Bloque | Qué es | Ejemplo |
-| --- | --- | --- |
-| **Secuencia** | Instrucciones una tras otra | Encender LED, esperar 1 s, apagar LED |
-| **Decisión** | Elegir un camino según una condición | Si el botón está presionado, encender; si no, apagar |
-| **Repetición** | Hacer algo varias veces | Parpadear 5 veces |
+```widget
+tres-bloques
+```
 
 #### Diagramas de flujo
 
@@ -64,7 +62,13 @@ Un **diagrama de flujo** dibuja un algoritmo con figuras estándar:
 | **Rombo** | Una decisión con dos salidas: sí / no ("¿botón presionado?") |
 | **Flechas** | El orden en que se siguen los pasos |
 
-Antes de ver un diagrama completo, intenta tú: ordena las instrucciones de un semáforo. Cuando aciertes, verás su diagrama de flujo.
+Antes de ver un diagrama completo, inténtalo tú. Vas a escribir el algoritmo de un semáforo:
+
+1. Lee cómo debe funcionar el semáforo (lo verás funcionando arriba del reto).
+2. Toca las 9 instrucciones en el orden correcto. Si te equivocas, toca una instrucción de tu lista para quitarla.
+3. Presiona **Probar en el semáforo** y mira cómo se ejecuta tu algoritmo, paso por paso.
+
+Cuando funcione, verás cómo se dibuja como diagrama de flujo.
 
 ```widget
 ordenar-semaforo
@@ -134,6 +138,10 @@ void loop() {
 - **`setup()`** es como prepararte antes de una carrera: se hace una vez.
 - **`loop()`** es la carrera: se repite sin parar mientras el ESP32 tenga energía.
 
+```widget
+setup-loop
+```
+
 > **Dato:** si algo de Programación no te queda claro, hay un [curso completo de ESP32 en YouTube](https://www.youtube.com/playlist?list=PLCTD_CpMeEKTvjzabAvLGHakg-ql6t0q6) (49 videos en español) para reforzar. Lo tienes también en la página del módulo de Programación. Úsalo como apoyo: las lecciones siguen siendo tu camino.
 
 #### Reglas de escritura
@@ -150,6 +158,10 @@ void loop() {
 | `pinMode(pin, modo)` | Configura un pin como salida (`OUTPUT`) o entrada (`INPUT`) | `pinMode(18, OUTPUT);` |
 | `digitalWrite(pin, valor)` | Pone el pin en 3.3 V (`HIGH`) o en 0 V (`LOW`) | `digitalWrite(18, HIGH);` |
 | `delay(ms)` | Espera los milisegundos indicados (1000 ms = 1 s) | `delay(500);` |
+
+```widget
+tres-instrucciones
+```
 
 #### Ponerle nombre a los pines
 
@@ -258,6 +270,10 @@ El ESP32 puede enviar texto a la computadora por el mismo cable USB (en Wokwi, a
 | `Serial.print("texto");` | Escribe el texto y se queda en la misma línea |
 | `Serial.println("texto");` | Escribe el texto y salta a la línea siguiente |
 
+```widget
+monitor-serial
+```
+
 #### Las variables
 
 Una **variable** es una "caja" con nombre donde el programa guarda un dato que puede cambiar. Al crearla, indicas qué **tipo** de dato guarda:
@@ -269,6 +285,10 @@ Una **variable** es una "caja" con nombre donde el programa guarda un dato que p
 | `bool` | Verdadero o falso | `bool encendido = true;` |
 | `char` | Una sola letra o símbolo | `char letra = 'a';` |
 | `String` | Texto | `String nombre = "Nova";` |
+
+```widget
+variable-caja
+```
 
 #### Operaciones
 
@@ -288,6 +308,10 @@ division-enteros
 
 - **Fuera de `setup()` y `loop()`** (arriba del todo): la variable existe durante todo el programa y la pueden usar todas las partes. Se llama **variable global**.
 - **Dentro de `loop()`**: la variable se crea de nuevo en cada vuelta y solo existe ahí. Se llama **variable local**.
+
+```widget
+global-local
+```
 
 ### Paso a paso
 
@@ -388,6 +412,10 @@ Puedes combinar condiciones:
 | `\|\|` | O (basta con una) | `if (a == HIGH \|\| b == HIGH)` |
 | `!` | NO (invierte) | `!true` es `false` |
 
+```widget
+leer-decidir
+```
+
 #### Estar presionado vs. "acabar de presionar"
 
 Hay dos formas de usar un botón:
@@ -395,9 +423,17 @@ Hay dos formas de usar un botón:
 1. **Mientras está presionado:** el LED se enciende solo mientras mantienes el dedo encima.
 2. **Cada vez que se presiona:** cada pulsación cambia algo (encender/apagar, cambiar de modo). Para esto hay que detectar el **cambio**: el botón estaba en `LOW` y ahora está en `HIGH`. Para saberlo, se guarda en una variable cómo estaba el botón en la vuelta anterior del `loop()`.
 
+```widget
+flanco
+```
+
 #### El rebote
 
 Cuando presionas un botón real, sus contactos metálicos "rebotan" durante unos milisegundos: el ESP32 ve varias pulsaciones muy rápidas en lugar de una. La solución más simple es **esperar unos 50 ms** después de detectar un cambio, hasta que la señal se estabilice. A esto se le llama **antirrebote (debounce)**.
+
+```widget
+rebote
+```
 
 #### Pruébalo antes de armarlo
 
@@ -544,6 +580,10 @@ int porcentaje = map(valor, 0, 4095, 0, 100);
 
 Se lee así: "toma `valor`, que va de 0 a 4095, y conviértelo a la escala de 0 a 100".
 
+```widget
+map-escalas
+```
+
 #### Decisiones por rangos
 
 Para elegir entre más de dos caminos se usa `else if`:
@@ -561,6 +601,10 @@ if (porcentaje < 33) {
 El programa revisa las condiciones **en orden** y ejecuta solo la primera que se cumpla.
 
 Comparadores disponibles: `<` (menor), `>` (mayor), `<=` (menor o igual), `>=` (mayor o igual).
+
+```widget
+rangos
+```
 
 #### Pruébalo: del pin al número
 
@@ -765,6 +809,10 @@ Un **servomotor** es un motor que no gira libremente, sino que **va a un ángulo
 
 El **SG90** es el servo más usado en robótica educativa: se mueve de **0° a 180°**.
 
+```widget
+servo-interno
+```
+
 #### Sus 3 cables
 
 | Color | Función | Conexión |
@@ -774,6 +822,10 @@ El **SG90** es el servo más usado en robótica educativa: se mueve de **0° a 1
 | **Naranja** (o amarillo) | Señal | GPIO 25 |
 
 Recuerda lo que viste en E3: el GPIO solo envía la **señal**; la **energía** viene de 5 V.
+
+```widget
+servo-cables
+```
 
 #### ¿Cómo sabe el servo a qué ángulo ir?
 
@@ -895,6 +947,10 @@ if (Serial.available() > 0) {   // ¿llegó algo?
 }
 ```
 
+```widget
+serial-fila
+```
+
 #### La estructura `switch`
 
 Cuando una variable puede tener muchos valores y cada uno lleva a una acción distinta, `switch` es más ordenado que muchos `if`:
@@ -911,6 +967,10 @@ switch (comando) {
     // si no es ninguno de los anteriores
     break;
 }
+```
+
+```widget
+switch-case
 ```
 
 > **Cuidado:** cada `case` termina con `break`. Si lo olvidas, el programa sigue ejecutando el `case` siguiente.
@@ -942,6 +1002,10 @@ encenderSolo(LED_ROJO);           // apaga todo y enciende solo el rojo
 
 **¿Por qué usar funciones?** Porque en vez de repetir las mismas 3 líneas en 5 lugares, escribes una vez y usas el nombre. Si hay un error, lo corriges en un solo lugar. Es lo que harás en el equipo con funciones como `adelante()`, `atras()` o `girarIzquierda()` para mover un robot.
 
+```widget
+funciones
+```
+
 #### Pruébalo antes de armarlo
 
 Este es el programa del Paso a paso funcionando. Escribe una letra y presiona **Enviar**: mira qué `case` se ejecuta. Después quita un `break` y vuelve a probar.
@@ -969,6 +1033,10 @@ if (SerialBT.available() > 0) {
 ```
 
 El simulador no puede probar Bluetooth, así que lo harás con una placa real ya en el equipo. Lo importante es que **la lógica ya la sabes**.
+
+```widget
+bluetooth
+```
 
 > **Dato:** el Bluetooth "clásico" del ESP32 (el de `BluetoothSerial`) funciona con celulares Android, pero no con iPhone.
 
