@@ -13,7 +13,7 @@ export const translations = {
       tienda: "Tienda Nova",
       impresion3d: "Impresión 3D",
       login: "Ingresar",
-      myPanel: "Mi panel",
+      myPanel: "Mi cuenta",
       join: "Unirse al Equipo",
     },
     hero: {
@@ -89,7 +89,7 @@ export const translations = {
       tienda: "Nova Store",
       impresion3d: "3D Printing",
       login: "Enter",
-      myPanel: "My dashboard",
+      myPanel: "My account",
       join: "Join the Team",
     },
     hero: {

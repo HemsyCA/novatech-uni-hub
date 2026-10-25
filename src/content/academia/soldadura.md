@@ -321,7 +321,7 @@ Los kits son limitados: por eso solo los reciben quienes llegaron hasta aquí. L
 
 #### Cómo será la práctica
 
-1. **El encargado de la convocatoria te asigna una fecha.** La verás en tu panel y en la Academia.
+1. **El encargado de la convocatoria te asigna una fecha.** La verás en Inicio y en la Academia.
 2. **El día de la práctica recibes un kit de placa** con componentes THT y SMD.
 3. **Sueldas tu placa con guía del equipo:** primero un repaso rápido de seguridad y técnica, y luego trabajas tú, con alguien revisando tus juntas.
 4. **Al terminar revisan tu placa juntos:** juntas, puentes, polaridad.
