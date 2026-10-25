@@ -20,7 +20,7 @@ import { currentWeekIndex, lessonState } from "@/lib/academia/path";
 
 const linkBase = "flex min-h-9 items-center gap-2.5 rounded-lg px-3 py-1.5 text-sm transition-colors";
 const linkClass = ({ isActive }: { isActive: boolean }) =>
-  `${linkBase} ${isActive ? "bg-white/10 font-semibold text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"}`;
+  `${linkBase} ${isActive ? "bg-nova/15 font-semibold text-white shadow-[inset_2px_0_0_0_hsl(var(--nova))]" : "text-white/60 hover:bg-white/[0.05] hover:text-white"}`;
 
 function GroupLabel({ children }: { children: string }) {
   return <p className="px-3 pb-1 pt-4 text-[11px] uppercase tracking-widest text-white/35">{children}</p>;
