@@ -1,10 +1,10 @@
-import type { CSSProperties } from "react";
+import { useState, type CSSProperties } from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight, Check, CircuitBoard, Code2, Cog, Flag, Lock, type LucideIcon } from "lucide-react";
 import { useAcademy, useLessonState } from "@/components/academia/academy-context";
 import { lessonPath, weeklyPlan, type Lesson } from "@/lib/academia/course";
 import { moduleAccent, moduleName } from "@/lib/academia/modules";
-import type { LessonState } from "@/lib/academia/path";
+import { currentWeekIndex, type LessonState } from "@/lib/academia/path";
 
 const moduleIcons: Record<string, LucideIcon> = {
   electronica: CircuitBoard,
@@ -42,7 +42,17 @@ function Node({ lesson, state }: { lesson: Lesson; state: LessonState }) {
   );
 }
 
-function PathStep({ lesson, state, isLast, nextDone }: { lesson: Lesson; state: LessonState; isLast: boolean; nextDone: boolean }) {
+function PathStep({
+  lesson,
+  state,
+  isLast,
+  nextDone,
+}: {
+  lesson: Lesson;
+  state: LessonState;
+  isLast: boolean;
+  nextDone: boolean;
+}) {
   const label = (
     <span className="min-w-0 flex-1">
       <span
@@ -101,40 +111,69 @@ function PathStep({ lesson, state, isLast, nextDone }: { lesson: Lesson; state: 
 export function CoursePath() {
   const { progress } = useAcademy();
   const stateOf = useLessonState();
+  // Se muestra una semana a la vez; empieza en la que toca cursar.
+  const [selected, setSelected] = useState(() => currentWeekIndex(progress.nextLesson));
+  const week = weeklyPlan[selected];
+  const done = week.lessons.filter((l) => progress.completed.has(l.key)).length;
 
   return (
-    <div className="grid gap-6 lg:grid-cols-3">
-      {weeklyPlan.map((week) => {
-        const done = week.lessons.filter((l) => progress.completed.has(l.key)).length;
-        return (
-          <div key={week.title} className="rounded-2xl border border-white/10 p-5">
-            <div className="mb-5 flex items-center justify-between">
-              <h3 className="font-display text-sm font-bold uppercase tracking-widest">{week.title}</h3>
+    <div>
+      <div role="tablist" aria-label="Semanas del curso" className="mb-4 flex flex-wrap gap-2">
+        {weeklyPlan.map((w, index) => {
+          const weekDone = w.lessons.filter((l) => progress.completed.has(l.key)).length;
+          const active = index === selected;
+          return (
+            <button
+              key={w.title}
+              type="button"
+              role="tab"
+              aria-selected={active}
+              onClick={() => setSelected(index)}
+              className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors ${
+                active
+                  ? "border-white bg-white text-black"
+                  : "border-white/15 text-white/70 hover:border-white/40 hover:text-white"
+              }`}
+            >
+              {w.title}
               <span
-                className={`rounded-full px-2.5 py-0.5 text-xs ${
-                  done === week.lessons.length ? "bg-emerald-400 font-semibold text-black" : "bg-white/10 text-white/60"
-                }`}
+                className={`text-xs ${weekDone === w.lessons.length ? "font-semibold text-emerald-500" : active ? "text-black/60" : "text-white/40"}`}
               >
-                {done}/{week.lessons.length}
+                {weekDone}/{w.lessons.length}
               </span>
-            </div>
-            <ol>
-              {week.lessons.map((lesson, index) => {
-                const following = week.lessons[index + 1];
-                return (
-                  <PathStep
-                    key={lesson.key}
-                    lesson={lesson}
-                    state={stateOf(lesson)}
-                    isLast={!following}
-                    nextDone={Boolean(following && progress.completed.has(following.key)) || following?.key === progress.nextLesson?.key}
-                  />
-                );
-              })}
-            </ol>
-          </div>
-        );
-      })}
+            </button>
+          );
+        })}
+      </div>
+      <div key={week.title} className="rounded-2xl border border-white/10 p-5">
+        <div className="mb-5 flex items-center justify-between">
+          <h3 className="font-display text-sm font-bold uppercase tracking-widest">{week.title}</h3>
+          <span
+            className={`rounded-full px-2.5 py-0.5 text-xs ${
+              done === week.lessons.length ? "bg-emerald-400 font-semibold text-black" : "bg-white/10 text-white/60"
+            }`}
+          >
+            {done}/{week.lessons.length}
+          </span>
+        </div>
+        <ol>
+          {week.lessons.map((lesson, index) => {
+            const following = week.lessons[index + 1];
+            return (
+              <PathStep
+                key={lesson.key}
+                lesson={lesson}
+                state={stateOf(lesson)}
+                isLast={!following}
+                nextDone={
+                  Boolean(following && progress.completed.has(following.key)) ||
+                  following?.key === progress.nextLesson?.key
+                }
+              />
+            );
+          })}
+        </ol>
+      </div>
     </div>
   );
 }
