@@ -1,10 +1,11 @@
 import { Suspense, useEffect, useState } from "react";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useMatch } from "react-router-dom";
 import { Lock } from "lucide-react";
 import { useAccount } from "@/components/account/account-context";
 import { useAcademyFichas } from "@/hooks/use-academy-fichas";
 import { getCurrentSession } from "@/services/supabase/auth";
 import { formatDate, limaToday } from "@/lib/academy-dates";
+import { AcademiaSidebar } from "@/components/academia/AcademiaSidebar";
 import type { AcademyContext } from "@/components/academia/academy-context";
 import type { AcademyMembership } from "@/types/domain";
 
@@ -63,7 +64,21 @@ export default function Academia() {
   const { academy, progress, entrega, practica } = useAccount();
   const { loading, hasAccess, isStaff, activeMembership, memberships, userId } = academy;
   const fichas = useAcademyFichas(userId);
-  const context: AcademyContext = { progress, fichas, entrega, practica, activeMembership, isStaff };
+  const context: AcademyContext = {
+    progress,
+    fichas,
+    entrega,
+    practica,
+    activeMembership,
+    isStaff,
+  };
+  // Las lecciones se leen sin distracciones (con su propio índice del módulo); el resto lleva el menú del curso.
+  const inLesson = useMatch("/academia/:moduleId/:lessonId") !== null;
+  const content = (
+    <Suspense fallback={<div className="text-white/60 animate-pulse">Cargando…</div>}>
+      <Outlet context={context} />
+    </Suspense>
+  );
 
   return (
     <div className="font-mono text-white">
@@ -71,9 +86,14 @@ export default function Academia() {
         {loading || progress.loading || fichas.loading || entrega.loading || practica.loading ? (
           <div className="text-white/60 animate-pulse">Cargando…</div>
         ) : hasAccess ? (
-          <Suspense fallback={<div className="text-white/60 animate-pulse">Cargando…</div>}>
-            <Outlet context={context} />
-          </Suspense>
+          inLesson ? (
+            content
+          ) : (
+            <div className="grid gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-10">
+              <AcademiaSidebar academy={context} />
+              <div className="min-w-0">{content}</div>
+            </div>
+          )
         ) : (
           <LockedState memberships={memberships} />
         )}
