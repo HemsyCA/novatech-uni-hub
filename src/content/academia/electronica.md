@@ -91,7 +91,7 @@ Un LED casi no tiene resistencia propia. Si lo conectas directo a una fuente, de
 **Cómo calcularla:**
 
 1. Al voltaje de la fuente le restas la caída del LED. Lo que sobra es el voltaje que se queda en la resistencia.
-2. Eliges cuánta corriente quieres (10 mA es un buen valor para el ESP32).
+2. Eliges cuánta corriente quieres (10 mA es un buen valor para el ESP32). Un LED común aguanta unos **20 mA**; con más de 30 mA se quema.
 3. Aplicas R = V / I.
 
 > **Ejemplo completo:** LED rojo conectado a un pin del ESP32 (3.3 V), queremos 10 mA.
@@ -99,7 +99,7 @@ Un LED casi no tiene resistencia propia. Si lo conectas directo a una fuente, de
 > - Voltaje en la resistencia: 3.3 V − 2.0 V = **1.3 V**
 > - R = 1.3 V / 0.010 A = **130 Ω**
 
-Ahora pruébalo tú. Empieza con el ejemplo (3.3 V, LED rojo, 10 mA) y comprueba que salen 130 Ω. Después cambia el color del LED o la corriente y mira qué cambia.
+Ahora pruébalo tú. Empieza con el ejemplo (3.3 V, LED rojo, 10 mA) y comprueba que salen 130 Ω. Después cambia el color del LED o la corriente y mira qué cambia. Sube la corriente más allá de 20 mA para ver qué le pasa al LED.
 
 ```widget
 calculadora-led
@@ -114,6 +114,24 @@ Las resistencias no se fabrican en cualquier valor. Existen valores estándar co
 En Nova usamos **220 Ω** para todos los LEDs conectados al ESP32. Con 220 Ω la corriente queda en:
 
 I = 1.3 V / 220 Ω ≈ **5.9 mA**, suficiente para que el LED se vea bien y muy seguro para el pin.
+
+#### El código de colores
+
+Las resistencias son tan pequeñas que su valor no viene escrito: viene pintado en **bandas de colores**. En las de 4 bandas:
+
+- **Bandas 1 y 2:** las dos primeras cifras del valor.
+- **Banda 3:** el multiplicador (por cuánto se multiplican esas cifras).
+- **Banda 4:** la tolerancia, casi siempre **dorada (±5 %)**: el valor real puede variar un poco.
+
+Por ejemplo, la de 220 Ω que usamos en Nova es **rojo · rojo · marrón · dorado**: 2, 2 y × 10 = 220 Ω.
+
+También vienen en distintos **tamaños**. El tamaño no cambia su valor en ohmios: indica cuánta potencia aguantan. Las más comunes son las de **1/4 W** y las de **1/8 W**, que son más pequeñas.
+
+Arma resistencias con los colores y compara los dos tamaños:
+
+```widget
+codigo-colores
+```
 
 #### Potencia (un dato extra)
 

@@ -31,6 +31,7 @@ import { ThtSolderGame } from "@/components/academia/widgets/ThtSolderGame";
 import { DefectHunt } from "@/components/academia/widgets/DefectHunt";
 import { SmdOrder, SmdSizes } from "@/components/academia/widgets/SmdWidgets";
 import { ReviewCards } from "@/components/academia/widgets/ReviewCards";
+import { ResistorColors } from "@/components/academia/widgets/ResistorColors";
 import { Check, ChevronRight, Copy, Info, Lightbulb, Maximize2, TriangleAlert, Wrench, type LucideIcon } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
@@ -49,6 +50,7 @@ const IMAGE_SRC = /^\/[\w/.-]+\.(webp|png|jpe?g|svg)$/;
 // Apoyos interactivos que se insertan en una lección con un bloque ```widget.
 const widgets: Record<string, () => JSX.Element> = {
   "calculadora-led": LedResistorCalculator,
+  "codigo-colores": ResistorColors,
   "diagrama-led": LedDiagram,
   "divisor-voltaje": VoltageDivider,
   potenciometro: Potentiometer,

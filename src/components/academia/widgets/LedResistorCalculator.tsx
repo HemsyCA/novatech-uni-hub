@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from "react";
-import { Calculator } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Calculator, RotateCcw } from "lucide-react";
 
 const SOURCES = [
   { volts: 3.3, label: "3.3 V", hint: "pin del ESP32" },
@@ -21,6 +21,9 @@ const E12 = [10, 12, 15, 18, 22, 27, 33, 39, 47, 56, 68, 82];
 const COMMERCIAL = [1, 10, 100, 1000].flatMap((factor) => E12.map((value) => value * factor));
 
 const POWER_LIMIT = 0.25;
+// Un LED común de 5 mm trabaja bien hasta unos 20 mA; pasando los 30 mA se quema.
+const LED_MAX = 0.02;
+const LED_BURN = 0.03;
 
 const ohms = (value: number) => (value >= 1000 ? `${+(value / 1000).toFixed(1)} kΩ` : `${Math.round(value)} Ω`);
 // Como en la lección: 2.0 V, 1.3 V, 0.25 V.
@@ -70,7 +73,18 @@ export function LedResistorCalculator() {
   const commercial = COMMERCIAL.find((value) => value >= ideal) ?? COMMERCIAL[COMMERCIAL.length - 1];
   const realCurrent = resistorVolts / commercial;
   const power = resistorVolts * realCurrent;
-  const glow = Math.min(realCurrent / 0.02, 1);
+  const glow = Math.min(realCurrent / LED_MAX, 1.4);
+  const ledState = realCurrent > LED_BURN ? "burn" : realCurrent > LED_MAX ? "limit" : "ok";
+
+  // Un LED quemado no se recupera aunque bajes la corriente: hay que cambiarlo.
+  const [burned, setBurned] = useState(false);
+  useEffect(() => {
+    if (resistorVolts > 0 && ledState === "burn") setBurned(true);
+  }, [ledState, resistorVolts]);
+  const newLed = () => {
+    setBurned(false);
+    setCurrentMa(10);
+  };
 
   return (
     <section className="not-prose my-8 rounded-2xl border border-[rgb(var(--tone,255_255_255)/0.4)] p-5">
@@ -109,7 +123,7 @@ export function LedResistorCalculator() {
             id="led-current"
             type="range"
             min={1}
-            max={20}
+            max={50}
             value={currentMa}
             onChange={(e) => setCurrentMa(Number(e.target.value))}
             className="w-full accent-[rgb(var(--tone,255_255_255))]"
@@ -133,25 +147,84 @@ export function LedResistorCalculator() {
             <Row label="2. Ley de Ohm: R = V / I" math={`${volts(resistorVolts)} ÷ ${current.toFixed(3)} A`} result={ohms(ideal)} />
             <Row label="3. Valor comercial (el siguiente más grande)" math="Serie comercial" result={ohms(commercial)} highlight />
             <Row
-              label={`4. Comprobación con ${ohms(commercial)}`}
+              label={`4. La resistencia de ${ohms(commercial)}`}
               math={`${milliamps(realCurrent)} · ${+power.toFixed(3)} W`}
               result={power < POWER_LIMIT ? "✅ Seguro" : "⚠️ Se calienta"}
             />
+            <Row
+              label="5. ¿Y el LED? (aguanta unos 20 mA)"
+              math={milliamps(realCurrent)}
+              result={ledState === "burn" ? "💥 Se quema" : ledState === "limit" ? "⚠️ Al límite" : "✅ Bien"}
+            />
           </div>
           <div className="flex flex-row items-center justify-center gap-4 rounded-xl bg-white/[0.03] p-4 sm:flex-col">
-            <svg viewBox="0 0 60 80" className="h-20 w-16" aria-hidden>
-              <circle cx="30" cy="28" r={14 + glow * 12} fill={led.color} opacity={0.15 + glow * 0.35} style={{ filter: "blur(6px)" }} />
-              <path d="M18 44 V26 a12 12 0 0 1 24 0 V44 Z" fill={led.color} opacity={0.35 + glow * 0.65} />
-              <rect x="16" y="44" width="28" height="4" rx="1" fill={led.color} opacity="0.6" />
-              <line x1="25" y1="48" x2="25" y2="78" stroke="#a3a3a3" strokeWidth="2" />
-              <line x1="35" y1="48" x2="35" y2="70" stroke="#a3a3a3" strokeWidth="2" />
-            </svg>
-            <p className="max-w-[9rem] text-center text-xs text-white/50">Más corriente, más brillo… y más riesgo para el pin.</p>
+            {burned ? (
+              <svg viewBox="0 0 60 80" className="h-20 w-16" role="img" aria-label="LED quemado">
+                {/* Humo */}
+                <g className="animate-pulse motion-reduce:animate-none" opacity="0.6">
+                  <circle cx="26" cy="10" r="5" fill="#737373" style={{ filter: "blur(3px)" }} />
+                  <circle cx="34" cy="5" r="4" fill="#737373" style={{ filter: "blur(3px)" }} />
+                </g>
+                <path d="M18 44 V26 a12 12 0 0 1 24 0 V44 Z" fill="#3f3a36" />
+                {/* La cápsula rajada y ennegrecida */}
+                <path d="M24 20 L29 27 L26 32 L31 38" fill="none" stroke="#111" strokeWidth="1.5" />
+                <path d="M36 24 L33 29" fill="none" stroke="#111" strokeWidth="1.2" />
+                <rect x="16" y="44" width="28" height="4" rx="1" fill="#2b2724" />
+                <line x1="25" y1="48" x2="25" y2="78" stroke="#a3a3a3" strokeWidth="2" />
+                <line x1="35" y1="48" x2="35" y2="70" stroke="#a3a3a3" strokeWidth="2" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 60 80" className="h-20 w-16" aria-hidden>
+                <circle
+                  cx="30"
+                  cy="28"
+                  r={14 + glow * 12}
+                  fill={ledState === "limit" ? "#fff7d6" : led.color}
+                  opacity={0.15 + Math.min(glow, 1) * 0.35}
+                  style={{ filter: "blur(6px)" }}
+                />
+                <path d="M18 44 V26 a12 12 0 0 1 24 0 V44 Z" fill={led.color} opacity={0.35 + Math.min(glow, 1) * 0.65} />
+                {ledState === "limit" && <circle cx="30" cy="28" r="6" fill="white" opacity="0.8" />}
+                <rect x="16" y="44" width="28" height="4" rx="1" fill={led.color} opacity="0.6" />
+                <line x1="25" y1="48" x2="25" y2="78" stroke="#a3a3a3" strokeWidth="2" />
+                <line x1="35" y1="48" x2="35" y2="70" stroke="#a3a3a3" strokeWidth="2" />
+              </svg>
+            )}
+            <p className="max-w-[9rem] text-center text-xs text-white/50">
+              {burned ? "Este LED ya no enciende." : "Más corriente, más brillo… y más riesgo para el LED y el pin."}
+            </p>
+            {burned && (
+              <button
+                type="button"
+                onClick={newLed}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-white/20 px-3 py-1.5 text-xs text-white hover:bg-white/10"
+              >
+                <RotateCcw className="h-3.5 w-3.5" /> Poner un LED nuevo
+              </button>
+            )}
           </div>
         </div>
       )}
 
-      {source.volts === 3.3 && currentMa > 12 && resistorVolts > 0 && (
+      {burned && resistorVolts > 0 && (
+        <p className="mt-3 rounded-xl bg-rose-400/10 px-4 py-3 text-sm text-rose-100" aria-live="polite">
+          <span className="font-semibold text-rose-300">¡El LED se quemó! </span>
+          Pasaron más de 30 mA y un LED común de 5 mm no lo aguanta: se calienta por dentro y se malogra para siempre. Bajar la corriente ya no
+          lo arregla: pon un LED nuevo y elige una corriente de 20 mA o menos.
+        </p>
+      )}
+      {!burned && ledState === "limit" && resistorVolts > 0 && (
+        <p className="mt-3 rounded-xl bg-amber-300/10 px-4 py-3 text-sm text-amber-100" aria-live="polite">
+          <span className="font-semibold text-amber-300">Al límite. </span>
+          Más de 20 mA: el LED brilla mucho, pero se calienta y dura mucho menos. Si sigues subiendo, se quema.
+        </p>
+      )}
+      {source.volts === 3.3 && currentMa > 20 && resistorVolts > 0 && (
+        <p className="mt-3 text-xs text-amber-200/80">
+          Y no solo el LED: más de 20 mA también es demasiado para un pin del ESP32.
+        </p>
+      )}
+      {source.volts === 3.3 && currentMa > 12 && currentMa <= 20 && resistorVolts > 0 && (
         <p className="mt-3 text-xs text-amber-200/80">
           Para cuidar los pines del ESP32, en Nova usamos alrededor de 10 mA por LED.
         </p>
