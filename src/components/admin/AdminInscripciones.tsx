@@ -82,7 +82,7 @@ export function AdminInscripciones({ groups, onReviewed }: Props) {
           <>
             {openGroups.length === 0 && (
               <p className="text-sm text-muted-foreground">
-                Crea un grupo (abajo) que no haya finalizado para poder aprobar solicitudes.
+                Crea un grupo (en la sección Grupos) que no haya finalizado para poder aprobar solicitudes.
               </p>
             )}
             {applications.map((application) => (

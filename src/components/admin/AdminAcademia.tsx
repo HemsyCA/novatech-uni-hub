@@ -52,7 +52,9 @@ const statusVariant: Record<AcademyStatus, "default" | "secondary" | "outline"> 
 const errorMessage = (error: unknown, fallback: string) =>
   (error as { message?: string } | null)?.message || fallback;
 
-export function AdminAcademia() {
+export type AcademiaView = "todo" | "inscripciones" | "grupos";
+
+export function AdminAcademia({ view = "todo" }: { view?: AcademiaView }) {
   const [groups, setGroups] = useState<AcademyGroup[]>([]);
   const [registered, setRegistered] = useState<Set<string>>(new Set());
   const [novaMembers, setNovaMembers] = useState<Set<string>>(new Set());
@@ -84,23 +86,28 @@ export function AdminAcademia() {
 
   return (
     <div className="space-y-6">
-      <AdminInscripciones groups={groups} onReviewed={fetchGroups} />
-      <NewGroupForm onCreated={fetchGroups} />
+      {view !== "grupos" && <AdminInscripciones groups={groups} onReviewed={fetchGroups} />}
 
-      {groups.length === 0 ? (
-        <p className="text-center text-muted-foreground py-4">Todavía no hay grupos de convocados</p>
-      ) : (
-        <Accordion type="multiple" className="space-y-2">
-          {groups.map((group) => (
-            <GroupItem
-              key={group.id}
-              group={group}
-              registered={registered}
-              novaMembers={novaMembers}
-              onChange={fetchGroups}
-            />
-          ))}
-        </Accordion>
+      {view !== "inscripciones" && (
+        <>
+          <NewGroupForm onCreated={fetchGroups} />
+
+          {groups.length === 0 ? (
+            <p className="text-center text-muted-foreground py-4">Todavía no hay grupos de convocados</p>
+          ) : (
+            <Accordion type="multiple" className="space-y-2">
+              {groups.map((group) => (
+                <GroupItem
+                  key={group.id}
+                  group={group}
+                  registered={registered}
+                  novaMembers={novaMembers}
+                  onChange={fetchGroups}
+                />
+              ))}
+            </Accordion>
+          )}
+        </>
       )}
     </div>
   );

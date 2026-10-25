@@ -87,7 +87,7 @@ const App = () => (
                 {/* La antigua zona de miembros ahora es Conocimientos Nova. */}
                 <Route path="/miembros" element={<Navigate to="/conocimientos" replace />} />
                 <Route element={<StaffRoute />}>
-                  <Route path="/admin" element={<Admin />} />
+                  <Route path="/admin/*" element={<Admin />} />
                 </Route>
               </Route>
             </Route>

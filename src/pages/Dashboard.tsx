@@ -256,10 +256,10 @@ export default function Dashboard() {
 
   const reviews = [
     academicPending !== null && { to: "/comunidad?vista=revisar", count: academicPending, label: "Aportes de la Comunidad" },
-    staffPending && { to: "/admin", count: staffPending.entregas, label: "Tareas finales" },
-    staffPending && { to: "/admin", count: staffPending.inscripciones, label: "Inscripciones" },
-    staffPending && { to: "/admin", count: staffPending.pedidos, label: "Pedidos por confirmar" },
-    staffPending && { to: "/admin", count: staffPending.reservas, label: "Reservas por aprobar" },
+    staffPending && { to: "/admin/entregas", count: staffPending.entregas, label: "Tareas finales" },
+    staffPending && { to: "/admin/inscripciones", count: staffPending.inscripciones, label: "Inscripciones" },
+    staffPending && { to: "/admin/pedidos", count: staffPending.pedidos, label: "Pedidos por confirmar" },
+    staffPending && { to: "/admin/reservas", count: staffPending.reservas, label: "Reservas por aprobar" },
   ].filter(Boolean) as { to: string; count: number; label: string }[];
   const pendingTotal = reviews.reduce((total, review) => total + review.count, 0);
 

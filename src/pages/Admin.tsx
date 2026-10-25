@@ -1,5 +1,16 @@
+import { useCallback, useEffect, useRef, type ReactNode } from "react";
+import { Link, Navigate, useNavigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Loader2 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { AdminRoles } from "@/components/admin/AdminRoles";
 import { AdminProducts } from "@/components/admin/AdminProducts";
 import { AdminOrders } from "@/components/admin/AdminOrders";
@@ -10,76 +21,269 @@ import { AdminAvance } from "@/components/admin/AdminAvance";
 import { AdminMiembros } from "@/components/admin/AdminMiembros";
 import { AdminEntregas } from "@/components/admin/AdminEntregas";
 import { AdminPracticas } from "@/components/admin/AdminPracticas";
-import { useUserRole } from "@/hooks/use-user-role";
+import { AdminHoy } from "@/components/admin/AdminHoy";
+import { useAccount } from "@/components/account/account-context";
+
+type PendingKey = "entregas" | "inscripciones" | "pedidos" | "reservas";
+
+interface Section {
+  slug: string;
+  label: string;
+  description: string;
+  // Qué contador del recuento de pendientes corresponde a esta sección.
+  pending?: PendingKey;
+  superadminOnly?: boolean;
+  element: ReactNode;
+}
+
+interface Area {
+  title: string;
+  sections: Section[];
+}
+
+const AREAS: Area[] = [
+  {
+    title: "Servicios",
+    sections: [
+      { slug: "pedidos", label: "Pedidos", description: "Pedidos de la Tienda Nova.", pending: "pedidos", element: <AdminOrders /> },
+      {
+        slug: "reservas",
+        label: "Reservas",
+        description: "Reservas de impresión 3D.",
+        pending: "reservas",
+        element: <AdminReservations />,
+      },
+      { slug: "productos", label: "Productos", description: "Catálogo de la Tienda Nova.", element: <AdminProducts /> },
+    ],
+  },
+  {
+    title: "Convocatoria",
+    sections: [
+      {
+        slug: "inscripciones",
+        label: "Inscripciones",
+        description: "Solicitudes recibidas desde Únete: apruébalas y asígnalas a un grupo.",
+        pending: "inscripciones",
+        element: <AdminAcademia view="inscripciones" />,
+      },
+      {
+        slug: "grupos",
+        label: "Grupos",
+        description: "Crea grupos con sus fechas y gestiona a los convocados de cada uno.",
+        element: <AdminAcademia view="grupos" />,
+      },
+      { slug: "avance", label: "Avance", description: "Cómo va cada convocado en el curso.", element: <AdminAvance /> },
+      {
+        slug: "entregas",
+        label: "Entregas",
+        description: "Tareas finales por revisar.",
+        pending: "entregas",
+        element: <AdminEntregas />,
+      },
+      {
+        slug: "practicas",
+        label: "Prácticas",
+        description: "Sesiones presenciales de soldadura.",
+        element: <AdminPracticas />,
+      },
+    ],
+  },
+  {
+    title: "Personas",
+    sections: [
+      { slug: "miembros", label: "Miembros", description: "Acceso permanente al material interno.", element: <AdminMiembros /> },
+      {
+        slug: "roles",
+        label: "Roles",
+        description: "Quién es superadmin, directiva o Área académica.",
+        superadminOnly: true,
+        element: <AdminRoles />,
+      },
+    ],
+  },
+  {
+    title: "Comunicación",
+    sections: [
+      {
+        slug: "mensajes",
+        label: "Mensajes",
+        description: "Mensajes recibidos desde el formulario de contacto.",
+        element: <AdminContactMessages />,
+      },
+    ],
+  },
+];
+
+const HOY_TITLE = "Hoy";
+const HOY_DESCRIPTION = "Esto es lo que espera tu revisión.";
+
+const pathFor = (slug: string) => (slug ? `/admin/${slug}` : "/admin");
+
+function Badge({ count }: { count: number }) {
+  return (
+    <span className="flex h-[18px] min-w-[18px] items-center justify-center rounded-full bg-nova px-1.5 text-[11px] font-semibold text-white">
+      {count}
+    </span>
+  );
+}
+
+function MenuLink({ to, active, label, count, note }: { to: string; active: boolean; label: string; count?: number; note?: string }) {
+  return (
+    <Link
+      to={to}
+      aria-current={active ? "page" : undefined}
+      className={`flex items-center justify-between rounded-lg px-3 py-2 text-sm transition-colors ${
+        active
+          ? "bg-nova/15 text-white shadow-[inset_2px_0_0_0_hsl(var(--nova))]"
+          : "text-white/60 hover:bg-white/5 hover:text-white"
+      }`}
+    >
+      {label}
+      {count ? <Badge count={count} /> : note ? <span className="font-mono text-[10px] text-white/30">{note}</span> : null}
+    </Link>
+  );
+}
 
 export default function Admin() {
-  const { isSuperadmin, isDirectiva } = useUserRole();
+  const { academy, staffPending, reloadStaffPending: reloadFromAccount } = useAccount();
+  const navigate = useNavigate();
+  const params = useParams();
+  const slug = (params["*"] ?? "").replace(/\/+$/, "");
+  const isSuperadmin = academy.isSuperadmin;
+
+  // Referencia estable: si la función del contexto cambiara de identidad, los efectos de abajo
+  // no se repetirían en bucle consultando la base de datos sin parar.
+  const latestReload = useRef(reloadFromAccount);
+  latestReload.current = reloadFromAccount;
+  const reloadStaffPending = useCallback(() => latestReload.current(), []);
+
+  // Los contadores se vuelven a calcular al cambiar de sección, al volver a la pestaña,
+  // cada minuto y poco después de pulsar un botón dentro de una sección (aprobar, rechazar…).
+  const firstRun = useRef(true);
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+      return;
+    }
+    reloadStaffPending();
+  }, [slug, reloadStaffPending]);
+
+  useEffect(() => {
+    const interval = window.setInterval(reloadStaffPending, 60_000);
+    window.addEventListener("focus", reloadStaffPending);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", reloadStaffPending);
+    };
+  }, [reloadStaffPending]);
+
+  const refreshTimer = useRef<number>();
+  useEffect(() => () => window.clearTimeout(refreshTimer.current), []);
+  const refreshSoon = (event: React.MouseEvent) => {
+    if (!(event.target as HTMLElement).closest("button")) return;
+    window.clearTimeout(refreshTimer.current);
+    refreshTimer.current = window.setTimeout(reloadStaffPending, 1500);
+  };
+
+  if (academy.loading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center pt-28">
+        <Loader2 className="h-6 w-6 animate-spin text-white/60" />
+      </div>
+    );
+  }
+
+  const areas = AREAS.map((area) => ({
+    ...area,
+    sections: area.sections.filter((s) => !s.superadminOnly || isSuperadmin),
+  })).filter((area) => area.sections.length > 0);
+
+  const allSections = areas.flatMap((a) => a.sections);
+  const current = allSections.find((s) => s.slug === slug);
+  if (slug && !current) return <Navigate to="/admin" replace />;
+
+  const countOf = (section: Section) => (section.pending && staffPending ? staffPending[section.pending] : 0);
+  const totalPending = staffPending ? staffPending.entregas + staffPending.inscripciones + staffPending.pedidos + staffPending.reservas : 0;
+
+  const title = current ? current.label : HOY_TITLE;
+  const description = current ? current.description : HOY_DESCRIPTION;
 
   return (
-    <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 pt-28 pb-12 max-w-4xl">
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-8">
-          <h1 className="text-3xl font-display font-bold mb-2">
-            Panel de <span className="text-gradient-primary">Directiva</span>
-          </h1>
-          <p className="text-muted-foreground">
-            {isSuperadmin
-              ? "Como superadmin puedes gestionar la tienda, las reservas, los convocados de Academia Nova, los miembros y los roles."
-              : isDirectiva
-                ? "Tienes acceso de staff para gestionar la tienda, las reservas, los convocados de Academia Nova y los miembros. La gestión de roles queda reservada al superadmin."
-                : ""}
-          </p>
-        </motion.div>
+    <div className="container mx-auto max-w-6xl px-4 pb-16 pt-28">
+      <div className="grid gap-8 lg:grid-cols-[220px_1fr] lg:gap-12">
+        <aside className="hidden self-start lg:sticky lg:top-28 lg:block">
+          <nav aria-label="Secciones del panel de directiva">
+            <p className="px-3 pb-1.5 font-mono text-[10.5px] uppercase tracking-[0.2em] text-white/40">Resumen</p>
+            <MenuLink to="/admin" active={!current} label={HOY_TITLE} count={totalPending} />
+            {areas.map((area) => (
+              <div key={area.title}>
+                <p className="px-3 pb-1.5 pt-5 font-mono text-[10.5px] uppercase tracking-[0.2em] text-white/40">{area.title}</p>
+                {area.sections.map((section) => (
+                  <MenuLink
+                    key={section.slug}
+                    to={pathFor(section.slug)}
+                    active={current?.slug === section.slug}
+                    label={section.label}
+                    count={countOf(section)}
+                    note={section.superadminOnly ? "superadmin" : undefined}
+                  />
+                ))}
+              </div>
+            ))}
+          </nav>
+        </aside>
 
-        <Tabs defaultValue="products">
-          <TabsList
-            className={`grid w-full h-auto bg-muted/50 mb-6 grid-cols-3 ${isSuperadmin ? "sm:grid-cols-10" : "sm:grid-cols-9"}`}
-          >
-            <TabsTrigger value="products">Productos</TabsTrigger>
-            <TabsTrigger value="orders">Pedidos</TabsTrigger>
-            <TabsTrigger value="reservations">Reservas</TabsTrigger>
-            <TabsTrigger value="messages">Mensajes</TabsTrigger>
-            <TabsTrigger value="academia">Convocados</TabsTrigger>
-            <TabsTrigger value="avance">Avance</TabsTrigger>
-            <TabsTrigger value="entregas">Entregas</TabsTrigger>
-            <TabsTrigger value="practicas">Prácticas</TabsTrigger>
-            <TabsTrigger value="miembros">Miembros</TabsTrigger>
-            {isSuperadmin && <TabsTrigger value="roles">Roles</TabsTrigger>}
-          </TabsList>
-          <TabsContent value="products">
-            <AdminProducts />
-          </TabsContent>
-          <TabsContent value="orders">
-            <AdminOrders />
-          </TabsContent>
-          <TabsContent value="reservations">
-            <AdminReservations />
-          </TabsContent>
-          <TabsContent value="messages">
-            <AdminContactMessages />
-          </TabsContent>
-          <TabsContent value="academia">
-            <AdminAcademia />
-          </TabsContent>
-          <TabsContent value="avance">
-            <AdminAvance />
-          </TabsContent>
-          <TabsContent value="entregas">
-            <AdminEntregas />
-          </TabsContent>
-          <TabsContent value="practicas">
-            <AdminPracticas />
-          </TabsContent>
-          <TabsContent value="miembros">
-            <AdminMiembros />
-          </TabsContent>
-          {isSuperadmin && (
-            <TabsContent value="roles">
-              <AdminRoles />
-            </TabsContent>
-          )}
-        </Tabs>
-      </main>
+        <div className="min-w-0">
+          <div className="mb-6 lg:hidden">
+            <Select value={current?.slug ?? "hoy"} onValueChange={(value) => navigate(value === "hoy" ? "/admin" : pathFor(value))}>
+              <SelectTrigger aria-label="Sección del panel">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Resumen</SelectLabel>
+                  <SelectItem value="hoy">{totalPending ? `${HOY_TITLE} (${totalPending})` : HOY_TITLE}</SelectItem>
+                </SelectGroup>
+                {areas.map((area) => (
+                  <SelectGroup key={area.title}>
+                    <SelectLabel>{area.title}</SelectLabel>
+                    {area.sections.map((section) => (
+                      <SelectItem key={section.slug} value={section.slug}>
+                        {countOf(section) ? `${section.label} (${countOf(section)})` : section.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+
+          <motion.div key={slug} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }}>
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-white/40">Panel de directiva</p>
+            <h1 className="mt-2 font-display text-2xl font-bold md:text-3xl">{title}</h1>
+            <p className="mb-8 mt-2 max-w-2xl text-sm text-white/60">{description}</p>
+
+            <div onClick={refreshSoon}>
+              {current ? (
+                current.element
+              ) : (
+                <AdminHoy
+                  cards={[
+                    { slug: "inscripciones", label: "Inscripciones por revisar", count: staffPending?.inscripciones ?? null },
+                    { slug: "pedidos", label: "Pedidos por confirmar", count: staffPending?.pedidos ?? null },
+                    { slug: "reservas", label: "Reservas de impresión por aprobar", count: staffPending?.reservas ?? null },
+                    { slug: "entregas", label: "Tareas finales por calificar", count: staffPending?.entregas ?? null },
+                  ]}
+                  groups={areas.map((area) => ({
+                    title: area.title,
+                    links: area.sections.map((s) => ({ slug: s.slug, label: s.label })),
+                  }))}
+                />
+              )}
+            </div>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 }
