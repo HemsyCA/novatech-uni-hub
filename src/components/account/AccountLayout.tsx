@@ -58,29 +58,29 @@ export default function AccountLayout() {
     };
   }, [user]);
 
+  const reloadStaffPending = useCallback(() => {
+    if (!academy.isStaff) return;
+    Promise.all([listAcademyEntregas(), listPendingApplications(), listAllOrders(), listAllReservations()])
+      .then(([entregas, inscripciones, allOrders, allReservations]) =>
+        setStaffPending({
+          entregas: entregas.filter((e) => e.estado === "enviada").length,
+          inscripciones: inscripciones.length,
+          pedidos: allOrders.filter((o) => o.status === "pending").length,
+          reservas: allReservations.filter((r) => r.status === "pending").length,
+        }),
+      )
+      .catch(() => {
+        // Si un recuento falla se conservan los números anteriores en vez de borrarlos.
+      });
+  }, [academy.isStaff]);
+
   useEffect(() => {
     if (!academy.isStaff) {
       setStaffPending(null);
       return;
     }
-    let active = true;
-    Promise.all([listAcademyEntregas(), listPendingApplications(), listAllOrders(), listAllReservations()])
-      .then(([entregas, inscripciones, allOrders, allReservations]) => {
-        if (active)
-          setStaffPending({
-            entregas: entregas.filter((e) => e.estado === "enviada").length,
-            inscripciones: inscripciones.length,
-            pedidos: allOrders.filter((o) => o.status === "pending").length,
-            reservas: allReservations.filter((r) => r.status === "pending").length,
-          });
-      })
-      .catch(() => {
-        if (active) setStaffPending(null);
-      });
-    return () => {
-      active = false;
-    };
-  }, [academy.isStaff]);
+    reloadStaffPending();
+  }, [academy.isStaff, reloadStaffPending]);
 
   const reloadAportes = useCallback(() => {
     if (!user) return;
@@ -119,6 +119,7 @@ export default function AccountLayout() {
     orders,
     reservations,
     staffPending,
+    reloadStaffPending,
     academicPending,
     aportes,
     reloadAportes,

@@ -18,11 +18,11 @@ export const buildNotifications = (account: AccountState): AccountNotification[]
   if (account.staffPending) {
     const { entregas, inscripciones, pedidos, reservas } = account.staffPending;
     if (entregas > 0)
-      list.push({ key: `staff-entregas:${entregas}`, text: `${entregas} tarea(s) final(es) por revisar.`, to: "/admin" });
+      list.push({ key: `staff-entregas:${entregas}`, text: `${entregas} tarea(s) final(es) por revisar.`, to: "/admin/entregas" });
     if (inscripciones > 0)
-      list.push({ key: `staff-inscripciones:${inscripciones}`, text: `${inscripciones} inscripción(es) por revisar.`, to: "/admin" });
-    if (pedidos > 0) list.push({ key: `staff-pedidos:${pedidos}`, text: `${pedidos} pedido(s) de la tienda por confirmar.`, to: "/admin" });
-    if (reservas > 0) list.push({ key: `staff-reservas:${reservas}`, text: `${reservas} reserva(s) de impresión por aprobar.`, to: "/admin" });
+      list.push({ key: `staff-inscripciones:${inscripciones}`, text: `${inscripciones} inscripción(es) por revisar.`, to: "/admin/inscripciones" });
+    if (pedidos > 0) list.push({ key: `staff-pedidos:${pedidos}`, text: `${pedidos} pedido(s) de la tienda por confirmar.`, to: "/admin/pedidos" });
+    if (reservas > 0) list.push({ key: `staff-reservas:${reservas}`, text: `${reservas} reserva(s) de impresión por aprobar.`, to: "/admin/reservas" });
   }
 
   if (account.academicPending)
