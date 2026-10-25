@@ -9,6 +9,7 @@ import {
   Clock,
   FileText,
   ListChecks,
+  Lock,
   PencilLine,
   PlayCircle,
   Target,
@@ -17,6 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useAcademy } from "@/components/academia/academy-context";
+import { useAccount } from "@/components/account/account-context";
 import { Markdown } from "@/components/academia/Markdown";
 import { LessonFichas } from "@/components/academia/LessonFichas";
 import { Quiz } from "@/components/academia/Quiz";
@@ -26,6 +28,7 @@ import { lessonQuizzes } from "@/content/academia/preguntas";
 import { lessonPath, part2Module, type Lesson } from "@/lib/academia/course";
 import { moduleAccent, moduleName } from "@/lib/academia/modules";
 import { checklistItems, estimatedMinutes, lessonSteps, type LessonStep, type StepKind } from "@/lib/academia/steps";
+import { useStepGate } from "@/lib/academia/step-gate";
 
 const stepIcons: Record<StepKind, LucideIcon> = {
   intro: Target,
@@ -38,30 +41,46 @@ const stepIcons: Record<StepKind, LucideIcon> = {
   otro: FileText,
 };
 
-function StepProgress({ steps, current, onSelect }: { steps: LessonStep[]; current: number; onSelect: (index: number) => void }) {
+// La barra de pasos: puedes volver a cualquier paso que ya viste; los que siguen se abren en orden.
+function StepProgress({
+  steps,
+  current,
+  reached,
+  onSelect,
+}: {
+  steps: LessonStep[];
+  current: number;
+  reached: number;
+  onSelect: (index: number) => void;
+}) {
   return (
     <div className="flex gap-1" role="list" aria-label="Pasos de la lección">
-      {steps.map((step, index) => (
-        <button
-          key={`${step.kind}-${step.title}`}
-          type="button"
-          role="listitem"
-          onClick={() => onSelect(index)}
-          aria-label={`Paso ${index + 1}: ${step.title}`}
-          aria-current={index === current ? "step" : undefined}
-          className="group flex-1 py-2"
-        >
-          <span
-            className={`block h-1.5 rounded-full transition-colors ${
-              index < current
-                ? "bg-[rgb(var(--tone))]"
-                : index === current
+      {steps.map((step, index) => {
+        const locked = index > reached;
+        return (
+          <button
+            key={`${step.kind}-${step.title}`}
+            type="button"
+            role="listitem"
+            onClick={() => onSelect(index)}
+            disabled={locked}
+            title={locked ? "Se abre al terminar el paso anterior" : step.title}
+            aria-label={`Paso ${index + 1}: ${step.title}${locked ? " (bloqueado)" : ""}`}
+            aria-current={index === current ? "step" : undefined}
+            className="group flex-1 py-2 disabled:cursor-not-allowed"
+          >
+            <span
+              className={`block h-1.5 rounded-full transition-colors ${
+                index === current
                   ? "bg-[rgb(var(--tone)/0.6)]"
-                  : "bg-white/10 group-hover:bg-white/25"
-            }`}
-          />
-        </button>
-      ))}
+                  : index <= reached
+                    ? "bg-[rgb(var(--tone))] group-hover:opacity-80"
+                    : "bg-white/10"
+              }`}
+            />
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -72,6 +91,7 @@ function IntroStep({
   minutes,
   isTask,
   aside,
+  reached,
   onStart,
 }: {
   step: LessonStep;
@@ -79,6 +99,7 @@ function IntroStep({
   minutes: number;
   isTask: boolean;
   aside?: ReactNode;
+  reached: number;
   onStart: () => void;
 }) {
   return (
@@ -111,24 +132,27 @@ function IntroStep({
         <ol className="mt-4 space-y-2">
           {steps.slice(1).map((s, index) => {
             const Icon = stepIcons[s.kind];
+            const locked = index > reached;
             return (
-              <li key={`${s.kind}-${s.title}`} className="flex items-center gap-3 text-sm text-white/75">
+              <li key={`${s.kind}-${s.title}`} className={`flex items-center gap-3 text-sm ${locked ? "text-white/45" : "text-white/75"}`}>
                 <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-white/[0.06] text-white/60">
                   <Icon className="h-3.5 w-3.5" />
                 </span>
                 <span className="text-white/35">{index + 1}.</span>
-                {s.title}
+                <span className="flex-1">{s.title}</span>
+                {locked && <Lock className="h-3.5 w-3.5 shrink-0 text-white/30" aria-label="Bloqueado" />}
               </li>
             );
           })}
         </ol>
+        {reached === 0 && <p className="mt-4 text-xs text-white/45">Los pasos se abren uno por uno, en orden.</p>}
       </div>
       <button
         type="button"
         onClick={onStart}
         className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[rgb(var(--tone))] px-6 py-3.5 font-semibold text-black transition-transform hover:scale-[1.01] sm:w-auto"
       >
-        Empezar <ArrowRight className="h-4 w-4" />
+        {reached > 1 ? "Seguir" : "Empezar"} <ArrowRight className="h-4 w-4" />
       </button>
     </div>
   );
@@ -403,9 +427,14 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
   const steps = useMemo(() => lessonSteps(lesson.content), [lesson.content]);
   const minutes = useMemo(() => estimatedMinutes(lesson.content), [lesson.content]);
   const checklist = useChecklistState(lesson.key);
+  const { progress, isStaff } = useAcademy();
+  const { user } = useAccount();
+  // La directiva y quien ya completó la lección pueden moverse libremente por todos los pasos.
+  const { reached, unlock } = useStepGate(user?.id ?? null, lesson.key, steps.length, isStaff || progress.completed.has(lesson.key));
   const [searchParams, setSearchParams] = useSearchParams();
   const requested = Number(searchParams.get("paso")) - 1;
-  const current = Number.isInteger(requested) && requested >= 0 && requested < steps.length ? requested : 0;
+  const valid = Number.isInteger(requested) && requested >= 0 && requested < steps.length;
+  const current = valid ? Math.min(requested, reached) : 0;
   const step = steps[current];
   const Icon = stepIcons[step.kind];
   const conceptIndex = steps.filter((s, i) => s.kind === "concepto" && i <= current).length;
@@ -414,10 +443,20 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
   const goTo = useCallback(
     (index: number) => {
       const target = Math.min(Math.max(index, 0), steps.length - 1);
+      if (target > reached) {
+        // Solo se abre el paso que sigue al último visto, y desde ese mismo paso.
+        if (target !== reached + 1 || current !== reached) return;
+        unlock(target);
+      }
       setSearchParams(target === 0 ? {} : { paso: String(target + 1) });
     },
-    [setSearchParams, steps.length],
+    [setSearchParams, steps.length, reached, current, unlock],
   );
+
+  // Si alguien escribe en la dirección un paso que todavía no abrió, vuelve al último que sí.
+  useEffect(() => {
+    if (valid && requested > reached) setSearchParams(reached === 0 ? {} : { paso: String(reached + 1) }, { replace: true });
+  }, [valid, requested, reached, setSearchParams]);
 
   useEffect(() => {
     window.scrollTo({ top: 0 });
@@ -446,7 +485,7 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
       <h1 className="mt-1 font-display text-xl font-black tracking-tight md:text-2xl">{lesson.title}</h1>
 
       <div className="mt-5">
-        <StepProgress steps={steps} current={current} onSelect={goTo} />
+        <StepProgress steps={steps} current={current} reached={reached} onSelect={goTo} />
         <p className="mt-1 text-xs text-white/50">
           Paso {current + 1} de {steps.length}
         </p>
@@ -478,7 +517,15 @@ export function SteppedLesson({ lesson, aside }: { lesson: Lesson; aside?: React
           )}
 
           {step.kind === "intro" ? (
-            <IntroStep step={step} steps={steps} minutes={minutes} isTask={lesson.isTask} aside={aside} onStart={() => goTo(1)} />
+            <IntroStep
+              step={step}
+              steps={steps}
+              minutes={minutes}
+              isTask={lesson.isTask}
+              aside={aside}
+              reached={reached}
+              onStart={() => (reached > 1 ? goTo(reached) : goTo(1))}
+            />
           ) : (
             <ChecklistContext.Provider value={checklist}>
               <StepBody lesson={lesson} step={step} />
