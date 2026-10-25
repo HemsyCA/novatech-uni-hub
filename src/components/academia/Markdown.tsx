@@ -8,6 +8,7 @@ import { LedResistorCalculator } from "@/components/academia/widgets/LedResistor
 import { LedDiagram } from "@/components/academia/widgets/LedDiagram";
 import { Potentiometer, VoltageDivider } from "@/components/academia/widgets/VoltageDivider";
 import { Esp32Pinout } from "@/components/academia/widgets/Esp32Pinout";
+import { Esp32Parts3D, Esp32Pins3D } from "@/components/academia/widgets/Esp32Board3D";
 import { AlgorithmOrder } from "@/components/academia/widgets/AlgorithmOrder";
 import { BlinkSimulator } from "@/components/academia/widgets/BlinkSimulator";
 import { IntegerDivision } from "@/components/academia/widgets/IntegerDivision";
@@ -51,6 +52,8 @@ const IMAGE_SRC = /^\/[\w/.-]+\.(webp|png|jpe?g|svg)$/;
 const widgets: Record<string, () => JSX.Element> = {
   "calculadora-led": LedResistorCalculator,
   "codigo-colores": ResistorColors,
+  "placa-3d-partes": Esp32Parts3D,
+  "placa-3d-pines": Esp32Pins3D,
   "diagrama-led": LedDiagram,
   "divisor-voltaje": VoltageDivider,
   potenciometro: Potentiometer,
