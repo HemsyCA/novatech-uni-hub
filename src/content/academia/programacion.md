@@ -8,6 +8,15 @@ En esta parte vas a aprender a darle instrucciones al ESP32: encender luces, lee
 - No hay riesgo de quemar componentes.
 - El mismo código funcionará después en una placa real (lo verás en la lección Extra).
 
+#### Curso completo de ESP32 (apoyo)
+
+Si algo de Programación no te queda claro, este curso de YouTube lo explica en español con un ESP32 real y el Arduino IDE: encender un LED, PWM, potenciómetro, pulsadores, servos y mucho más (49 videos). El código es el mismo que escribes en Wokwi. Las lecciones siguen siendo tu camino; usa el curso **para reforzar** o para verlo a la par.
+
+```video
+VuJkqL2Ys3Y list=PLCTD_CpMeEKTvjzabAvLGHakg-ql6t0q6
+Curso de ESP32 · Programador Novato (49 videos)
+```
+
 ## P1 · Pensar como un robot
 
 ### Objetivo
@@ -124,6 +133,8 @@ void loop() {
 
 - **`setup()`** es como prepararte antes de una carrera: se hace una vez.
 - **`loop()`** es la carrera: se repite sin parar mientras el ESP32 tenga energía.
+
+> **Dato:** si algo de Programación no te queda claro, hay un [curso completo de ESP32 en YouTube](https://www.youtube.com/playlist?list=PLCTD_CpMeEKTvjzabAvLGHakg-ql6t0q6) (49 videos en español) para reforzar. Lo tienes también en la página del módulo de Programación. Úsalo como apoyo: las lecciones siguen siendo tu camino.
 
 #### Reglas de escritura
 

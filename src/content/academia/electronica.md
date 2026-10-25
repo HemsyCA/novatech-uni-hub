@@ -2,6 +2,19 @@ En esta parte vas a entender cómo funciona la electricidad en un circuito, a co
 
 > **Nota:** los nombres de los menús de EasyEDA pueden cambiar un poco según la versión. Si no encuentras una opción exactamente con el nombre que aparece aquí, busca una parecida.
 
+### Cursos completos de electrónica (apoyo)
+
+Si algo de Electrónica no te queda claro, estos cursos de YouTube lo explican desde cero y en español. Las lecciones siguen siendo tu camino; usa los cursos **para reforzar** o para verlos a la par.
+
+**Para E1 y E2** (voltaje, corriente, resistencia, Ley de Ohm, el LED y el potenciómetro): un curso de electrónica básica de 30 videos.
+
+```video
+RH9eLKXq2qk list=PL04XX6UHHXqi6_ZHVZro0gFqFKL1p6Suo
+Curso de electrónica básica · AUTOMATIZACION INDUSTRIAL (30 videos)
+```
+
+**Para E4 a E6** (esquemático y PCB): el [curso de EasyEDA de Kamikaze Soluciones](https://www.youtube.com/playlist?list=PL_IJh6aT1nRycpD68DZq4dgt-Tezzdrmd). Sus primeros 9 videos van de crear la cuenta a generar los archivos para fabricar la placa. La interfaz puede verse algo distinta a la de EasyEDA Pro, pero las ideas son las mismas.
+
 ## E1 · Voltaje, corriente y resistencia
 
 ### Objetivo
@@ -27,6 +40,8 @@ La electricidad no se ve, así que para entenderla usamos una comparación con e
 - **Voltaje:** es el "empuje" que hace moverse a las cargas eléctricas. Una batería o una fuente lo proporciona. Siempre se mide **entre dos puntos** (por ejemplo, entre el positivo y el negativo de una batería). En nuestros robots verás sobre todo **3.3 V** (el voltaje del ESP32), **5 V** (el de los servos y muchos sensores) y **7.4 V** (una batería LiPo de 2 celdas).
 - **Corriente:** es la cantidad de electricidad que circula por el circuito. En electrónica pequeña se usan mucho los **miliamperios (mA)**: 1 A = 1000 mA. Un LED usa unos 10 mA; un motor pequeño puede usar 500 mA o más.
 - **Resistencia:** es la oposición al paso de la corriente. Una resistencia "estrecha la tubería" para que pase menos corriente. Se usan mucho los **kiloohmios (kΩ)**: 1 kΩ = 1000 Ω.
+
+> **Dato:** si algo de Electrónica no te queda claro, hay un [curso completo de electrónica básica en YouTube](https://www.youtube.com/playlist?list=PL04XX6UHHXqi6_ZHVZro0gFqFKL1p6Suo) (30 videos en español) para reforzar. Lo tienes también en la página del módulo de Electrónica. Úsalo como apoyo: las lecciones siguen siendo tu camino.
 
 #### La Ley de Ohm
 
@@ -390,6 +405,8 @@ Un **esquemático** es el "plano" de un circuito. No muestra cómo se ven los co
 ```widget
 simbolos-esquematico
 ```
+
+> **Dato:** para reforzar EasyEDA hay un [curso en YouTube de Kamikaze Soluciones](https://www.youtube.com/playlist?list=PL_IJh6aT1nRycpD68DZq4dgt-Tezzdrmd): sus primeros 9 videos van de crear la cuenta a generar los archivos para fabricar la placa. Lo tienes también en la página del módulo de Electrónica.
 
 #### Conceptos clave
 
