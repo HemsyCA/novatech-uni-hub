@@ -24,7 +24,8 @@ import { AdminPracticas } from "@/components/admin/AdminPracticas";
 import { AdminHoy } from "@/components/admin/AdminHoy";
 import { useAccount } from "@/components/account/account-context";
 
-type PendingKey = "entregas" | "inscripciones" | "pedidos" | "reservas";
+type StaffKey = "entregas" | "inscripciones" | "pedidos" | "reservas";
+type PendingKey = StaffKey | "aportes";
 
 interface Section {
   slug: string;
@@ -33,7 +34,12 @@ interface Section {
   // Qué contador del recuento de pendientes corresponde a esta sección.
   pending?: PendingKey;
   superadminOnly?: boolean;
-  element: ReactNode;
+  // Solo para quien revisa los aportes de la Comunidad (Área académica y superadmin).
+  academicOnly?: boolean;
+  // Si existe, la sección vive en otra pantalla: el menú enlaza allí en vez de abrir una sección del panel.
+  href?: string;
+  note?: string;
+  element?: ReactNode;
 }
 
 interface Area {
@@ -110,6 +116,15 @@ const AREAS: Area[] = [
         description: "Mensajes recibidos desde el formulario de contacto.",
         element: <AdminContactMessages />,
       },
+      {
+        slug: "aportes",
+        label: "Aportes",
+        description: "Aportes de la Comunidad por revisar.",
+        pending: "aportes",
+        academicOnly: true,
+        href: "/comunidad?vista=revisar",
+        note: "Comunidad",
+      },
     ],
   },
 ];
@@ -145,7 +160,7 @@ function MenuLink({ to, active, label, count, note }: { to: string; active: bool
 }
 
 export default function Admin() {
-  const { academy, staffPending, reloadStaffPending: reloadFromAccount } = useAccount();
+  const { academy, staffPending, academicPending, reloadStaffPending: reloadFromAccount, reloadAportes } = useAccount();
   const navigate = useNavigate();
   const params = useParams();
   const slug = (params["*"] ?? "").replace(/\/+$/, "");
@@ -153,8 +168,11 @@ export default function Admin() {
 
   // Referencia estable: si la función del contexto cambiara de identidad, los efectos de abajo
   // no se repetirían en bucle consultando la base de datos sin parar.
-  const latestReload = useRef(reloadFromAccount);
-  latestReload.current = reloadFromAccount;
+  const latestReload = useRef<() => void>(() => {});
+  latestReload.current = () => {
+    reloadFromAccount();
+    if (academy.isAcademic) reloadAportes();
+  };
   const reloadStaffPending = useCallback(() => latestReload.current(), []);
 
   // Los contadores se vuelven a calcular al cambiar de sección, al volver a la pestaña,
@@ -195,15 +213,20 @@ export default function Admin() {
 
   const areas = AREAS.map((area) => ({
     ...area,
-    sections: area.sections.filter((s) => !s.superadminOnly || isSuperadmin),
+    sections: area.sections.filter((s) => (!s.superadminOnly || isSuperadmin) && (!s.academicOnly || academy.isAcademic)),
   })).filter((area) => area.sections.length > 0);
 
   const allSections = areas.flatMap((a) => a.sections);
-  const current = allSections.find((s) => s.slug === slug);
+  // Las secciones con enlace a otra pantalla no tienen dirección propia dentro del panel.
+  const current = allSections.filter((s) => !s.href).find((s) => s.slug === slug);
   if (slug && !current) return <Navigate to="/admin" replace />;
 
-  const countOf = (section: Section) => (section.pending && staffPending ? staffPending[section.pending] : 0);
-  const totalPending = staffPending ? staffPending.entregas + staffPending.inscripciones + staffPending.pedidos + staffPending.reservas : 0;
+  const countOf = (section: Section) => {
+    if (section.pending === "aportes") return academicPending ?? 0;
+    return section.pending && staffPending ? staffPending[section.pending] : 0;
+  };
+  const staffTotal = staffPending ? staffPending.entregas + staffPending.inscripciones + staffPending.pedidos + staffPending.reservas : 0;
+  const totalPending = staffTotal + (academy.isAcademic ? academicPending ?? 0 : 0);
 
   const title = current ? current.label : HOY_TITLE;
   const description = current ? current.description : HOY_DESCRIPTION;
@@ -221,11 +244,11 @@ export default function Admin() {
                 {area.sections.map((section) => (
                   <MenuLink
                     key={section.slug}
-                    to={pathFor(section.slug)}
+                    to={section.href ?? pathFor(section.slug)}
                     active={current?.slug === section.slug}
                     label={section.label}
                     count={countOf(section)}
-                    note={section.superadminOnly ? "superadmin" : undefined}
+                    note={section.note ?? (section.superadminOnly ? "superadmin" : undefined)}
                   />
                 ))}
               </div>
@@ -235,7 +258,9 @@ export default function Admin() {
 
         <div className="min-w-0">
           <div className="mb-6 lg:hidden">
-            <Select value={current?.slug ?? "hoy"} onValueChange={(value) => navigate(value === "hoy" ? "/admin" : pathFor(value))}>
+            <Select value={current?.slug ?? "hoy"} onValueChange={(value) =>
+                navigate(value === "hoy" ? "/admin" : allSections.find((s) => s.slug === value)?.href ?? pathFor(value))
+              }>
               <SelectTrigger aria-label="Sección del panel">
                 <SelectValue />
               </SelectTrigger>
@@ -273,10 +298,13 @@ export default function Admin() {
                     { slug: "pedidos", label: "Pedidos por confirmar", count: staffPending?.pedidos ?? null },
                     { slug: "reservas", label: "Reservas de impresión por aprobar", count: staffPending?.reservas ?? null },
                     { slug: "entregas", label: "Tareas finales por calificar", count: staffPending?.entregas ?? null },
+                    ...(academy.isAcademic
+                      ? [{ slug: "aportes", to: "/comunidad?vista=revisar", label: "Aportes de la Comunidad por revisar", count: academicPending }]
+                      : []),
                   ]}
                   groups={areas.map((area) => ({
                     title: area.title,
-                    links: area.sections.map((s) => ({ slug: s.slug, label: s.label })),
+                    links: area.sections.map((s) => ({ slug: s.slug, label: s.label, to: s.href })),
                   }))}
                 />
               )}
