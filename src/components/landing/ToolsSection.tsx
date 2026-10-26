@@ -16,7 +16,7 @@ export function ToolsSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-24 relative bg-black">
+    <section className="py-24 relative bg-[#f5f5f5] text-black">
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -25,8 +25,8 @@ export function ToolsSection() {
           className="text-center mb-16"
         >
           <h2 className="font-mono text-5xl md:text-6xl font-black mb-6 uppercase tracking-tighter">
-            <span className="text-white">{t.tools.title1}</span>
-            <span className="text-white">{t.tools.title2}</span>
+            <span className="text-black">{t.tools.title1}</span>
+            <span className="text-black">{t.tools.title2}</span>
           </h2>
         </motion.div>
 
@@ -39,13 +39,13 @@ export function ToolsSection() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               className="group"
             >
-              <div className="rounded-2xl p-6 text-center h-full bg-transparent hover:scale-105 transition-transform duration-300">
+              <div className="rounded-2xl border border-black/15 bg-white p-6 text-center h-full transition-all duration-300 hover:-translate-y-1 hover:border-nova hover:shadow-[6px_6px_0_0_hsl(var(--nova))]">
                 <a href={tool.url} target="_blank" rel="noopener noreferrer" className="inline-block">
-                  <div className={`h-20 mx-auto flex items-center justify-center mb-4 text-white cursor-pointer group-hover:text-white/80 transition-colors duration-300 ${tool.name === "Arduino IDE" ? "w-25" : "w-20"}`}>
+                  <div className={`h-20 mx-auto flex items-center justify-center mb-4 text-black cursor-pointer group-hover:text-nova transition-colors duration-300 ${tool.name === "Arduino IDE" ? "w-25" : "w-20"}`}>
                     <tool.icon className="w-full h-full" />
                   </div>
                 </a>
-                <h3 className="font-display text-base font-semibold text-white group-hover:text-white transition-colors duration-300">{tool.name}</h3>
+                <h3 className="font-display text-base font-semibold text-black group-hover:text-nova transition-colors duration-300">{tool.name}</h3>
               </div>
             </motion.div>
           ))}

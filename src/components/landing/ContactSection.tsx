@@ -47,7 +47,7 @@ export function ContactSection() {
   };
 
   return (
-    <section id="contacto" className="py-24 relative">
+    <section id="contacto" className="py-24 relative bg-black">
       <div className="container mx-auto px-4" ref={ref}>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -55,7 +55,7 @@ export function ContactSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <span className="inline-block px-4 py-1 rounded-full text-sm font-medium bg-white/10 text-white border border-white/20 mb-4">
+          <span className="inline-block px-3 py-1 mb-4 text-xs tracking-widest uppercase border border-white/20 rounded-full text-white/70">
             {t.contact.badge}
           </span>
           <h2 className="font-display text-4xl md:text-5xl font-bold mb-6">
@@ -71,7 +71,7 @@ export function ContactSection() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="max-w-xl mx-auto"
         >
-          <form id="contact-form" onSubmit={handleSubmit} className="glass-card rounded-2xl p-6 md:p-8 space-y-4">
+          <form id="contact-form" onSubmit={handleSubmit} className="rounded-2xl border border-white/10 p-6 md:p-8 space-y-4">
             <div className="space-y-2">
               <Label htmlFor="contact-name">{t.contact.nameLabel}</Label>
               <Input
@@ -110,7 +110,7 @@ export function ContactSection() {
             </div>
             <Button
               type="submit"
-              className="w-full bg-white text-black hover:bg-white/80 active:bg-white/70 transition-colors duration-300"
+              className="w-full bg-white text-black hover:bg-white/85 active:bg-nova active:text-white transition-colors duration-300"
               disabled={submitting}
             >
               {submitting ? (
