@@ -113,7 +113,7 @@ export const robots: Robot[] = [
   { name: "Los Vaguitos", categories: ["soccer"], levels: ["Senior"], isTeam: true },
 ];
 
-export const featuredRobotNames = ["Haniel", "Nova II", "Morroponus"];
+export const featuredRobotNames = ["Nova I", "Morroponus", "Haniel"];
 
 export const pcbs: Pcb[] = [
   { name: "PCB Universal Senior-Máster V2", usedIn: "Minisumo, Microsumo y Robot Soccer" },
