@@ -73,7 +73,7 @@ export function Hero() {
               <span className="text-white">TECH</span>
             </motion.h1>
 
-            <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 font-mono tracking-wide">
+            <p className="text-base md:text-lg text-muted-foreground mb-8 max-w-xl mx-auto lg:mx-0 font-mono tracking-wide">
               <TypewriterText key={lang} text={t.hero.subtitle} startDelay={800} speed={20} />
             </p>
 
