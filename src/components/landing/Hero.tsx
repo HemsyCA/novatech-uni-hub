@@ -108,7 +108,10 @@ export function Hero() {
           >
             <div className="relative">
               {/* Soft glow */}
-              <div className="absolute inset-0 bg-white/20 opacity-40 blur-[60px] scale-75" />
+              <div
+                className="absolute -inset-[30%]"
+                style={{ background: "radial-gradient(closest-side, hsl(var(--nova) / 0.4), transparent 72%)" }}
+              />
 
               {/* Thin dashed ring, rotating slowly */}
               <motion.div
@@ -140,7 +143,7 @@ export function Hero() {
                 className="absolute inset-0"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               >
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_12px_rgba(255,255,255,0.6)]" />
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-2.5 h-2.5 rounded-full bg-nova shadow-[0_0_14px_hsl(var(--nova))]" />
               </motion.div>
               <motion.div
                 animate={{ rotate: 360 }}
@@ -148,7 +151,7 @@ export function Hero() {
                 className="absolute inset-0"
                 style={{ width: "120%", height: "120%", left: "-10%", top: "-10%" }}
               >
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-white/70 shadow-[0_0_10px_rgba(255,255,255,0.6)]" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-1/2 w-2 h-2 rounded-full bg-nova/70 shadow-[0_0_10px_hsl(var(--nova))]" />
               </motion.div>
             </div>
           </motion.div>

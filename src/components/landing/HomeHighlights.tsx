@@ -23,12 +23,12 @@ export function HomeHighlights() {
 
   return (
     <>
-      <section className="py-20 bg-black">
+      <section className="py-20 bg-[#f5f5f5] text-black">
         <div className="container mx-auto px-4">
-          <SectionHeading eyebrow={h.badge} title={h.title} subtitle={h.subtitle} />
+          <SectionHeading eyebrow={h.badge} title={h.title} subtitle={h.subtitle} tone="light" />
 
           <div className="grid lg:grid-cols-3 gap-4">
-            <div className="lg:col-span-2 grid grid-cols-2 gap-4">
+            <div className="lg:col-span-2 grid grid-cols-2 gap-x-8 gap-y-6">
               {stats.map((stat, index) => (
                 <motion.div
                   key={stat.label}
@@ -36,17 +36,17 @@ export function HomeHighlights() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ duration: 0.4, delay: index * 0.08 }}
-                  className="rounded-2xl border border-white/10 p-6"
+                  className="border-t-2 border-black pt-5 pb-2"
                 >
-                  <div className="font-display text-4xl md:text-5xl font-black text-white">{stat.value}</div>
-                  <div className="mt-2 text-xs uppercase tracking-wider text-white/50">{stat.label}</div>
+                  <div className="font-display text-5xl md:text-6xl font-black text-black">{stat.value}</div>
+                  <div className="mt-2 text-xs uppercase tracking-wider text-black/55">{stat.label}</div>
                 </motion.div>
               ))}
             </div>
 
             <Link
               to="/competencias"
-              className="group rounded-2xl border border-white/30 p-6 flex flex-col hover:border-white transition-colors"
+              className="group rounded-2xl bg-black p-6 flex flex-col text-white shadow-[10px_10px_0_0_hsl(var(--nova))] transition-transform hover:-translate-y-0.5"
             >
               <span className="text-xs uppercase tracking-widest text-white/50">{h.nextTournament}</span>
               {nextTournament ? (
@@ -73,7 +73,7 @@ export function HomeHighlights() {
         </div>
       </section>
 
-      <section className="py-20 bg-black border-t border-white/10">
+      <section className="py-20 bg-black">
         <div className="container mx-auto px-4">
           <SectionHeading eyebrow={h.prototypesBadge} title={h.featuredTitle} />
           <div className="grid md:grid-cols-3 gap-4">
