@@ -12,7 +12,7 @@ export function HomeHighlights() {
   const h = t.highlights;
   const totals = countPlacements(pastTournaments());
   const nextTournament = upcomingTournaments()[0];
-  const featured = robots.filter((r) => featuredRobotNames.includes(r.name));
+  const featured = featuredRobotNames.flatMap((name) => robots.filter((r) => r.name === name));
 
   const stats = [
     { label: h.firstPlaces, value: totals.first },
