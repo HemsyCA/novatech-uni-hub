@@ -41,11 +41,11 @@ export function Breadcrumbs({ items }: { items: { label: string; to?: string }[]
   );
 }
 
-export function StatusDot({ done }: { done: boolean }) {
+export function StatusDot({ done, nova = false }: { done: boolean; nova?: boolean }) {
   return (
     <span
       className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border ${
-        done ? "border-white bg-white text-black" : "border-white/30"
+        done ? (nova ? "border-nova bg-nova text-white" : "border-white bg-white text-black") : nova ? "border-nova/40" : "border-white/30"
       }`}
     >
       {done && <Check className="h-3 w-3" strokeWidth={3} />}
