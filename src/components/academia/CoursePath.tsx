@@ -131,13 +131,13 @@ export function CoursePath() {
               onClick={() => setSelected(index)}
               className={`inline-flex items-center gap-2 rounded-full border px-4 py-1.5 text-sm transition-colors ${
                 active
-                  ? "border-white bg-white text-black"
+                  ? "border-nova bg-nova text-white"
                   : "border-white/15 text-white/70 hover:border-white/40 hover:text-white"
               }`}
             >
               {w.title}
               <span
-                className={`text-xs ${weekDone === w.lessons.length ? "font-semibold text-emerald-500" : active ? "text-black/60" : "text-white/40"}`}
+                className={`text-xs ${weekDone === w.lessons.length ? "font-semibold text-emerald-500" : active ? "text-white/70" : "text-white/40"}`}
               >
                 {weekDone}/{w.lessons.length}
               </span>
