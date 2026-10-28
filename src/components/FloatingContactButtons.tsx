@@ -8,12 +8,21 @@ import { TiktokIcon } from "@/components/icons/SocialIcons";
 // El botón flotante de redes: su ícono va cambiando entre las redes para que se entienda que lleva a ellas
 // (un sobre hacía pensar en "enviar un mensaje"). Al abrirlo, cada red aparece con su nombre.
 
+// Cada red con su color oficial. TikTok es negro con los toques cian y rosa de su logo.
 const socialLinks = [
-  { icon: Instagram, href: "https://www.instagram.com/novatechuni/", label: "Instagram" },
-  { icon: TiktokIcon, href: "https://www.tiktok.com/@novatechteam", label: "TikTok" },
-  { icon: Facebook, href: "https://web.facebook.com/profile.php?id=61553951379710", label: "Facebook" },
-  { icon: Linkedin, href: "https://www.linkedin.com/company/nova-tech-uni/", label: "LinkedIn" },
+  {
+    icon: Instagram,
+    href: "https://www.instagram.com/novatechuni/",
+    label: "Instagram",
+    background: "radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%)",
+  },
+  { icon: TiktokIcon, href: "https://www.tiktok.com/@novatechteam", label: "TikTok", background: "#010101", tiktok: true },
+  { icon: Facebook, href: "https://web.facebook.com/profile.php?id=61553951379710", label: "Facebook", background: "#1877F2" },
+  { icon: Linkedin, href: "https://www.linkedin.com/company/nova-tech-uni/", label: "LinkedIn", background: "#0A66C2" },
 ];
+
+// El logo de TikTok lleva un borde cian y otro rosa desplazados.
+const TIKTOK_GLOW = { filter: "drop-shadow(-1.2px -1px 0 #25F4EE) drop-shadow(1.2px 1px 0 #FE2C55)" };
 
 // Dentro de la cuenta estorbarían a la barra inferior y a la navegación de las lecciones.
 const ACCOUNT_PATHS = ["/dashboard", "/academia", "/miembros", "/admin", "/conocimientos", "/comunidad"];
@@ -119,8 +128,13 @@ export function FloatingContactButtons() {
                       <span className="rounded-full bg-black/85 px-3 py-1.5 text-sm font-semibold text-white shadow-lg backdrop-blur-sm transition-colors group-hover:bg-white group-hover:text-black">
                         {social.label}
                       </span>
-                      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white shadow-lg backdrop-blur-md transition-all group-hover:scale-110 group-hover:bg-white group-hover:text-black">
-                        <Icon className="h-5 w-5" />
+                      <span
+                        className={`flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-transform group-hover:scale-110 ${
+                          social.tiktok ? "ring-1 ring-white/30" : ""
+                        }`}
+                        style={{ background: social.background }}
+                      >
+                        <Icon className="h-5 w-5" style={social.tiktok ? TIKTOK_GLOW : undefined} />
                       </span>
                     </a>
                   </motion.li>
@@ -156,7 +170,11 @@ export function FloatingContactButtons() {
           aria-expanded={isOpen}
           aria-controls="redes-nova"
           title={isOpen ? undefined : "Síguenos en redes"}
-          className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full bg-white text-black shadow-lg"
+          // Cerrado, el botón toma el color de la red que está mostrando; abierto, vuelve a blanco para la X.
+          style={{ background: isOpen ? "#ffffff" : socialLinks[current].background, transition: "background 0.4s" }}
+          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full shadow-lg ${
+            isOpen ? "text-black" : "text-white"
+          } ${!isOpen && socialLinks[current].tiktok ? "ring-2 ring-white/40" : ""}`}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {isOpen ? (
@@ -171,7 +189,7 @@ export function FloatingContactButtons() {
                 exit={{ y: -22, opacity: 0 }}
                 transition={{ duration: 0.35 }}
               >
-                <Current className="h-7 w-7" />
+                <Current className="h-7 w-7" style={socialLinks[current].tiktok ? TIKTOK_GLOW : undefined} />
               </motion.span>
             )}
           </AnimatePresence>
