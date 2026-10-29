@@ -129,9 +129,7 @@ export function FloatingContactButtons() {
                         {social.label}
                       </span>
                       <span
-                        className={`flex h-12 w-12 items-center justify-center rounded-full text-white shadow-lg transition-transform group-hover:scale-110 ${
-                          social.tiktok ? "ring-1 ring-white/30" : ""
-                        }`}
+                        className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white/90 text-white shadow-[0_4px_14px_rgba(0,0,0,0.45)] transition-transform group-hover:scale-110 group-hover:border-white"
                         style={{ background: social.background }}
                       >
                         <Icon className="h-5 w-5" style={social.tiktok ? TIKTOK_GLOW : undefined} />
@@ -172,9 +170,10 @@ export function FloatingContactButtons() {
           title={isOpen ? undefined : "Síguenos en redes"}
           // Cerrado, el botón toma el color de la red que está mostrando; abierto, vuelve a blanco para la X.
           style={{ background: isOpen ? "#ffffff" : socialLinks[current].background, transition: "background 0.4s" }}
-          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full shadow-lg ${
-            isOpen ? "text-black" : "text-white"
-          } ${!isOpen && socialLinks[current].tiktok ? "ring-2 ring-white/40" : ""}`}
+          // El mismo contorno blanco en todos los círculos: los separa del fondo, sea oscuro o una foto.
+          className={`relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border-[3px] shadow-[0_6px_20px_rgba(0,0,0,0.5)] ${
+            isOpen ? "border-black/10 text-black" : "border-white text-white"
+          }`}
         >
           <AnimatePresence mode="popLayout" initial={false}>
             {isOpen ? (
