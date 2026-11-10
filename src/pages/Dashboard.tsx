@@ -11,6 +11,7 @@ import {
   ShoppingCart,
   Sparkles,
   Users,
+  Wrench,
   type LucideIcon,
 } from "lucide-react";
 import { useAccount } from "@/components/account/account-context";
@@ -293,6 +294,7 @@ export default function Dashboard() {
     staffPending && { to: "/admin/inscripciones", count: staffPending.inscripciones, label: "Inscripciones" },
     staffPending && { to: "/admin/pedidos", count: staffPending.pedidos, label: "Pedidos por confirmar" },
     staffPending && { to: "/admin/reservas", count: staffPending.reservas, label: "Reservas por aprobar" },
+    staffPending && { to: "/admin/prestamos", count: staffPending.prestamos, label: "Préstamos y devoluciones" },
     academicPending !== null && { to: "/comunidad?vista=revisar", count: academicPending, label: "Aportes de la Comunidad" },
   ].filter(Boolean) as { to: string; count: number; label: string }[];
   const pendingTotal = reviews.reduce((total, review) => total + review.count, 0);
@@ -470,6 +472,15 @@ export default function Dashboard() {
                   <MessagesSquare className="h-4 w-4 text-nova" /> Comunidad
                   <ArrowRight className="ml-auto h-4 w-4 text-white/40" />
                 </Link>
+                {member.isMember && (
+                  <Link
+                    to="/almacen"
+                    className="flex items-center gap-3 rounded-xl border border-white/15 bg-black px-4 py-3 text-sm font-semibold transition-colors hover:border-white/40"
+                  >
+                    <Wrench className="h-4 w-4 text-nova" /> Almacén
+                    <ArrowRight className="ml-auto h-4 w-4 text-white/40" />
+                  </Link>
+                )}
                 <Link
                   to="/comunidad?vista=compartir"
                   className="flex items-center gap-3 rounded-xl bg-nova px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-nova/90"

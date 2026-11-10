@@ -7,6 +7,7 @@ import {
   Home,
   LogOut,
   MessagesSquare,
+  Wrench,
   MonitorSmartphone,
   Users,
   Printer,
@@ -84,6 +85,17 @@ function useSections(): Section[] {
       alert: academicPending || undefined,
     });
   }
+  // El Almacén es solo para miembros (la directiva también lo es).
+  if (member.isMember)
+    sections.push({
+      id: "almacen",
+      to: "/almacen",
+      label: "Almacén",
+      short: "Almacén",
+      icon: Wrench,
+      group: "equipo",
+      active: (p) => p.startsWith("/almacen"),
+    });
   return sections;
 }
 

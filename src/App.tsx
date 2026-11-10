@@ -34,6 +34,7 @@ const AcademiaLesson = lazy(() => import("./pages/academia/AcademiaLesson"));
 const Conocimientos = lazy(() => import("./pages/Conocimientos"));
 const ConocimientoDetalle = lazy(() => import("./pages/ConocimientoDetalle"));
 const Comunidad = lazy(() => import("./pages/Comunidad"));
+const Almacen = lazy(() => import("./pages/Almacen"));
 const AccountLayout = lazy(() => import("./components/account/AccountLayout"));
 const SessionShell = lazy(() => import("./components/account/SessionShell"));
 
@@ -84,6 +85,7 @@ const App = () => (
                 <Route path="/conocimientos" element={<Conocimientos />} />
                 <Route path="/conocimientos/:id" element={<ConocimientoDetalle />} />
                 <Route path="/comunidad" element={<Comunidad />} />
+                <Route path="/almacen" element={<Almacen />} />
                 {/* La antigua zona de miembros ahora es Conocimientos Nova. */}
                 <Route path="/miembros" element={<Navigate to="/conocimientos" replace />} />
                 <Route element={<StaffRoute />}>
