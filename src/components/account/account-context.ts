@@ -20,7 +20,8 @@ export interface AccountState {
   orders: Order[];
   reservations: Reservation[];
   // Lo que la directiva tiene por revisar o atender (null si no es directiva).
-  staffPending: { entregas: number; inscripciones: number; pedidos: number; reservas: number } | null;
+  // prestamos: solicitudes del Almacén por aprobar + devoluciones por confirmar.
+  staffPending: { entregas: number; inscripciones: number; pedidos: number; reservas: number; prestamos: number } | null;
   // Vuelve a contar lo pendiente; el panel de directiva lo llama al cambiar de sección.
   reloadStaffPending: () => void;
   // Aportes que esperan al Área académica (null si no es del Área académica).

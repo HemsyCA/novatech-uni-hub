@@ -126,6 +126,110 @@ export type Database = {
           },
         ]
       }
+      herramientas: {
+        Row: {
+          categoria: string
+          codigo: string
+          created_at: string
+          created_by: string | null
+          descripcion: string | null
+          estado: Database["public"]["Enums"]["herramienta_estado"]
+          id: string
+          nombre: string
+          ubicacion: string | null
+          updated_at: string
+        }
+        Insert: {
+          categoria?: string
+          codigo: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          estado?: Database["public"]["Enums"]["herramienta_estado"]
+          id?: string
+          nombre: string
+          ubicacion?: string | null
+          updated_at?: string
+        }
+        Update: {
+          categoria?: string
+          codigo?: string
+          created_at?: string
+          created_by?: string | null
+          descripcion?: string | null
+          estado?: Database["public"]["Enums"]["herramienta_estado"]
+          id?: string
+          nombre?: string
+          ubicacion?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      prestamos: {
+        Row: {
+          aprobado_at: string | null
+          aprobado_por: string | null
+          comentario_directiva: string | null
+          created_at: string
+          devolucion_estimada: string
+          devolucion_reportada_at: string | null
+          devuelto_at: string | null
+          estado: Database["public"]["Enums"]["prestamo_estado"]
+          herramienta_id: string
+          id: string
+          motivo: string
+          nota_devolucion: string | null
+          recibido_por: string | null
+          solicitante_id: string
+          solicitante_nombre: string
+          updated_at: string
+        }
+        Insert: {
+          aprobado_at?: string | null
+          aprobado_por?: string | null
+          comentario_directiva?: string | null
+          created_at?: string
+          devolucion_estimada: string
+          devolucion_reportada_at?: string | null
+          devuelto_at?: string | null
+          estado?: Database["public"]["Enums"]["prestamo_estado"]
+          herramienta_id: string
+          id?: string
+          motivo: string
+          nota_devolucion?: string | null
+          recibido_por?: string | null
+          solicitante_id: string
+          solicitante_nombre: string
+          updated_at?: string
+        }
+        Update: {
+          aprobado_at?: string | null
+          aprobado_por?: string | null
+          comentario_directiva?: string | null
+          created_at?: string
+          devolucion_estimada?: string
+          devolucion_reportada_at?: string | null
+          devuelto_at?: string | null
+          estado?: Database["public"]["Enums"]["prestamo_estado"]
+          herramienta_id?: string
+          id?: string
+          motivo?: string
+          nota_devolucion?: string | null
+          recibido_por?: string | null
+          solicitante_id?: string
+          solicitante_nombre?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prestamos_herramienta_id_fkey"
+            columns: ["herramienta_id"]
+            isOneToOne: false
+            referencedRelation: "herramientas"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       aportes: {
         Row: {
           aprendi: string
@@ -1018,10 +1122,27 @@ export type Database = {
         Args: { _aprobar: boolean; _grupo_id?: string; _id: string }
         Returns: undefined
       }
+      solicitar_prestamo: {
+        Args: { _herramienta: string; _motivo: string; _devolucion: string }
+        Returns: string
+      }
+      cancelar_prestamo: { Args: { _id: string }; Returns: undefined }
+      herramientas_pedidas: { Args: Record<PropertyKey, never>; Returns: string[] }
+      revisar_prestamo: {
+        Args: { _id: string; _aprobar: boolean; _comentario: string | null }
+        Returns: undefined
+      }
+      reportar_devolucion: { Args: { _id: string; _nota: string | null }; Returns: undefined }
+      confirmar_devolucion: {
+        Args: { _id: string; _queda: Database["public"]["Enums"]["herramienta_estado"]; _comentario: string | null }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "superadmin" | "directiva" | "academica"
       aporte_estado: "enviado" | "observado" | "aprobado"
+      herramienta_estado: "disponible" | "prestada" | "mantenimiento" | "baja"
+      prestamo_estado: "solicitado" | "rechazado" | "cancelado" | "prestado" | "devolucion_reportada" | "devuelto"
       entrega_estado: "enviada" | "observada" | "aprobada"
       practica_estado: "programada" | "asistio" | "no_asistio"
       inscripcion_estado: "pendiente" | "aprobada" | "rechazada"
@@ -1162,6 +1283,8 @@ export const Constants = {
     Enums: {
       app_role: ["superadmin", "directiva", "academica"],
       aporte_estado: ["enviado", "observado", "aprobado"],
+      herramienta_estado: ["disponible", "prestada", "mantenimiento", "baja"],
+      prestamo_estado: ["solicitado", "rechazado", "cancelado", "prestado", "devolucion_reportada", "devuelto"],
       entrega_estado: ["enviada", "observada", "aprobada"],
       practica_estado: ["programada", "asistio", "no_asistio"],
       inscripcion_estado: ["pendiente", "aprobada", "rechazada"],

@@ -22,9 +22,10 @@ import { AdminMiembros } from "@/components/admin/AdminMiembros";
 import { AdminEntregas } from "@/components/admin/AdminEntregas";
 import { AdminPracticas } from "@/components/admin/AdminPracticas";
 import { AdminHoy } from "@/components/admin/AdminHoy";
+import { AdminAlmacen } from "@/components/admin/AdminAlmacen";
 import { useAccount } from "@/components/account/account-context";
 
-type StaffKey = "entregas" | "inscripciones" | "pedidos" | "reservas";
+type StaffKey = "entregas" | "inscripciones" | "pedidos" | "reservas" | "prestamos";
 type PendingKey = StaffKey | "aportes";
 
 interface Section {
@@ -91,6 +92,24 @@ const AREAS: Area[] = [
         label: "Prácticas",
         description: "Sesiones presenciales de soldadura.",
         element: <AdminPracticas />,
+      },
+    ],
+  },
+  {
+    title: "Almacén",
+    sections: [
+      {
+        slug: "prestamos",
+        label: "Préstamos",
+        description: "Aprueba lo que piden los miembros y confirma las devoluciones después de revisar el almacén.",
+        pending: "prestamos",
+        element: <AdminAlmacen view="prestamos" />,
+      },
+      {
+        slug: "herramientas",
+        label: "Herramientas",
+        description: "El inventario del equipo: cada herramienta con su código.",
+        element: <AdminAlmacen view="herramientas" />,
       },
     ],
   },
@@ -225,7 +244,9 @@ export default function Admin() {
     if (section.pending === "aportes") return academicPending ?? 0;
     return section.pending && staffPending ? staffPending[section.pending] : 0;
   };
-  const staffTotal = staffPending ? staffPending.entregas + staffPending.inscripciones + staffPending.pedidos + staffPending.reservas : 0;
+  const staffTotal = staffPending
+    ? staffPending.entregas + staffPending.inscripciones + staffPending.pedidos + staffPending.reservas + staffPending.prestamos
+    : 0;
   const totalPending = staffTotal + (academy.isAcademic ? academicPending ?? 0 : 0);
 
   const title = current ? current.label : HOY_TITLE;
@@ -298,6 +319,7 @@ export default function Admin() {
                     { slug: "pedidos", label: "Pedidos por confirmar", count: staffPending?.pedidos ?? null },
                     { slug: "reservas", label: "Reservas de impresión por aprobar", count: staffPending?.reservas ?? null },
                     { slug: "entregas", label: "Tareas finales por calificar", count: staffPending?.entregas ?? null },
+                    { slug: "prestamos", label: "Préstamos y devoluciones del almacén", count: staffPending?.prestamos ?? null },
                     ...(academy.isAcademic
                       ? [{ slug: "aportes", to: "/comunidad?vista=revisar", label: "Aportes de la Comunidad por revisar", count: academicPending }]
                       : []),

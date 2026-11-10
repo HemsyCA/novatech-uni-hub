@@ -14,6 +14,7 @@ import { toast } from "@/hooks/use-toast";
 import { listAllOrders, listOrders } from "@/services/supabase/orders";
 import { listAllReservations, listUserReservations } from "@/services/supabase/reservations";
 import { listAcademyEntregas, listPendingApplications } from "@/services/supabase/academia";
+import { listPrestamos } from "@/services/supabase/almacen";
 import { listAportesPorRevisar, listMyAportes, type Aporte } from "@/services/supabase/conocimientos";
 import type { Order, Reservation } from "@/types/domain";
 
@@ -60,13 +61,21 @@ export default function AccountLayout() {
 
   const reloadStaffPending = useCallback(() => {
     if (!academy.isStaff) return;
-    Promise.all([listAcademyEntregas(), listPendingApplications(), listAllOrders(), listAllReservations()])
-      .then(([entregas, inscripciones, allOrders, allReservations]) =>
+    Promise.all([
+      listAcademyEntregas(),
+      listPendingApplications(),
+      listAllOrders(),
+      listAllReservations(),
+      // Si la tabla del Almacén aún no existe (migración sin correr), el resto de contadores sigue funcionando.
+      listPrestamos().catch(() => []),
+    ])
+      .then(([entregas, inscripciones, allOrders, allReservations, prestamos]) =>
         setStaffPending({
           entregas: entregas.filter((e) => e.estado === "enviada").length,
           inscripciones: inscripciones.length,
           pedidos: allOrders.filter((o) => o.status === "pending").length,
           reservas: allReservations.filter((r) => r.status === "pending").length,
+          prestamos: prestamos.filter((p) => p.estado === "solicitado" || p.estado === "devolucion_reportada").length,
         }),
       )
       .catch(() => {
