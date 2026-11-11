@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Loader2, Package } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -23,11 +25,20 @@ const statusLabels: Record<string, string> = {
   cancelled: "Cancelado",
 };
 
+const paymentLabels: Record<string, string> = {
+  yape: "Yape",
+  efectivo: "Efectivo",
+  transferencia: "Transferencia",
+};
+
 export function AdminOrders() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [expanded, setExpanded] = useState<string | null>(null);
   const [items, setItems] = useState<(OrderItem & { products: { name: string } | null })[]>([]);
+  const [payFor, setPayFor] = useState<Order | null>(null);
+  const [method, setMethod] = useState("yape");
+  const [savingPayment, setSavingPayment] = useState(false);
   const { toast } = useToast();
 
   const fetchOrders = async () => {
@@ -57,14 +68,40 @@ export function AdminOrders() {
     }
   };
 
-  const handleStatusChange = async (orderId: string, status: string) => {
+  const applyStatus = async (orderId: string, status: string, paymentMethod?: string) => {
     try {
-      await updateOrderStatus(orderId, status as Order["status"]);
-      setOrders((prev) => prev.map((o) => (o.id === orderId ? { ...o, status } : o)));
+      await updateOrderStatus(orderId, status as Order["status"], paymentMethod);
+      setOrders((prev) =>
+        prev.map((o) => (o.id === orderId ? { ...o, status, ...(paymentMethod ? { payment_method: paymentMethod } : {}) } : o)),
+      );
       toast({ title: "Pedido actualizado" });
-    } catch {
-      toast({ title: "Error", description: "No se pudo actualizar el pedido", variant: "destructive" });
+      return true;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "No se pudo actualizar el pedido",
+        variant: "destructive",
+      });
+      return false;
     }
+  };
+
+  // Al confirmar el pago se pregunta cómo pagó, para que quede registrado.
+  const handleStatusChange = (order: Order, status: string) => {
+    if (status === "paid" && !order.payment_method) {
+      setMethod("yape");
+      setPayFor(order);
+      return;
+    }
+    applyStatus(order.id, status);
+  };
+
+  const confirmPayment = async () => {
+    if (!payFor) return;
+    setSavingPayment(true);
+    const ok = await applyStatus(payFor.id, "paid", method);
+    setSavingPayment(false);
+    if (ok) setPayFor(null);
   };
 
   if (loading) {
@@ -85,11 +122,12 @@ export function AdminOrders() {
                 <code className="text-xs font-mono text-emerald-400">{order.transaction_code}</code>
                 <p className="text-xs text-muted-foreground">
                   {new Date(order.created_at).toLocaleString()}
+                  {order.payment_method && <> · Pago: {paymentLabels[order.payment_method] ?? order.payment_method}</>}
                 </p>
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-semibold">S/ {Number(order.total).toFixed(2)}</span>
-                <Select value={order.status} onValueChange={(v) => handleStatusChange(order.id, v)}>
+                <Select value={order.status} onValueChange={(v) => handleStatusChange(order, v)}>
                   <SelectTrigger className="w-36 h-8">
                     <SelectValue>
                       <Badge className={statusColors[order.status]}>{statusLabels[order.status]}</Badge>
@@ -127,6 +165,41 @@ export function AdminOrders() {
           </CardContent>
         </Card>
       ))}
+
+      <Dialog open={payFor !== null} onOpenChange={(open) => !open && setPayFor(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>¿Cómo pagó?</DialogTitle>
+            <DialogDescription>
+              Pedido {payFor?.transaction_code} · S/ {Number(payFor?.total ?? 0).toFixed(2)}. Queda registrado junto con la fecha.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid grid-cols-3 gap-2">
+            {Object.entries(paymentLabels).map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setMethod(value)}
+                aria-pressed={method === value}
+                className={`rounded-lg border px-3 py-2 text-sm transition-colors ${
+                  method === value ? "border-nova bg-nova text-white" : "border-white/20 hover:border-nova/60"
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setPayFor(null)}>
+              Cancelar
+            </Button>
+            <Button onClick={confirmPayment} disabled={savingPayment}>
+              {savingPayment && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Confirmar pago
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

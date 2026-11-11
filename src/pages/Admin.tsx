@@ -13,6 +13,8 @@ import {
 } from "@/components/ui/select";
 import { AdminRoles } from "@/components/admin/AdminRoles";
 import { AdminProducts } from "@/components/admin/AdminProducts";
+import { AdminMateriales } from "@/components/admin/AdminMateriales";
+import { AdminIndicadores } from "@/components/admin/AdminIndicadores";
 import { AdminOrders } from "@/components/admin/AdminOrders";
 import { AdminReservations } from "@/components/admin/AdminReservations";
 import { AdminContactMessages } from "@/components/admin/AdminContactMessages";
@@ -60,7 +62,19 @@ const AREAS: Area[] = [
         pending: "reservas",
         element: <AdminReservations />,
       },
-      { slug: "productos", label: "Productos", description: "Catálogo de la Tienda Nova.", element: <AdminProducts /> },
+      { slug: "productos", label: "Productos", description: "Catálogo y stock de la Tienda Nova.", element: <AdminProducts /> },
+      {
+        slug: "materiales",
+        label: "Materiales",
+        description: "Stock de filamento y resina para impresión 3D.",
+        element: <AdminMateriales />,
+      },
+      {
+        slug: "indicadores",
+        label: "Indicadores",
+        description: "Ventas, pedidos, stock y lo más vendido.",
+        element: <AdminIndicadores />,
+      },
     ],
   },
   {

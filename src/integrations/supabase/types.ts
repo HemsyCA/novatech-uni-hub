@@ -660,6 +660,8 @@ export type Database = {
       }
       orders: {
         Row: {
+          paid_at: string | null
+          payment_method: string | null
           created_at: string
           id: string
           status: Database["public"]["Enums"]["order_status"]
@@ -669,6 +671,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          paid_at?: string | null
+          payment_method?: string | null
           created_at?: string
           id?: string
           status?: Database["public"]["Enums"]["order_status"]
@@ -678,6 +682,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          paid_at?: string | null
+          payment_method?: string | null
           created_at?: string
           id?: string
           status?: Database["public"]["Enums"]["order_status"]
@@ -690,6 +696,8 @@ export type Database = {
       }
       print_materials: {
         Row: {
+          min_stock_kg: number
+          stock_kg: number
           cost_per_gram: number
           cost_per_hour: number
           created_at: string
@@ -700,6 +708,8 @@ export type Database = {
           print_speed_g_per_hour: number
         }
         Insert: {
+          min_stock_kg?: number
+          stock_kg?: number
           cost_per_gram?: number
           cost_per_hour?: number
           created_at?: string
@@ -710,6 +720,8 @@ export type Database = {
           print_speed_g_per_hour?: number
         }
         Update: {
+          min_stock_kg?: number
+          stock_kg?: number
           cost_per_gram?: number
           cost_per_hour?: number
           created_at?: string
@@ -723,6 +735,7 @@ export type Database = {
       }
       print_reservations: {
         Row: {
+          stock_descontado: boolean
           contact_email: string | null
           contact_name: string | null
           contact_phone: string | null
@@ -744,6 +757,7 @@ export type Database = {
           user_id: string | null
         }
         Insert: {
+          stock_descontado?: boolean
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -765,6 +779,7 @@ export type Database = {
           user_id?: string | null
         }
         Update: {
+          stock_descontado?: boolean
           contact_email?: string | null
           contact_name?: string | null
           contact_phone?: string | null
@@ -834,6 +849,7 @@ export type Database = {
       }
       products: {
         Row: {
+          min_stock: number
           category: string
           created_at: string
           description: string | null
@@ -846,6 +862,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          min_stock?: number
           category: string
           created_at?: string
           description?: string | null
@@ -858,6 +875,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          min_stock?: number
           category?: string
           created_at?: string
           description?: string | null
@@ -1064,6 +1082,8 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      crear_pedido: { Args: { _items: Json }; Returns: Database["public"]["Tables"]["orders"]["Row"] }
+      indicadores_negocio: { Args: Record<PropertyKey, never>; Returns: Json }
       enviar_entrega_academia: {
         Args: {
           _diagrama_url: string

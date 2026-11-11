@@ -141,7 +141,7 @@ export default function Store() {
     }
     setSubmitting(true);
     try {
-      const order = await createOrderWithItems(user.id, cart, cartTotal);
+      const order = await createOrderWithItems(cart);
       toast({ title: "¡Pedido realizado!", description: `Código: ${order.transaction_code || order.id}` });
       setCart([]);
       setCartOpen(false);
@@ -149,6 +149,8 @@ export default function Store() {
       navigate("/store?vista=pedidos", { replace: true });
     } catch (error) {
       toast({ title: "Error", description: error instanceof Error ? error.message : "No se pudo crear el pedido", variant: "destructive" });
+      // El stock pudo cambiar mientras armabas el carrito: se vuelve a mostrar el real.
+      listProducts().then(setProducts).catch(() => {});
     } finally {
       setSubmitting(false);
     }
