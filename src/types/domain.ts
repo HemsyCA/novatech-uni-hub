@@ -15,6 +15,8 @@ export interface PrintMaterial {
   print_speed_g_per_hour: number;
   is_default: boolean;
   is_active: boolean;
+  stock_kg: number;
+  min_stock_kg: number;
 }
 
 export interface Reservation {
@@ -46,6 +48,7 @@ export interface Product {
   category: string;
   price: number;
   stock: number;
+  min_stock?: number;
   image_url: string;
   is_active?: boolean;
 }
@@ -56,6 +59,8 @@ export interface Order {
   total: number;
   status: string;
   transaction_code?: string;
+  payment_method?: string | null;
+  paid_at?: string | null;
   created_at: string;
 }
 

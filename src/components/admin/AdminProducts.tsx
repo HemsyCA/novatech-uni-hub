@@ -7,12 +7,12 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Loader2, Pencil, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Loader2, Pencil, Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { createProduct, deleteProduct, listAllProducts, updateProduct } from "@/services/supabase/products";
 import type { Product } from "@/types/domain";
 
-const emptyForm = { name: "", description: "", category: "", price: "", stock: "", image_url: "🔌" };
+const emptyForm = { name: "", description: "", category: "", price: "", stock: "", min_stock: "5", image_url: "🔌" };
 
 export function AdminProducts() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -51,6 +51,7 @@ export function AdminProducts() {
       category: product.category,
       price: String(product.price),
       stock: String(product.stock),
+      min_stock: String(product.min_stock ?? 5),
       image_url: product.image_url ?? "🔌",
     });
     setOpen(true);
@@ -69,6 +70,7 @@ export function AdminProducts() {
         category: form.category,
         price: parseFloat(form.price),
         stock: parseInt(form.stock || "0", 10),
+        min_stock: parseInt(form.min_stock || "0", 10),
         image_url: form.image_url,
       };
       if (editing) {
@@ -109,6 +111,8 @@ export function AdminProducts() {
     return <Loader2 className="h-6 w-6 animate-spin text-primary mx-auto" />;
   }
 
+  const lowStock = products.filter((p) => p.is_active && p.stock <= (p.min_stock ?? 5));
+
   return (
     <div className="space-y-4">
       <div className="flex justify-end">
@@ -141,7 +145,7 @@ export function AdminProducts() {
                   <Input value={form.image_url} onChange={(e) => setForm({ ...form, image_url: e.target.value })} />
                 </div>
               </div>
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-1">
                   <Label>Precio (S/)</Label>
                   <Input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
@@ -149,6 +153,10 @@ export function AdminProducts() {
                 <div className="space-y-1">
                   <Label>Stock</Label>
                   <Input type="number" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+                </div>
+                <div className="space-y-1">
+                  <Label>Stock mínimo</Label>
+                  <Input type="number" min="0" value={form.min_stock} onChange={(e) => setForm({ ...form, min_stock: e.target.value })} />
                 </div>
               </div>
               <Button className="w-full bg-gradient-primary" onClick={handleSave} disabled={saving}>
@@ -159,6 +167,16 @@ export function AdminProducts() {
           </DialogContent>
         </Dialog>
       </div>
+
+      {lowStock.length > 0 && (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-500/40 bg-amber-500/10 p-4 text-sm">
+          <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-400" />
+          <p className="text-white/80">
+            <span className="font-semibold text-white">{lowStock.length} producto(s) con stock bajo o agotado:</span>{" "}
+            {lowStock.map((p) => p.name).join(", ")}.
+          </p>
+        </div>
+      )}
 
       <div className="grid sm:grid-cols-2 gap-3">
         {products.map((product) => (
@@ -183,7 +201,14 @@ export function AdminProducts() {
               </div>
               <div className="flex items-center justify-between mt-3 text-sm">
                 <span className="font-semibold text-violet-400">S/ {product.price.toFixed(2)}</span>
-                <span className="text-muted-foreground">Stock: {product.stock}</span>
+                <span className="flex items-center gap-1.5 text-muted-foreground">
+                  Stock: {product.stock}
+                  {product.stock === 0 ? (
+                    <Badge className="bg-red-500/20 text-red-400">Agotado</Badge>
+                  ) : product.stock <= (product.min_stock ?? 5) ? (
+                    <Badge className="bg-amber-500/20 text-amber-400">Bajo</Badge>
+                  ) : null}
+                </span>
                 <div className="flex items-center gap-1">
                   <span className="text-xs text-muted-foreground">Activo</span>
                   <Switch checked={product.is_active} onCheckedChange={() => toggleActive(product)} />

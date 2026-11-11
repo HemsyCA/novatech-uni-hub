@@ -29,30 +29,21 @@ export const listOrderItems = async (orderId: string) => {
   return (data ?? []) as (OrderItem & { products: { name: string } | null })[];
 };
 
-export const updateOrderStatus = async (orderId: string, status: Order["status"]) => {
-  const { error } = await supabase.from("orders").update({ status }).eq("id", orderId);
-  if (error) throw error;
+export const updateOrderStatus = async (orderId: string, status: Order["status"], paymentMethod?: string) => {
+  const { error } = await supabase
+    .from("orders")
+    .update({ status, ...(paymentMethod ? { payment_method: paymentMethod } : {}) })
+    .eq("id", orderId);
+  // El mensaje de la base explica el motivo (por ejemplo, que ya no hay stock para reabrir un pedido).
+  if (error) throw new Error(error.message);
 };
 
-export const createOrderWithItems = async (userId: string, cart: Array<Product & { quantity: number }>, total: number) => {
-  const { data: order, error: orderError } = await supabase
-    .from("orders")
-    .insert({ user_id: userId, total })
-    .select()
-    .single();
+// El pedido se crea en la base con crear_pedido(): valida el stock, toma los precios reales
+// y descuenta todo de una vez. Si algo falla, no queda nada a medias.
+export const createOrderWithItems = async (cart: Array<Pick<Product, "id"> & { quantity: number }>) => {
+  const items = cart.map((item) => ({ product_id: item.id, quantity: item.quantity }));
+  const { data, error } = await supabase.rpc("crear_pedido", { _items: items });
 
-  if (orderError) throw orderError;
-
-  const orderItems = cart.map((item) => ({
-    order_id: order.id,
-    product_id: item.id,
-    quantity: item.quantity,
-    unit_price: item.price,
-  }));
-
-  const { error: itemsError } = await supabase.from("order_items").insert(orderItems);
-
-  if (itemsError) throw itemsError;
-
-  return order as Order;
+  if (error) throw new Error(error.message);
+  return data as unknown as Order;
 };
