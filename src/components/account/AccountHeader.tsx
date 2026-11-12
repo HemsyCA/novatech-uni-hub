@@ -8,7 +8,6 @@ import {
   LogOut,
   MessagesSquare,
   Wrench,
-  Bot,
   MonitorSmartphone,
   Users,
   Printer,
@@ -86,17 +85,7 @@ function useSections(): Section[] {
       alert: academicPending || undefined,
     });
   }
-  // Categorías y Almacén son solo para miembros (la directiva también lo es).
-  if (member.isMember)
-    sections.push({
-      id: "categorias",
-      to: "/categorias",
-      label: "Categorías",
-      short: "Categorías",
-      icon: Bot,
-      group: "equipo",
-      active: (p) => p.startsWith("/categorias"),
-    });
+  // Almacén es solo para miembros (la directiva también lo es). Las categorías viven dentro de Conocimientos.
   if (member.isMember)
     sections.push({
       id: "almacen",

@@ -43,7 +43,8 @@ function FichaView({ aporte }: { aporte: Pick<Aporte, "queria" | "hice" | "paso"
 }
 
 // Compartir un descubrimiento con la misma ficha de la bitácora de Academia Nova.
-function AporteForm({ initial, onDone }: { initial: Aporte | null; onDone: () => void }) {
+// categoriaInicial: llega desde "Proponer un aporte" de una categoría (?categoria=<id>).
+function AporteForm({ initial, categoriaInicial, onDone }: { initial: Aporte | null; categoriaInicial?: string | null; onDone: () => void }) {
   const { toast } = useToast();
   const [form, setForm] = useState<AporteInput>(
     initial
@@ -57,7 +58,9 @@ function AporteForm({ initial, onDone }: { initial: Aporte | null; onDone: () =>
           aprendi: initial.aprendi,
           evidencia_url: initial.evidencia_url ?? "",
         }
-      : emptyForm,
+      : categoriaInicial && CATEGORIAS.some((c) => c.id === categoriaInicial)
+        ? { ...emptyForm, categoria: categoriaInicial }
+        : emptyForm,
   );
   const [sending, setSending] = useState(false);
   const set = <K extends keyof AporteInput>(key: K, value: AporteInput[K]) => setForm((f) => ({ ...f, [key]: value }));
@@ -266,6 +269,7 @@ export default function Comunidad() {
         <AporteForm
           key={editing?.id ?? "nuevo"}
           initial={editing}
+          categoriaInicial={searchParams.get("categoria")}
           onDone={() => {
             reloadAportes();
             navigate("/comunidad?vista=mios", { replace: true });

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
-import { Loader2, Lock, Plus, Search } from "lucide-react";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
+import { ArrowRight, Bot, CircuitBoard, Loader2, Lock, Plus, Search } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { useAccount } from "@/components/account/account-context";
@@ -10,6 +10,8 @@ import { displayNameOf } from "@/hooks/use-session";
 import { inputClass, primaryButton, secondaryButton } from "@/lib/account/styles";
 import { CATEGORIAS, DISCIPLINAS, TIPOS, categoriaLabel, disciplinaLabel } from "@/lib/conocimientos";
 import { formatDate } from "@/lib/academy-dates";
+import { PAGINAS, TIPOS as TIPOS_PAGINA, avance, relaciones, type TipoPagina } from "@/lib/conocimiento/modelo";
+import { ICONOS } from "@/lib/conocimiento/iconos";
 import {
   createConocimiento,
   listConocimientos,
@@ -125,13 +127,83 @@ function AddConocimiento({ onAdded }: { onAdded: () => void }) {
   );
 }
 
+// Las puertas de entrada a la base de conocimiento: primero las categorías (el centro), luego el resto.
+function Explora() {
+  const otras: TipoPagina[] = ["placas", "robots", "temas", "componentes"];
+  return (
+    <section aria-labelledby="explora" className="space-y-4">
+      <div>
+        <h2 id="explora" className="font-display text-xl font-bold">
+          Categorías
+        </h2>
+        <p className="text-sm text-white/55">Empieza por tu categoría: lo esencial de su electrónica, mecánica y programación, y nuestro mejor robot.</p>
+      </div>
+      <ul className="grid grid-cols-2 gap-2 sm:gap-3 lg:grid-cols-4">
+        {PAGINAS.categorias.map((c) => {
+          const rel = relaciones(c);
+          const { escritos, total } = avance(c);
+          return (
+            <li key={c.slug}>
+              <Link
+                to={`/conocimientos/categorias/${c.slug}`}
+                className="group flex h-full flex-col rounded-2xl border border-white/10 p-3 transition-colors hover:border-white/40 sm:p-4"
+              >
+                <span className="text-sm font-semibold leading-snug sm:text-base">{c.titulo}</span>
+                <span className="mt-1 line-clamp-2 hidden flex-1 text-xs text-white/50 sm:block">{c.resumen}</span>
+                <span className="flex-1 sm:hidden" />
+                <span className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-white/45">
+                  <span className="inline-flex items-center gap-1">
+                    <Bot className="h-3 w-3" /> {rel.robots.length}
+                  </span>
+                  <span className="inline-flex items-center gap-1">
+                    <CircuitBoard className="h-3 w-3" /> {rel.placas.length}
+                  </span>
+                  <span className="ml-auto">
+                    {escritos}/{total}
+                  </span>
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <ul className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-4">
+        {otras.map((tipo) => {
+          const Icon = ICONOS[tipo];
+          return (
+            <li key={tipo}>
+              <Link
+                to={`/conocimientos/${tipo}`}
+                className="group flex items-center gap-3 rounded-xl border border-white/10 px-4 py-3 transition-colors hover:border-white/40"
+              >
+                <Icon className="h-4 w-4 shrink-0 text-nova" />
+                <span className="min-w-0 flex-1">
+                  <span className="block text-sm font-semibold">{TIPOS_PAGINA[tipo].plural}</span>
+                  <span className="block text-xs text-white/40">{PAGINAS[tipo].length} páginas</span>
+                </span>
+                <ArrowRight className="h-4 w-4 shrink-0 text-white/30 transition-transform group-hover:translate-x-1 group-hover:text-white" />
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+    </section>
+  );
+}
+
 export default function Conocimientos() {
   const { academy, member } = useAccount();
+  const [searchParams] = useSearchParams();
+  const { hash } = useLocation();
   const [items, setItems] = useState<Conocimiento[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [disciplina, setDisciplina] = useState<string>("todas");
-  const [categoria, setCategoria] = useState<string>("todas");
+  // Desde una categoría se llega con ?categoria=<id> para ver todo su material.
+  const [categoria, setCategoria] = useState<string>(() => {
+    const desdeUrl = searchParams.get("categoria");
+    return desdeUrl && CATEGORIAS.some((c) => c.id === desdeUrl) ? desdeUrl : "todas";
+  });
   const canAccess = member.isMember || academy.isAcademic;
   const canCurate = academy.isStaff || academy.isAcademic;
 
@@ -145,6 +217,10 @@ export default function Conocimientos() {
     if (canAccess) load();
     else setLoading(false);
   }, [canAccess]);
+
+  useEffect(() => {
+    if (!loading && hash === "#material") document.getElementById("material")?.scrollIntoView();
+  }, [loading, hash]);
 
   const filtered = useMemo(() => {
     const q = search.trim().toLowerCase();
@@ -172,11 +248,17 @@ export default function Conocimientos() {
     <main className="container mx-auto max-w-5xl space-y-6 px-4 pb-16 pt-28">
       <div>
         <p className="mb-1 text-xs font-semibold uppercase tracking-widest text-nova">Zona de miembros</p>
-        <PageHeader
-          title="Conocimientos Nova"
-          description="Todo lo que el equipo fue aprendiendo, con el nombre de quien lo hizo."
-          actions={canCurate ? <AddConocimiento onAdded={load} /> : undefined}
-        />
+        <PageHeader title="Conocimientos Nova" description="Todo lo que el equipo sabe y fue aprendiendo, ordenado por categoría." />
+      </div>
+
+      <Explora />
+
+      <div id="material" className="flex scroll-mt-28 flex-wrap items-end justify-between gap-3 border-t border-white/10 pt-8">
+        <div>
+          <h2 className="font-display text-xl font-bold">Material y aportes</h2>
+          <p className="text-sm text-white/55">Lo que el equipo fue compartiendo, con el nombre de quien lo hizo.</p>
+        </div>
+        {canCurate && <AddConocimiento onAdded={load} />}
       </div>
 
       <div className="relative">
