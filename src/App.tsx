@@ -3,7 +3,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Navigate, Routes, Route, useParams } from "react-router-dom";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { StaffRoute } from "@/components/StaffRoute";
 import { LanguageProvider } from "@/contexts/LanguageContext";
@@ -35,11 +35,17 @@ const Conocimientos = lazy(() => import("./pages/Conocimientos"));
 const ConocimientoDetalle = lazy(() => import("./pages/ConocimientoDetalle"));
 const Comunidad = lazy(() => import("./pages/Comunidad"));
 const Almacen = lazy(() => import("./pages/Almacen"));
-const Categorias = lazy(() => import("./pages/Categorias"));
+const ConocimientoPagina = lazy(() => import("./pages/conocimiento/ConocimientoPagina"));
 const AccountLayout = lazy(() => import("./components/account/AccountLayout"));
 const SessionShell = lazy(() => import("./components/account/SessionShell"));
 
 const queryClient = new QueryClient();
+
+// Las categorías ahora viven dentro de Conocimientos Nova: los enlaces antiguos siguen funcionando.
+function CategoriaAntigua() {
+  const { id } = useParams();
+  return <Navigate to={`/conocimientos/categorias${id ? `/${id}` : ""}`} replace />;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -84,11 +90,18 @@ const App = () => (
                   <Route path=":moduleId/:lessonId" element={<AcademiaLesson />} />
                 </Route>
                 <Route path="/conocimientos" element={<Conocimientos />} />
+                {/* Base de conocimiento: los índices fijos ganan a /conocimientos/:id (material publicado). */}
+                <Route path="/conocimientos/categorias" element={<ConocimientoPagina tipo="categorias" />} />
+                <Route path="/conocimientos/placas" element={<ConocimientoPagina tipo="placas" />} />
+                <Route path="/conocimientos/robots" element={<ConocimientoPagina tipo="robots" />} />
+                <Route path="/conocimientos/temas" element={<ConocimientoPagina tipo="temas" />} />
+                <Route path="/conocimientos/componentes" element={<ConocimientoPagina tipo="componentes" />} />
+                <Route path="/conocimientos/:tipo/:slug" element={<ConocimientoPagina />} />
                 <Route path="/conocimientos/:id" element={<ConocimientoDetalle />} />
                 <Route path="/comunidad" element={<Comunidad />} />
                 <Route path="/almacen" element={<Almacen />} />
-                <Route path="/categorias" element={<Categorias />} />
-                <Route path="/categorias/:id" element={<Categorias />} />
+                <Route path="/categorias" element={<CategoriaAntigua />} />
+                <Route path="/categorias/:id" element={<CategoriaAntigua />} />
                 {/* La antigua zona de miembros ahora es Conocimientos Nova. */}
                 <Route path="/miembros" element={<Navigate to="/conocimientos" replace />} />
                 <Route element={<StaffRoute />}>
