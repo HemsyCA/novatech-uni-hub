@@ -25,7 +25,7 @@ const socialLinks = [
 const TIKTOK_GLOW = { filter: "drop-shadow(-1.2px -1px 0 #25F4EE) drop-shadow(1.2px 1px 0 #FE2C55)" };
 
 // Dentro de la cuenta estorbarían a la barra inferior y a la navegación de las lecciones.
-const ACCOUNT_PATHS = ["/dashboard", "/academia", "/miembros", "/admin", "/conocimientos", "/comunidad", "/almacen"];
+const ACCOUNT_PATHS = ["/dashboard", "/academia", "/miembros", "/admin", "/conocimientos", "/comunidad", "/almacen", "/categorias"];
 // Tienda e Impresión 3D se abren dentro de la cuenta cuando hay sesión.
 const SERVICE_PATHS = ["/store", "/print3d"];
 
