@@ -147,7 +147,7 @@ export default function AccountLayout() {
     <AccountContext.Provider value={account}>
       <div className="nova-shell font-mono min-h-screen bg-black text-white">
         <AccountHeader />
-        <div className={inLesson ? "" : "pb-20 md:pb-0"}>
+        <div className={inLesson ? "" : "pb-20 lg:pb-0"}>
           <Suspense fallback={<div className="container mx-auto px-4 pt-28 text-white/60 animate-pulse">Cargando…</div>}>
             <Outlet />
           </Suspense>

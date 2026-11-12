@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   BookOpen,
+  Bot,
   GraduationCap,
   LayoutGrid,
   MessagesSquare,
@@ -472,6 +473,15 @@ export default function Dashboard() {
                   <MessagesSquare className="h-4 w-4 text-nova" /> Comunidad
                   <ArrowRight className="ml-auto h-4 w-4 text-white/40" />
                 </Link>
+                {member.isMember && (
+                  <Link
+                    to="/categorias"
+                    className="flex items-center gap-3 rounded-xl border border-white/15 bg-black px-4 py-3 text-sm font-semibold transition-colors hover:border-white/40"
+                  >
+                    <Bot className="h-4 w-4 text-nova" /> Categorías
+                    <ArrowRight className="ml-auto h-4 w-4 text-white/40" />
+                  </Link>
+                )}
                 {member.isMember && (
                   <Link
                     to="/almacen"

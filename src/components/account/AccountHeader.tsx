@@ -8,6 +8,7 @@ import {
   LogOut,
   MessagesSquare,
   Wrench,
+  Bot,
   MonitorSmartphone,
   Users,
   Printer,
@@ -85,7 +86,17 @@ function useSections(): Section[] {
       alert: academicPending || undefined,
     });
   }
-  // El Almacén es solo para miembros (la directiva también lo es).
+  // Categorías y Almacén son solo para miembros (la directiva también lo es).
+  if (member.isMember)
+    sections.push({
+      id: "categorias",
+      to: "/categorias",
+      label: "Categorías",
+      short: "Categorías",
+      icon: Bot,
+      group: "equipo",
+      active: (p) => p.startsWith("/categorias"),
+    });
   if (member.isMember)
     sections.push({
       id: "almacen",
@@ -237,7 +248,7 @@ export function AccountHeader() {
           <span className="hidden font-display text-xl font-bold sm:block">NOVATECH</span>
         </Link>
 
-        <nav aria-label="Secciones de tu cuenta" className="hidden items-center gap-1 md:flex">
+        <nav aria-label="Secciones de tu cuenta" className="hidden items-center gap-1 lg:flex">
           {sections.map((section, index) => {
             const active = section.active(pathname);
             // Una línea fina separa servicios, Academia y zona de miembros.
@@ -340,7 +351,7 @@ export function AccountTabBar() {
   return (
     <nav
       aria-label="Secciones de tu cuenta"
-      className="fixed bottom-0 left-0 right-0 z-50 flex border-t border-white/10 bg-black/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl md:hidden"
+      className="fixed bottom-0 left-0 right-0 z-50 flex border-t border-white/10 bg-black/90 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl lg:hidden"
     >
       {tabs.map((section) => {
         const active = section.active(pathname);
