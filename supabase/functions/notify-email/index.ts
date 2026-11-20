@@ -8,10 +8,17 @@
 //   GMAIL_USER          correo del equipo, ej. novatech.equipo@gmail.com
 //   GMAIL_APP_PASSWORD  contraseña de aplicación de Google (16 caracteres)
 //   SITE_URL            opcional, por defecto https://novatech-uni-hub.vercel.app
+//   NOVA_GROUP_URL      opcional, enlace de invitación al grupo de Nova (https://...).
+//                       Si existe, el correo de bienvenida a miembros lo incluye como botón.
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import nodemailer from "npm:nodemailer@6.9.16";
 
 type Tipo = "inscripcion" | "convocado" | "miembro";
+
+interface Cta {
+  label: string;
+  url: string;
+}
 
 interface Email {
   to: string;
@@ -21,6 +28,13 @@ interface Email {
 }
 
 const SITE_URL = (Deno.env.get("SITE_URL") ?? "https://novatech-uni-hub.vercel.app").replace(/\/$/, "");
+
+// El enlace del grupo es un secreto de Supabase (quien lo tiene puede entrar), no vive en git.
+// Solo se acepta https y sin caracteres que rompan el HTML.
+const groupUrl = (): string | null => {
+  const url = (Deno.env.get("NOVA_GROUP_URL") ?? "").trim();
+  return /^https:\/\/[^\s"'<>]+$/.test(url) ? url : null;
+};
 
 const supabaseAdmin = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!);
 
@@ -48,29 +62,30 @@ const limaToday = () => new Intl.DateTimeFormat("en-CA", { timeZone: "America/Li
 const escapeHtml = (value: string) =>
   value.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
 
-const layout = (title: string, paragraphs: string[], cta?: { label: string; url: string }) => `
+const button = (cta: Cta, primary: boolean) =>
+  `<a href="${cta.url}" style="display:inline-block;margin:0 10px 10px 0;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:8px;${
+    primary ? "background:#fff;color:#000" : "background:transparent;color:#fff;border:1px solid #525252"
+  }">${cta.label}</a>`;
+
+const layout = (title: string, paragraphs: string[], ctas: Cta[] = []) => `
 <div style="background:#000;padding:32px 16px;font-family:Arial,Helvetica,sans-serif">
   <div style="max-width:520px;margin:0 auto;background:#0d0d0d;border:1px solid #262626;border-radius:16px;padding:32px;color:#e5e5e5">
     <p style="margin:0 0 24px;font-size:14px;letter-spacing:3px;color:#fff;font-weight:bold">NOVA<span style="color:#a78bfa">TECH</span></p>
     <h1 style="margin:0 0 16px;font-size:22px;color:#fff">${title}</h1>
     ${paragraphs.map((p) => `<p style="margin:0 0 14px;font-size:15px;line-height:1.6">${p}</p>`).join("")}
-    ${
-      cta
-        ? `<p style="margin:24px 0 0"><a href="${cta.url}" style="display:inline-block;background:#fff;color:#000;text-decoration:none;font-weight:bold;padding:12px 22px;border-radius:8px">${cta.label}</a></p>`
-        : ""
-    }
+    ${ctas.length ? `<p style="margin:24px 0 0">${ctas.map((c, i) => button(c, i === 0)).join("")}</p>` : ""}
     <p style="margin:28px 0 0;font-size:12px;color:#737373">Nova Tech · Equipo de robótica de la UNI. Si tienes dudas, responde a este correo.</p>
   </div>
 </div>`;
 
-const toText = (title: string, paragraphs: string[], cta?: { label: string; url: string }) =>
-  [title, "", ...paragraphs.map((p) => p.replace(/<[^>]+>/g, "")), ...(cta ? ["", `${cta.label}: ${cta.url}`] : [])].join("\n");
+const toText = (title: string, paragraphs: string[], ctas: Cta[] = []) =>
+  [title, "", ...paragraphs.map((p) => p.replace(/<[^>]+>/g, "")), ...ctas.flatMap((c) => ["", `${c.label}: ${c.url}`])].join("\n");
 
-const build = (to: string, subject: string, title: string, paragraphs: string[], cta?: { label: string; url: string }): Email => ({
+const build = (to: string, subject: string, title: string, paragraphs: string[], ctas?: Cta[]): Email => ({
   to,
   subject,
-  html: layout(title, paragraphs, cta),
-  text: toText(title, paragraphs, cta),
+  html: layout(title, paragraphs, ctas),
+  text: toText(title, paragraphs, ctas),
 });
 
 const firstName = (name: string | null | undefined) => (name ?? "").trim().split(/\s+/)[0] || "";
@@ -123,17 +138,28 @@ async function buildEmail(tipo: Tipo, id: string): Promise<Email | null> {
       `Fuiste aceptado en la convocatoria de Nova Tech, en el grupo <b>${escapeHtml(grupo.nombre)}</b>.`,
       empieza,
       `Para entrar, inicia sesión con este mismo correo (<b>${escapeHtml(data.email)}</b>), con Google o creando tu cuenta con correo y contraseña. Luego abre Academia Nova desde tu cuenta.`,
-    ], { label: "Entrar a Academia Nova", url: `${SITE_URL}/academia` });
+    ], [{ label: "Entrar a Academia Nova", url: `${SITE_URL}/academia` }]);
   }
 
   const { data } = await supabaseAdmin.from("nova_miembros").select("email").eq("id", id).maybeSingle();
   if (!data) return null;
   const hola = escapeHtml(firstName(await findName(data.email)));
-  return build(data.email, "¡Bienvenido a Nova Tech!", `¡Bienvenido al equipo${hola ? `, ${hola}` : ""}!`, [
-    "Ahora eres <b>miembro de Nova Tech</b>.",
-    "Tienes acceso a la Zona de miembros, con material interno de nuestros robots, componentes y PCBs.",
-    `Inicia sesión con este mismo correo (<b>${escapeHtml(data.email)}</b>) para verla.`,
-  ], { label: "Ir a la Zona de miembros", url: `${SITE_URL}/miembros` });
+  const group = groupUrl();
+  return build(
+    data.email,
+    "¡Bienvenido a Nova Tech!",
+    `¡Bienvenido al equipo${hola ? `, ${hola}` : ""}!`,
+    [
+      "Ahora eres <b>miembro de Nova Tech</b>.",
+      "Con tu cuenta tienes acceso a <b>Conocimientos</b> (material interno de nuestros robots, placas y componentes), a la <b>Comunidad</b> para compartir lo que aprendes y al <b>Almacén</b> de herramientas del equipo.",
+      `Inicia sesión con este mismo correo (<b>${escapeHtml(data.email)}</b>) para verlos.`,
+      ...(group ? ["Únete también a nuestro grupo para enterarte de todo lo que hace el equipo."] : []),
+    ],
+    [
+      { label: "Entrar a la plataforma", url: `${SITE_URL}/conocimientos` },
+      ...(group ? [{ label: "Unirme al grupo de Nova", url: group }] : []),
+    ],
+  );
 }
 
 const json = (body: unknown, status = 200) =>
